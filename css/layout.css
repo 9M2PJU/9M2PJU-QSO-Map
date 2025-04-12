@@ -1,0 +1,30 @@
+/* Main layout */
+div#map {
+    width: auto;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+div#controls {
+    position: absolute;
+    top: 1em;
+    left: 1em;
+    width: 20em;
+    margin: 0;
+    padding: 1em;
+    z-index: 1001;
+    overflow: hidden;
+}
+
+p#zoomin {
+    margin-bottom: 0;
+}
+
+/* Default to "zoom ok" controls hidden. Button should be centered */
+p#zoomok {
+    display: none;
+    text-align: center;
+    margin-bottom: 0;
+    line-height: 2em;
+}

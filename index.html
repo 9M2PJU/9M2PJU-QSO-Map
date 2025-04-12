@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>ADIF Map Tool</title>
+
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="white"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="white-translucent">
+
+    <meta property="og:title" content="MØTRT ADIF Map Tool"/>
+    <meta property="twitter:title" content="MØTRT ADIF Map Tool"/>
+    <meta name="description" content="A tool to plot the contents of ADIF files on a map"/>
+    <meta property="og:description" content="A tool to plot the contents of ADIF files on a map"/>
+    <link rel="canonical" href="https://adifmap.m0trt.radio/"/>
+    <meta property="og:url" content="https://adifmap.m0trt.radio/"/>
+    <meta property="og:image" content="https://adifmap.m0trt.radio/img/screenshot.png"/>
+    <meta property="twitter:image" content="https://adifmap.m0trt.radio/img/screenshot.png"/>
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="author" content="Ian Renton"/>
+    <meta property="og:locale" content="en_GB"/>
+    <meta property="og:type" content="website"/>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.2.2/dist/css/leaflet.extra-markers.min.css">
+
+    <link rel="stylesheet" href="css/base.css" type="text/css">
+    <link rel="stylesheet" href="css/layout.css" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <link rel="stylesheet" href="css/mobile.css" type="text/css">
+
+    <script src="https://kit.fontawesome.com/eb1770b90a.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-ui@1.13.2/dist/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-providers@2.0.0/leaflet-providers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-edgebuffer@1.0.6/src/leaflet.edgebuffer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-geometryutil@0.10.2/src/leaflet.geometryutil.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.2.2/src/assets/js/leaflet.extra-markers.min.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.geodesic"></script>
+
+    <link rel="alternate icon" type="image/png" href="img/favicon.png">
+    <link rel="alternate icon" type="image/png" href="img/favicon-32.png">
+</head>
+<body>
+<div id="controls">
+    <h1 id="title">ADIF Map Tool</h1>
+    <p id="subtitle">By <a href="https://ianrenton.com" target="_blank">Ian Renton MØTRT</a></p>
+    <p><label for="fileSelect" class="configLabel">ADIF file:&nbsp;<input type="file" id="fileSelect" /></label></p>
+    <p><label for="linesEnabled" class="configLabel">
+                        <input type="checkbox" id="linesEnabled" name="linesEnabled" checked="checked">&nbsp;Draw lines from QTH grid:&nbsp;
+        <input type="text" id="qthGrid" class="textBox" name="qthGrid" placeholder="AA00aa" maxlength="6" size="6"></label></p>
+    <p><label for="bandColours" class="configLabel">
+        <input type="checkbox" id="bandColours" name="bandColours" checked="checked">&nbsp;Colour according to band</label></p>
+</div>
+<div id="map"></div>
+
+<script src="js/globals.js"></script>
+<script src="js/adif-funcs.js"></script>
+<script src="js/display-funcs.js"></script>
+<script src="js/utility-funcs.js"></script>
+<script src="js/map-setup-funcs.js"></script>
+<script src="js/ui-funcs.js"></script>
+<script src="js/startup.js"></script>
+</body>
+</html>

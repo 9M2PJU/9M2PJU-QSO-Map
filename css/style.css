@@ -1,0 +1,82 @@
+h1#title {
+    margin: 0;
+    font-size: 1.3em;
+}
+
+p#subtitle {
+    margin-top: 0;
+    font-size: 0.8em;
+}
+
+div#controls {
+    background-color: var(--background);
+    border: 1px solid var(--text);
+    border-radius: 3px;
+    color: var(--text);
+}
+
+label.configLabel {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+button.configButton {
+    padding: 0.3em;
+    font-size: 1em;
+    background-color: var(--box-background);
+    border: 1px solid var(--text);
+    border-radius: 3px;
+    color: var(--text);
+}
+
+input {
+    font-size: 1em;
+    font-family: sans-serif;
+}
+
+input.textBox {
+    font-size: 1em;
+    background-color: var(--box-background);
+    border: 1px solid var(--text);
+    border-radius: 3px;
+    color: var(--text);
+}
+
+.leaflet-popup {
+    font-size: 14px;
+}
+
+/* Marker and popup styles */
+/*noinspection CssUnusedSymbol*/
+.leaflet-tooltip, .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+    background-color: var(--popup-background);
+    color: var(--text);
+}
+
+/*noinspection CssUnusedSymbol*/
+.leaflet-tooltip {
+    border: 1px solid var(--popup-background);
+}
+
+/*noinspection CssUnusedSymbol*/
+.leaflet-tooltip-top::before {
+    border-top-color: var(--popup-background);
+}
+
+span.youAreHereNote {
+    font-size: 0.7em;
+    font-style: italic;
+}
+
+/* Text/link styles */
+a, .leaflet-container a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+/* Leaflet.js mods */
+/*noinspection CssUnusedSymbol*/
+.leaflet-container .leaflet-control-attribution {
+    background: none;
+    color: var(--text);
+}
