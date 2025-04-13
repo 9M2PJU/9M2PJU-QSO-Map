@@ -92,6 +92,7 @@ function qsoToColour(qso) {
                 return band.color;
             }
         }
+        return "grey";
     }
     return "dodgerblue";
 }

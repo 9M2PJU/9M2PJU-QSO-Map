@@ -48,3 +48,4 @@ let bandColours = true;
 let smallIcons = false;
 let outdoorSymbols = false;
 let showMaidenheadGrid = false;
+let callsignLabels = false;

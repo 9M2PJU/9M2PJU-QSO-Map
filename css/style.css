@@ -34,20 +34,14 @@ label.configLabel {
 }
 
 /* Marker and popup styles */
-/*noinspection CssUnusedSymbol*/
-.leaflet-tooltip, .leaflet-popup-content-wrapper, .leaflet-popup-tip {
-    background-color: var(--popup-background);
-    color: var(--text);
-}
 
 /*noinspection CssUnusedSymbol*/
 .leaflet-tooltip {
-    border: 1px solid var(--popup-background);
-}
-
-/*noinspection CssUnusedSymbol*/
-.leaflet-tooltip-top::before {
-    border-top-color: var(--popup-background);
+    border: none;
+    background-color: transparent;
+    font-size: 0.8em;
+    font-weight: bold;
+    box-shadow: none;
 }
 
 /* Text/link styles */

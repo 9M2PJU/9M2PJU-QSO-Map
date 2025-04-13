@@ -27,6 +27,11 @@ function updateMapObjects() {
             // Set tooltip
             m.bindPopup(getTooltipText(q));
 
+            // Set label
+            if (callsignLabels) {
+                m.bindTooltip(q.get("CALL"), {permanent: true, direction: 'center', offset: L.point(0, 10)});
+            }
+
             // Add geodesic line
             if (linesEnabled && qthPos != null) {
                 let line = L.geodesic([qthPos, m.getLatLng()], {

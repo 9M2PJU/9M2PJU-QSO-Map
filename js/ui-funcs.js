@@ -27,6 +27,7 @@ function updateModelFromUI() {
     bandColours = $("#bandColours").is(':checked');
     smallIcons = $("#smallIcons").is(':checked');
     outdoorSymbols = $("#outdoorSymbols").is(':checked');
+    callsignLabels = $("#showCallsignLabels").is(':checked');
     updateMapObjects();
 }
 
@@ -74,6 +75,11 @@ $("#outdoorSymbols").change(function () {
 
 // Show Maidenhead grid overlay
 $("#showMaidenheadGrid").change(function () {
+    updateModelFromUI();
+});
+
+// Show callsign labels
+$("#showCallsignLabels").change(function () {
     updateModelFromUI();
 });
 
