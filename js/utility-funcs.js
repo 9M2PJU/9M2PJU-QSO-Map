@@ -136,7 +136,7 @@ function qsoToColour(qso) {
             } else if (qso.get("MODE") === "CW") {
                 return "red";
             } else {
-                return "bluw";
+                return "blue";
             }
         }
         return "grey";
