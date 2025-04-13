@@ -29,14 +29,22 @@ let markers = [];
 let lines = [];
 let qthPos = null;
 let map;
-let basemap = "Esri.NatGeoWorldMap";
-let basemapOpacity = 0.5;
 let basemapLayer;
 let markersLayer;
 let linesLayer;
 let ownPosLayer;
 let ownPosMarker;
+let maidenheadGrid;
+
+
+/////////////////////////////
+//  UI CONFIGURABLE VARS   //
+/////////////////////////////
+
+let basemap = "Esri.NatGeoWorldMap";
+let basemapOpacity = 0.5;
 let linesEnabled = true;
 let bandColours = true;
 let smallIcons = false;
 let outdoorSymbols = false;
+let showMaidenheadGrid = false;

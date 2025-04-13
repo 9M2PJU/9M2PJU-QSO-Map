@@ -28,7 +28,7 @@ function updateMapObjects() {
             m.bindPopup(getTooltipText(q));
 
             // Add geodesic line
-            if (qthPos != null) {
+            if (linesEnabled && qthPos != null) {
                 let line = L.geodesic([qthPos, m.getLatLng()], {
                     color: qsoToColour(q),
                     wrap: false,
@@ -36,7 +36,6 @@ function updateMapObjects() {
                     weight: 1
                 });
                 linesLayer.addLayer(line);
-                console.log(line);
                 lines.push(line);
             }
 
@@ -56,6 +55,19 @@ function updateMapObjects() {
 function zoomToFit() {
     var group = new L.featureGroup(markers);
     map.fitBounds(group.getBounds().pad(0.1));
+}
+
+// Shows/hides the Maidenhead grid overlay
+function enableMaidenheadGrid(show) {
+    showMaidenheadGrid = show;
+    if (maidenheadGrid) {
+        if (show) {
+            maidenheadGrid.addTo(map);
+            basemapLayer.bringToBack();
+        } else {
+            map.removeLayer(maidenheadGrid);
+        }
+    }
 }
 
 

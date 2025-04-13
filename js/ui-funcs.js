@@ -22,6 +22,7 @@ function updateModelFromUI() {
     setBasemap($("#basemap").val());
     setBasemapOpacity($("#basemapOpacity").val());
     updatePosFromGridInput();
+    enableMaidenheadGrid($("#showMaidenheadGrid").is(':checked'));
     linesEnabled = $("#linesEnabled").is(':checked');
     bandColours = $("#bandColours").is(':checked');
     smallIcons = $("#smallIcons").is(':checked');
@@ -68,6 +69,11 @@ $("#smallIcons").change(function () {
 
 // Listen for outdoor activity symbols toggle
 $("#outdoorSymbols").change(function () {
+    updateModelFromUI();
+});
+
+// Show Maidenhead grid overlay
+$("#showMaidenheadGrid").change(function () {
     updateModelFromUI();
 });
 

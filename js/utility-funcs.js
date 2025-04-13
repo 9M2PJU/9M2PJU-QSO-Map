@@ -77,8 +77,6 @@ function latLonForGrid(grid) {
             // Decode 6-character grid square
             lat = lat4(grid) + (1.0 / 60.0) * 2.5 * (grid.charCodeAt(5) - 'A'.charCodeAt(0) + 0.5);
             lon = lon4(grid) + (1.0 / 60.0) * 5 * (grid.charCodeAt(4) - 'A'.charCodeAt(0) + 0.5);
-        } else {
-            console.log("latLonForGrid: invalid grid: " + grid + ". Only 4 and 6 char grids supported");
         }
 
         return [lat, lon];

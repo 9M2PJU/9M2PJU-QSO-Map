@@ -20,6 +20,14 @@ function setUpMap() {
     basemapLayer.addTo(map);
     basemapLayer.bringToBack();
 
+    // Add Maidenhead grid (toggleable)
+    maidenheadGrid = L.maidenhead({
+        color : 'rgba(0, 0, 0, 0.4)'
+    });
+    if (showMaidenheadGrid) {
+        maidenheadGrid.addTo(map);
+    }
+
     // Add marker layer
     markersLayer = new L.LayerGroup();
     markersLayer.addTo(map);
