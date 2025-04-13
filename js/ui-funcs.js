@@ -48,3 +48,9 @@ $("#smallIcons").change(function () {
     smallIcons = $(this).is(':checked');
     updateMapObjects();
 });
+
+// Listen for outdoor activity symbols toggle
+$("#outdoorSymbols").change(function () {
+    outdoorSymbols = $(this).is(':checked');
+    updateMapObjects();
+});

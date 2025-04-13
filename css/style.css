@@ -79,6 +79,13 @@ a, .leaflet-container a {
     font-size: 11px;
 }
 
+/* Fudge basic circle icon to be smaller */
+.fa-circle {
+    font-size: 11.5px !important;
+    padding-top: 2px !important;
+    padding-left: 0.5px !important;
+}
+
 /* Leaflet.js mods */
 /*noinspection CssUnusedSymbol*/
 .leaflet-container .leaflet-control-attribution {

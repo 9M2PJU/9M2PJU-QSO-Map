@@ -125,27 +125,33 @@ function getIcon(qso) {
 
 // Get Font Awesome icon name for the QSO
 function getIconName(qso) {
-    if (qso.has("SIG")) {
-        program = qso.get("SIG");
-        if (program === "POTA") {
-            return "fa-tree";
-        } else if (program === "SOTA") {
-            return "fa-mountain-sun";
-        } else if (program === "WWFF") {
-            return "fa-seedling";
-        } else if (program === "GMA") {
-            return "fa-person-hiking";
-        } else if (program === "WWBOTA" || program === "UKBOTA") {
-            return "fa-radiation";
-        } else if (program === "IOTA") {
-            return "fa-umbrella-beach";
-        } else if (program === "WCA") {
-            return "fa-chess-rook";
-        } else if (program === "ALHRS") {
-            return "fa-tower-observation";
-        } else if (program === "MOTA") {
-            return "fa-fan";
+    if (outdoorSymbols) {
+        if (qso.has("SIG")) {
+            program = qso.get("SIG");
+            if (program === "POTA") {
+                return "fa-tree";
+            } else if (program === "SOTA") {
+                return "fa-mountain-sun";
+            } else if (program === "WWFF") {
+                return "fa-seedling";
+            } else if (program === "GMA") {
+                return "fa-person-hiking";
+            } else if (program === "WWBOTA" || program === "UKBOTA") {
+                return "fa-radiation";
+            } else if (program === "IOTA") {
+                return "fa-umbrella-beach";
+            } else if (program === "WCA") {
+                return "fa-chess-rook";
+            } else if (program === "ALHRS") {
+                return "fa-tower-observation";
+            } else if (program === "MOTA") {
+                return "fa-fan";
+            }
         }
+        return "fa-crosshairs";
+    } else  if (smallIcons) {
+        return "fa-none";
+    } else {
+        return "fa-circle"
     }
-    return "fa-crosshairs";
 }

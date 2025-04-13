@@ -39,3 +39,4 @@ let ownPosMarker;
 let linesEnabled = true;
 let bandColours = true;
 let smallIcons = false;
+let outdoorSymbols = false;
