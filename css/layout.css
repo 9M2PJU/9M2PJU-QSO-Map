@@ -30,3 +30,11 @@ div#menuButton {
 input#fileSelect {
     width: 17em;
 }
+
+/* Hide loading status until we have something to put in there */
+p#loadingStatus {
+    display: none;
+    margin-top: 0;
+    font-size: 0.8em;
+    text-align: center;
+}

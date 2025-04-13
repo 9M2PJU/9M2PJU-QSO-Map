@@ -7,6 +7,7 @@ function setUpMap() {
     map = L.map('map', {
         zoomControl: false,
         minZoom: 2,
+        maxZoom: 17,
         zoomDelta: 0.25,
         wheelPxPerZoomLevel: 200,
         zoomSnap: 0
