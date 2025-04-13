@@ -118,7 +118,7 @@ function latLonForGrid(grid) {
     return [lat, lon];
 }
 
-// Returns a colour based on QSO band, if enabled, otherwise returns neutral blue
+// Returns a colour based on QSO band or mode, if enabled, otherwise returns neutral blue
 function qsoToColour(qso) {
     if (bandColours) {
         for (band of BANDS) {
@@ -128,8 +128,22 @@ function qsoToColour(qso) {
             }
         }
         return "grey";
+
+    } else if (modeColours) {
+        if (qso.has("MODE")) {
+            if (qso.get("MODE") === "SSB" || qso.get("MODE") === "USB" || qso.get("MODE") === "LSB") {
+                return "green";
+            } else if (qso.get("MODE") === "CW") {
+                return "red";
+            } else {
+                return "bluw";
+            }
+        }
+        return "grey";
+
+    } else {
+        return "dodgerblue";
     }
-    return "dodgerblue";
 }
 
 // Returns a colour to contrast with the result of qsoToColor, based on QSO band, if enabled, otherwise returns white
@@ -141,8 +155,11 @@ function qsoToContrastColor(qso) {
                 return band.contrastColor;
             }
         }
+    } else if (modeColours) {
+        return "white";
+    } else {
+        return "white";
     }
-    return "white";
 }
 
 // Get an icon for a qso, based on its band, using PSK Reporter colours, its program etc.

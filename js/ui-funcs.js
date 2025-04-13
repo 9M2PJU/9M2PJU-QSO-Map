@@ -25,6 +25,7 @@ function updateModelFromUI() {
     enableMaidenheadGrid($("#showMaidenheadGrid").is(':checked'));
     linesEnabled = $("#linesEnabled").is(':checked');
     bandColours = $("#bandColours").is(':checked');
+    modeColours = $("#modeColours").is(':checked');
     smallIcons = $("#smallIcons").is(':checked');
     outdoorSymbols = $("#outdoorSymbols").is(':checked');
     callsignLabels = $("#showCallsignLabels").is(':checked');
@@ -58,8 +59,17 @@ $("#linesEnabled").change(function () {
     updateModelFromUI();
 });
 
-// Listen for band colours toggle
+// Listen for band/mode colours toggles. Only one can be turned on at a time.
 $("#bandColours").change(function () {
+    if ($("#bandColours").is(':checked')) {
+        $("#modeColours").prop('checked', false);
+    }
+    updateModelFromUI();
+});
+$("#modeColours").change(function () {
+    if ($("#modeColours").is(':checked')) {
+        $("#bandColours").prop('checked', false);
+    }
     updateModelFromUI();
 });
 

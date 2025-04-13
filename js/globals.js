@@ -46,6 +46,7 @@ let basemapOpacity = 0.5;
 let basemapIsDark = false;
 let linesEnabled = true;
 let bandColours = true;
+let modeColours = true;
 let smallIcons = false;
 let outdoorSymbols = false;
 let showMaidenheadGrid = false;
