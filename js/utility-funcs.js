@@ -45,54 +45,59 @@ function createOwnPosMarker(newPos) {
     }
 }
 
-// Convert a Maidenhead grid reference to lat/long. Based on C code from
-// https://www.hexnut.net/2019/05/maidenhead-locator-to-gps-and-back.html
+// Convert a Maidenhead grid reference of arbitrary precision to lat/long.
 function latLonForGrid(grid) {
+    // Make sure we are in upper case so our maths works. Case is arbitrary for Maidenhead references
     grid = grid.toUpperCase();
 
-    // Scaling table. Applied in degrees longitude, so latitude will be half this
-    let table = [
-        20.0,
-        2.0,
-        (1.0 / 12.0),
-        (1.0 / 120.0),
-        (1.0 / 2880.0),
-        (1.0 / 28800.0),
-        (1.0 / 6912000.0),
-        (1.0 / 69120000.0),
-        (1.0 / 165888000.0)
-    ];
-
+    // Return null if our Maidenhead string is invalid or too short
     let len = grid.length;
-
-    // Return null if our Maidenhead string is invalid or too short or longer than we know what to do with
-    if (len <= 0 || (len % 2) !== 0 || len > table.length * 2) {
+    if (len <= 0 || (len % 2) !== 0) {
         return null;
     }
 
-    let j = 0;
     let lat = 0.0; // aggregated latitude
     let lon = 0.0; // aggregated longitude
-    let uc; // grid longitude cell number
-    let ud; // grid latitude cell number
+    let latCellSize = 10; // Size in degrees latitude of the current cell. Starts at 20 and gets smaller as the calculation progresses
+    let lonCellSize = 20; // Size in degrees longitude of the current cell. Starts at 20 and gets smaller as the calculation progresses
+    let latCellNo; // grid latitude cell number this time
+    let lonCellNo; // grid longitude cell number this time
 
-    for (let i = 0; i < len; i += 2) {
-        if (j % 2 === 0) {
-            // Alphabetic characters in this block
-            uc = grid.charCodeAt(i) - 'A'.charCodeAt(0);
-            ud = grid.charCodeAt(i + 1) - 'A'.charCodeAt(0);
+    // Iterate through blocks (two-character sections)
+    for (let block = 0; block * 2 < len; block += 1) {
+        if (block % 2 === 0) {
+            // Letters in this block
+            lonCellNo = grid.charCodeAt(block * 2) - 'A'.charCodeAt(0);
+            latCellNo = grid.charCodeAt(block * 2 + 1) - 'A'.charCodeAt(0);
         } else {
-            // Numeric characters in this block
-            uc = parseInt(grid.charAt(i));
-            ud = parseInt(grid.charAt(i+1));
+            // Numbers in this block
+            lonCellNo = parseInt(grid.charAt(block * 2));
+            latCellNo = parseInt(grid.charAt(block * 2+1));
         }
-        lon += uc * table[j];
-        lat += ud * table[j];
-        j++;
-    }
 
-    // Correct for latitude blocks being half the size of longitude blocks
-    lat /= 2.0;
+        // Aggregate the angles
+        lat += latCellNo * latCellSize;
+        lon += lonCellNo * lonCellSize;
+
+        // Reduce the cell size for the next block, unless we are on the last cell. If we are on the last cell, instead
+        // move the position into the middle of the cell rather than its south-west corner.
+        if (block * 2 < len - 2) {
+            // Still have more work to do, so reduce the cell size
+            if (block % 2 === 0) {
+                // Just dealt with letters, next block will be numbers so cells will be 1/10 the current size
+                latCellSize = latCellSize / 10.0;
+                lonCellSize = lonCellSize / 10.0;
+            } else {
+                // Just dealt with numbers, next block will be letters so cells will be 1/24 the current size
+                latCellSize = latCellSize / 24.0;
+                lonCellSize = lonCellSize / 24.0;
+            }
+        } else {
+            // This is the last block, so move the marker to the middle.
+            lat += latCellSize / 2;
+            lon += lonCellSize / 2;
+        }
+    }
 
     // Offset back to (-180, -90) where the grid starts
     lon -= 180.0;
