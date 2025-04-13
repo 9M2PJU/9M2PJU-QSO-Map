@@ -45,42 +45,60 @@ function createOwnPosMarker(newPos) {
     }
 }
 
-/* Get the latitude and longitude for a Maidenhead (grid square) Locator.
- *
- * This function takes a single string parameter that is a Maidenhead (grid
- * square) Locator. It must be 4 or 6 characters in length.
- *
- * Returns an array of floating point numbers `[latitude, longitude]`.
- *
- * Based on code by Paul Brewer KI6CQ and Stephen Houser N1SH
- * https://gist.github.com/stephenhouser/4ad8c1878165fc7125cb547431a2bdaa
- */
+// Convert a Maidenhead grid reference to lat/long. Based on C code from
+// https://www.hexnut.net/2019/05/maidenhead-locator-to-gps-and-back.html
 function latLonForGrid(grid) {
-    if (grid) {
-        grid = grid.toUpperCase();
-        var lat = 0.0;
-        var lon = 0.0;
+    grid = grid.toUpperCase();
 
-        function lat4(g) {
-            return 10 * (g.charCodeAt(1) - 'A'.charCodeAt(0)) + parseInt(g.charAt(3)) - 90;
-        }
+    // Scaling table. Applied in degrees longitude, so latitude will be half this
+    let table = [
+        20.0,
+        2.0,
+        (1.0 / 12.0),
+        (1.0 / 120.0),
+        (1.0 / 2880.0),
+        (1.0 / 28800.0),
+        (1.0 / 6912000.0),
+        (1.0 / 69120000.0),
+        (1.0 / 165888000.0)
+    ];
 
-        function lon4(g) {
-            return 20 * (g.charCodeAt(0) - 'A'.charCodeAt(0)) + 2 * parseInt(g.charAt(2)) - 180;
-        }
+    let len = grid.length;
 
-        if (/^[A-R]{2}[0-9]{2}$/.test(grid)) {
-            // Decode 4-character grid square
-            lat = lat4(grid) + 0.5;
-            lon = lon4(grid) + 1;
-        } else if (/[A-R]{2}[0-9]{2}[A-X]{2}$/.test(grid)) {
-            // Decode 6-character grid square
-            lat = lat4(grid) + (1.0 / 60.0) * 2.5 * (grid.charCodeAt(5) - 'A'.charCodeAt(0) + 0.5);
-            lon = lon4(grid) + (1.0 / 60.0) * 5 * (grid.charCodeAt(4) - 'A'.charCodeAt(0) + 0.5);
-        }
-
-        return [lat, lon];
+    // Return null if our Maidenhead string is invalid or too short or longer than we know what to do with
+    if (len <= 0 || (len % 2) !== 0 || len > table.length * 2) {
+        return null;
     }
+
+    let j = 0;
+    let lat = 0.0; // aggregated latitude
+    let lon = 0.0; // aggregated longitude
+    let uc; // grid longitude cell number
+    let ud; // grid latitude cell number
+
+    for (let i = 0; i < len; i += 2) {
+        if (j % 2 === 0) {
+            // Alphabetic characters in this block
+            uc = grid.charCodeAt(i) - 'A'.charCodeAt(0);
+            ud = grid.charCodeAt(i + 1) - 'A'.charCodeAt(0);
+        } else {
+            // Numeric characters in this block
+            uc = parseInt(grid.charAt(i));
+            ud = parseInt(grid.charAt(i+1));
+        }
+        lon += uc * table[j];
+        lat += ud * table[j];
+        j++;
+    }
+
+    // Correct for latitude blocks being half the size of longitude blocks
+    lat /= 2.0;
+
+    // Offset back to (-180, -90) where the grid starts
+    lon -= 180.0;
+    lat -= 90.0;
+
+    return [lat, lon];
 }
 
 // Returns a colour based on QSO band, if enabled, otherwise returns neutral blue
@@ -148,7 +166,7 @@ function getIconName(qso) {
             }
         }
         return "fa-crosshairs";
-    } else  if (smallIcons) {
+    } else if (smallIcons) {
         return "fa-none";
     } else {
         return "fa-circle"
