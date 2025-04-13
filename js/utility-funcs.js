@@ -69,10 +69,22 @@ function latLonForGrid(grid) {
             // Letters in this block
             lonCellNo = grid.charCodeAt(block * 2) - 'A'.charCodeAt(0);
             latCellNo = grid.charCodeAt(block * 2 + 1) - 'A'.charCodeAt(0);
+            // Bail if the values aren't in range. Allowed values are A-R (0-17) for the first letter block, or
+            // A-X (0-23) thereafter.
+            let maxCellNo = (block === 0) ? 17 : 23;
+            if (latCellNo < 0 || latCellNo > maxCellNo || lonCellNo < 0 || lonCellNo > maxCellNo) {
+                console.log("A " + grid);
+                return null;
+            }
         } else {
             // Numbers in this block
             lonCellNo = parseInt(grid.charAt(block * 2));
-            latCellNo = parseInt(grid.charAt(block * 2+1));
+            latCellNo = parseInt(grid.charAt(block * 2 + 1));
+            // Bail if the values aren't in range 0-9..
+            if (latCellNo < 0 || latCellNo > 9 || lonCellNo < 0 || lonCellNo > 9) {
+                console.log("A " + grid);
+                return null;
+            }
         }
 
         // Aggregate the angles
