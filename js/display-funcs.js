@@ -25,7 +25,7 @@ function updateMapObjects() {
             markersLayer.addLayer(m);
 
             // Set tooltip
-            m.tooltip = getTooltipText(q);
+            m.bindPopup(getTooltipText(q));
 
             // Add geodesic line
             if (qthPos != null) {
@@ -66,8 +66,28 @@ function zoomToFit() {
 
 // Tooltip text for the normal click-to-appear tooltips
 function getTooltipText(qso) {
-    // todo
-    return "";
+    let text = "<b>" + qso.get("CALL") + "</b>";
+    if (qso.has("NAME")) {
+        text += "&nbsp;&nbsp;" + qso.get("NAME").replaceAll(" ", "&nbsp;");
+    }
+    text += "<br/>"
+    if (qso.has("QTH")) {
+        text += qso.get("QTH").replaceAll(" ", "&nbsp;") + ",&nbsp;";
+    }
+    text += qso.get("GRIDSQUARE");
+    if (qso.has("FREQ")) {
+        text += "<br/>" + qso.get("FREQ").replaceAll("000", "");
+        if (qso.has("MODE")) {
+            text += "&nbsp;MHz&nbsp;&nbsp;" + qso.get("MODE");
+        }
+    }
+    if (qso.has("TIME_ON")) {
+        text += "<br/>" + qso.get("TIME_ON").substring(0, 2) + ":" + qso.get("TIME_ON").substring(2, 4);
+        if (qso.has("QSO_DATE")) {
+            text += "&nbsp;UTC on&nbsp;" + qso.get("QSO_DATE").substring(0, 4) + "-" + qso.get("QSO_DATE").substring(4, 6) + "-" + qso.get("QSO_DATE").substring(6, 8);
+        }
+    }
+    return text;
 }
 
 
