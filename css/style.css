@@ -20,28 +20,6 @@ label.configLabel {
     white-space: nowrap;
 }
 
-button.configButton {
-    padding: 0.3em;
-    font-size: 1em;
-    background-color: var(--box-background);
-    border: 1px solid var(--text);
-    border-radius: 3px;
-    color: var(--text);
-}
-
-input {
-    font-size: 1em;
-    font-family: sans-serif;
-}
-
-input.textBox {
-    font-size: 1em;
-    background-color: var(--box-background);
-    border: 1px solid var(--text);
-    border-radius: 3px;
-    color: var(--text);
-}
-
 .leaflet-popup {
     font-size: 14px;
 }

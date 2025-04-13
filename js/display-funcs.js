@@ -117,3 +117,25 @@ function getIconPosition(q) {
     }
     return null;
 }
+
+// Set the basemap
+function setBasemap(basemapname) {
+    basemap = basemapname;
+    if (typeof backgroundTileLayer !== 'undefined') {
+        map.removeLayer(backgroundTileLayer);
+    }
+    backgroundTileLayer = L.tileLayer.provider(basemapname, {
+        opacity: basemapOpacity,
+        edgeBufferTiles: 1
+    });
+    backgroundTileLayer.addTo(map);
+    backgroundTileLayer.bringToBack();
+}
+
+// Set the basemap opacity
+function setBasemapOpacity(opacity) {
+    basemapOpacity = opacity;
+    if (typeof backgroundTileLayer !== 'undefined') {
+        backgroundTileLayer.setOpacity(opacity);
+    }
+}

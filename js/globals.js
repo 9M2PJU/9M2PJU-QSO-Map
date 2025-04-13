@@ -2,8 +2,6 @@
 //        CONSTANTS        //
 /////////////////////////////
 
-const BASEMAP = "CartoDB.Voyager";
-const BASEMAP_OPACITY = 1.0;
 const BANDS = [
     {name: "160m", startFreq: 1.8, stopFreq: 2.0, color: "#7cfc00", contrastColor: "black"},
     {name: "80m", startFreq: 3.5, stopFreq: 4.0, color: "#e550e5", contrastColor: "black"},
@@ -31,6 +29,8 @@ let markers = [];
 let lines = [];
 let qthPos = null;
 let map;
+let basemap = "Esri.NatGeoWorldMap";
+let basemapOpacity = 0.5;
 let backgroundTileLayer;
 let markersLayer;
 let linesLayer;

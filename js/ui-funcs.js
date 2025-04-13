@@ -26,6 +26,14 @@ function updatePosFromGridInput() {
     updateMapObjects();
 }
 
+// Listen for basemap & opacity changes
+$("#basemap").change(function() {
+    setBasemap($(this).val());
+});
+$("#basemapOpacity").change(function() {
+    setBasemapOpacity($(this).val());
+});
+
 // Listen for QTH grid input
 $("#qthGrid").on("input", function(e) {
     updatePosFromGridInput();

@@ -7,17 +7,14 @@ function setUpMap() {
     map = L.map('map', {
         zoomControl: false,
         minZoom: 2,
-        zoomSnap: 0.5
+        zoomDelta: 0.25,
+        wheelPxPerZoomLevel: 200,
+        zoomSnap: 0
     });
 
-    // Manually add zoom control so we can put it in the top right
-    L.control.zoom({
-        position: 'topright'
-    }).addTo(map);
-
     // Add basemap
-    backgroundTileLayer = L.tileLayer.provider(BASEMAP, {
-        opacity: BASEMAP_OPACITY,
+    backgroundTileLayer = L.tileLayer.provider(basemap, {
+        opacity: basemapOpacity,
         edgeBufferTiles: 1
     });
     backgroundTileLayer.addTo(map);
