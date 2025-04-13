@@ -43,6 +43,7 @@ let maidenheadGrid;
 
 let basemap = "Esri.NatGeoWorldMap";
 let basemapOpacity = 0.5;
+let basemapIsDark = false;
 let linesEnabled = true;
 let bandColours = true;
 let smallIcons = false;

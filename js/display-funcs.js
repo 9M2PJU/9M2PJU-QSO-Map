@@ -29,7 +29,8 @@ function updateMapObjects() {
 
             // Set label
             if (callsignLabels) {
-                m.bindTooltip(q.get("CALL"), {permanent: true, direction: 'center', offset: L.point(0, 10)});
+                m.bindTooltip("<span style='color: " + (basemapIsDark ? "white" : "black") + ";'>"
+                    + q.get("CALL") + "</span>", {permanent: true, direction: 'center', offset: L.point(0, 10)});
             }
 
             // Add geodesic line
@@ -160,8 +161,8 @@ function setBasemap(basemapname) {
 
         // Identify dark basemaps to ensure we use white text for unselected icons
         // and change the background colour appropriately
-        let baseMapIsDark = (basemapname == "CartoDB.DarkMatter" || basemapname == "Esri.WorldImagery");
-        $("#map").css('background-color', baseMapIsDark ? "black" : "white");
+        basemapIsDark = basemapname == "CartoDB.DarkMatter" || basemapname == "Esri.WorldImagery";
+        $("#map").css('background-color', basemapIsDark ? "black" : "white");
     }
 }
 
