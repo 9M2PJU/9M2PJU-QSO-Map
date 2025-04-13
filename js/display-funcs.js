@@ -55,7 +55,7 @@ function updateMapObjects() {
 // Zoom the display to fit all markers
 function zoomToFit() {
     var group = new L.featureGroup(markers);
-    map.fitBounds(group.getBounds().pad(0.05));
+    map.fitBounds(group.getBounds().pad(0.1));
 }
 
 
