@@ -63,15 +63,20 @@ input.textBox {
     border-top-color: var(--popup-background);
 }
 
-span.youAreHereNote {
-    font-size: 0.7em;
-    font-style: italic;
-}
-
 /* Text/link styles */
 a, .leaflet-container a {
     color: var(--link-color);
     text-decoration: none;
+}
+
+/* Small markers */
+.leaflet-map-pane svg.smallicon {
+    width: 22px;
+    margin-top: 5px;
+}
+.extra-marker i.fa-smallicon {
+    margin-top: 18px;
+    font-size: 11px;
 }
 
 /* Leaflet.js mods */

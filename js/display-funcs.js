@@ -11,6 +11,9 @@ function updateMapObjects() {
     lines.forEach(line => linesLayer.removeLayer(line));
     lines = [];
 
+    // Add own position marker
+    createOwnPosMarker(qthPos);
+
     // Iterate through qsos, creating markers
     qsos.forEach(function (q) {
         const pos = getIconPosition(q);
@@ -33,6 +36,7 @@ function updateMapObjects() {
                     weight: 1
                 });
                 linesLayer.addLayer(line);
+                console.log(line);
                 lines.push(line);
             }
 
@@ -40,6 +44,12 @@ function updateMapObjects() {
             markers.push(m);
         }
     });
+
+    // Use small icons if requested
+    if (smallIcons) {
+        $(".leaflet-marker-icon svg").addClass("smallicon");
+        $(".extra-marker i.fa").addClass("fa-smallicon");
+    }
 }
 
 // Zoom the display to fit all markers

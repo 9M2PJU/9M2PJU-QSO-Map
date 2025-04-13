@@ -42,3 +42,9 @@ $("#bandColours").change(function () {
     bandColours = $(this).is(':checked');
     updateMapObjects();
 });
+
+// Listen for small icons toggle
+$("#smallIcons").change(function () {
+    smallIcons = $(this).is(':checked');
+    updateMapObjects();
+});
