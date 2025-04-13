@@ -15,6 +15,15 @@ div#controls {
     color: var(--text);
 }
 
+div#menuButton {
+    background-color: var(--background);
+    border: 1px solid var(--text);
+    border-radius: 3px;
+}
+div#menuButton a {
+    color: var(--text);
+}
+
 label.configLabel {
     display: inline-block;
     white-space: nowrap;
@@ -45,6 +54,10 @@ label.configLabel {
 a, .leaflet-container a {
     color: var(--link-color);
     text-decoration: none;
+}
+
+a.closeButton {
+    font-size: 0.8em;
 }
 
 /* Small markers */

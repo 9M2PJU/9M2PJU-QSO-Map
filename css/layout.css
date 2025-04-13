@@ -12,9 +12,19 @@ div#controls {
     left: 1em;
     width: 19em;
     margin: 0;
-    padding: 1em;
+    padding: 1em 1em 0em 1em;
     z-index: 1001;
     overflow: hidden;
+}
+
+div#menuButton {
+    position: absolute;
+    top: 1em;
+    left: 1em;
+    display: none;
+    margin: 0;
+    padding: 0.2em 0.5em;
+    z-index: 1001;
 }
 
 p#zoomin {

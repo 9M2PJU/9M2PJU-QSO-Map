@@ -62,3 +62,13 @@ $("#outdoorSymbols").change(function () {
     outdoorSymbols = $(this).is(':checked');
     updateMapObjects();
 });
+
+// Open/close controls
+function openControls() {
+    $("#menuButton").hide();
+    $("#controls").show();
+}
+function closeControls() {
+    $("#controls").hide();
+    $("#menuButton").show();
+}
