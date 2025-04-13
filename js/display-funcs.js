@@ -83,13 +83,21 @@ function enableMaidenheadGrid(show) {
 
 // Tooltip text for the normal click-to-appear tooltips
 function getTooltipText(qso) {
-    let text = "<b>" + qso.get("CALL") + "</b>";
+    let text = "<a href='https://www.qrz.com/db/" + qso.get("CALL") + "' target='_blank'><b>" + qso.get("CALL") + "</b></a>";
     if (qso.has("NAME")) {
-        text += "&nbsp;&nbsp;" + qso.get("NAME").substring(0, 28).trim().replaceAll(" ", "&nbsp;");
+        let displayName = qso.get("NAME");
+        if (displayName.length > 30) {
+            displayName = displayName.substring(0, 26).trim() + "..."
+        }
+        text += "&nbsp;&nbsp;" + displayName.replaceAll(" ", "&nbsp;");
     }
     text += "<br/>"
     if (qso.has("QTH")) {
-        text += qso.get("QTH").replaceAll(" ", "&nbsp;") + ",&nbsp;";
+        let displayQTH = qso.get("QTH");
+        if (displayQTH.length > 30) {
+            displayQTH = displayQTH.substring(0, 26).trim() + "..."
+        }
+        text += displayQTH.replaceAll(" ", "&nbsp;") + ",&nbsp;";
     }
     text += qso.get("GRIDSQUARE");
     if (qso.has("FREQ")) {
