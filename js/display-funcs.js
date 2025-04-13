@@ -68,7 +68,7 @@ function zoomToFit() {
 function getTooltipText(qso) {
     let text = "<b>" + qso.get("CALL") + "</b>";
     if (qso.has("NAME")) {
-        text += "&nbsp;&nbsp;" + qso.get("NAME").replaceAll(" ", "&nbsp;");
+        text += "&nbsp;&nbsp;" + qso.get("NAME").substring(0, 28).trim().replaceAll(" ", "&nbsp;");
     }
     text += "<br/>"
     if (qso.has("QTH")) {
