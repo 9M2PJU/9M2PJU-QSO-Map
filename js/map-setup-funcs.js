@@ -13,12 +13,12 @@ function setUpMap() {
     });
 
     // Add basemap
-    backgroundTileLayer = L.tileLayer.provider(basemap, {
+    basemapLayer = L.tileLayer.provider(basemap, {
         opacity: basemapOpacity,
         edgeBufferTiles: 1
     });
-    backgroundTileLayer.addTo(map);
-    backgroundTileLayer.bringToBack();
+    basemapLayer.addTo(map);
+    basemapLayer.bringToBack();
 
     // Add marker layer
     markersLayer = new L.LayerGroup();

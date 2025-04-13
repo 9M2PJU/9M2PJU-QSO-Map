@@ -27,14 +27,6 @@ div#menuButton {
     z-index: 1001;
 }
 
-p#zoomin {
-    margin-bottom: 0;
-}
-
-/* Default to "zoom ok" controls hidden. Button should be centered */
-p#zoomok {
-    display: none;
-    text-align: center;
-    margin-bottom: 0;
-    line-height: 2em;
+input#fileSelect {
+    width: 17em;
 }

@@ -120,22 +120,30 @@ function getIconPosition(q) {
 
 // Set the basemap
 function setBasemap(basemapname) {
-    basemap = basemapname;
-    if (typeof backgroundTileLayer !== 'undefined') {
-        map.removeLayer(backgroundTileLayer);
+    // Only change if we have to, to avoid a flash of reloading content
+    if (basemap !== basemapname) {
+        basemap = basemapname;
+        if (typeof basemapLayer !== 'undefined') {
+            map.removeLayer(basemapLayer);
+        }
+        basemapLayer = L.tileLayer.provider(basemapname, {
+            opacity: basemapOpacity,
+            edgeBufferTiles: 1
+        });
+        basemapLayer.addTo(map);
+        basemapLayer.bringToBack();
+
+        // Identify dark basemaps to ensure we use white text for unselected icons
+        // and change the background colour appropriately
+        let baseMapIsDark = (basemapname == "CartoDB.DarkMatter" || basemapname == "Esri.WorldImagery");
+        $("#map").css('background-color', baseMapIsDark ? "black" : "white");
     }
-    backgroundTileLayer = L.tileLayer.provider(basemapname, {
-        opacity: basemapOpacity,
-        edgeBufferTiles: 1
-    });
-    backgroundTileLayer.addTo(map);
-    backgroundTileLayer.bringToBack();
 }
 
 // Set the basemap opacity
 function setBasemapOpacity(opacity) {
     basemapOpacity = opacity;
-    if (typeof backgroundTileLayer !== 'undefined') {
-        backgroundTileLayer.setOpacity(opacity);
+    if (typeof basemapLayer !== 'undefined') {
+        basemapLayer.setOpacity(opacity);
     }
 }

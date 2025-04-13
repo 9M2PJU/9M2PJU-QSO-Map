@@ -31,7 +31,7 @@ let qthPos = null;
 let map;
 let basemap = "Esri.NatGeoWorldMap";
 let basemapOpacity = 0.5;
-let backgroundTileLayer;
+let basemapLayer;
 let markersLayer;
 let linesLayer;
 let ownPosLayer;

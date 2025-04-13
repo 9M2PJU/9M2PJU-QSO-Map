@@ -16,6 +16,19 @@ $("#fileSelect").change(function () {
     }
 });
 
+// General method called on UI change, to update the software's internal model from
+// the UI selections.
+function updateModelFromUI() {
+    setBasemap($("#basemap").val());
+    setBasemapOpacity($("#basemapOpacity").val());
+    updatePosFromGridInput();
+    linesEnabled = $("#linesEnabled").is(':checked');
+    bandColours = $("#bandColours").is(':checked');
+    smallIcons = $("#smallIcons").is(':checked');
+    outdoorSymbols = $("#outdoorSymbols").is(':checked');
+    updateMapObjects();
+}
+
 function updatePosFromGridInput() {
     let grid = $("#qthGrid").val().toUpperCase();
     let pos = null;
@@ -23,44 +36,39 @@ function updatePosFromGridInput() {
         pos = latLonForGrid(grid);
     }
     setQTH(pos);
-    updateMapObjects();
 }
 
 // Listen for basemap & opacity changes
 $("#basemap").change(function() {
-    setBasemap($(this).val());
+    updateModelFromUI();
 });
 $("#basemapOpacity").change(function() {
-    setBasemapOpacity($(this).val());
+    updateModelFromUI();
 });
 
 // Listen for QTH grid input
 $("#qthGrid").on("input", function(e) {
-    updatePosFromGridInput();
+    updateModelFromUI();
 });
 
 // Listen for lines enabled toggle
 $("#linesEnabled").change(function () {
-    linesEnabled = $(this).is(':checked');
-    updateMapObjects();
+    updateModelFromUI();
 });
 
 // Listen for band colours toggle
 $("#bandColours").change(function () {
-    bandColours = $(this).is(':checked');
-    updateMapObjects();
+    updateModelFromUI();
 });
 
 // Listen for small icons toggle
 $("#smallIcons").change(function () {
-    smallIcons = $(this).is(':checked');
-    updateMapObjects();
+    updateModelFromUI();
 });
 
 // Listen for outdoor activity symbols toggle
 $("#outdoorSymbols").change(function () {
-    outdoorSymbols = $(this).is(':checked');
-    updateMapObjects();
+    updateModelFromUI();
 });
 
 // Open/close controls
