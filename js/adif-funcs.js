@@ -36,9 +36,9 @@ function loadAdif(text) {
                     }
 
                     // Figure out if this is the end of the record
-                    if (text.substring(cursor, cursor + 5).toUpperCase() === "<EOR>") {
+                    if (text.substring(openBracketPos, openBracketPos + 5).toUpperCase() === "<EOR>") {
                         finishedRecord = true;
-                        cursor += 5;
+                        cursor = openBracketPos + 5;
                         break;
                     }
 
@@ -59,7 +59,7 @@ function loadAdif(text) {
                     }
 
                     // Move the cursor ready for the next one
-                    cursor = closeBracketPos + 2 + fieldLength;
+                    cursor = closeBracketPos + 1 + fieldLength;
                 }
                 qsos.push(qso);
 
