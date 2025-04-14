@@ -118,88 +118,130 @@ function latLonForGrid(grid) {
     return [lat, lon];
 }
 
-// Returns a colour based on QSO band or mode, if enabled, otherwise returns neutral blue
-function qsoToColour(qso) {
-    if (bandColours) {
-        for (band of BANDS) {
-            let f = parseFloat(qso.freq);
-            if (f >= band.startFreq && f <= band.stopFreq) {
-                return band.color;
+// Returns a colour based on data item's QSOs' band or mode, if enabled, otherwise returns neutral blue.
+// If there would be multiple colours, purple is used.
+function qsoToColour(d) {
+    let qsoColours = [];
+    d.qsos.forEach((qso) => {
+        if (bandColours) {
+            let found = false;
+            for (band of BANDS) {
+                let f = parseFloat(qso.freq);
+                if (f >= band.startFreq && f <= band.stopFreq) {
+                    qsoColours.push(band.color);
+                    found = true;
+                }
             }
-        }
-        return "grey";
+            if (!found) {
+                qsoColours.push("grey");
+            }
 
-    } else if (modeColours) {
-        if (qso.mode) {
-            if (qso.mode === "SSB" || qso.mode === "USB" || qso.mode === "LSB") {
-                return "green";
-            } else if (qso.mode === "CW") {
-                return "red";
+        } else if (modeColours) {
+            if (qso.mode) {
+                if (qso.mode === "SSB" || qso.mode === "USB" || qso.mode === "LSB") {
+                    qsoColours.push("green");
+                } else if (qso.mode === "CW") {
+                    qsoColours.push("red");
+                } else {
+                    qsoColours.push("blue");
+                }
             } else {
-                return "blue";
+                qsoColours.push("grey");
             }
-        }
-        return "grey";
 
+        } else {
+            qsoColours.push("dodgerblue");
+        }
+    });
+    let allEqual = qsoColours.every( (val, i, arr) => val === arr[0] );
+    if (allEqual) {
+        return qsoColours[0];
     } else {
-        return "dodgerblue";
+        return "rebeccapurple";
     }
 }
 
-// Returns a colour to contrast with the result of qsoToColor, based on QSO band, if enabled, otherwise returns white
-function qsoToContrastColor(qso) {
-    if (bandColours) {
-        let f = parseFloat(qso.freq);
-        for (band of BANDS) {
-            if (f >= band.startFreq && f <= band.stopFreq) {
-                return band.contrastColor;
+// Returns a colour to contrast with the result of qsoToColor, based on data item QSOs' bands or modes, if enabled,
+// otherwise returns white.
+function qsoToContrastColor(d) {
+    let qsoColours = [];
+    d.qsos.forEach((qso) => {
+        if (bandColours) {
+            let found = false;
+            let f = parseFloat(qso.freq);
+            for (band of BANDS) {
+                if (f >= band.startFreq && f <= band.stopFreq) {
+                    qsoColours.push(band.contrastColor);
+                    found = true;
+                }
             }
+            if (!found) {
+                qsoColours.push("white");
+            }
+        } else if (modeColours) {
+            qsoColours.push("white");
+        } else {
+            qsoColours.push("white");
         }
-    } else if (modeColours) {
-        return "white";
+    });
+    let allEqual = qsoColours.every( (val, i, arr) => val === arr[0] );
+    if (allEqual) {
+        return qsoColours[0];
     } else {
         return "white";
     }
 }
 
-// Get an icon for a qso, based on its band, using PSK Reporter colours, its program etc.
-function getIcon(qso) {
+// Get an icon for a data item, based on its band, using PSK Reporter colours, its program etc.
+function getIcon(d) {
     return L.ExtraMarkers.icon({
-        icon: getIconName(qso),
-        iconColor: qsoToContrastColor(qso),
-        markerColor: qsoToColour(qso),
+        icon: getIconName(d),
+        iconColor: qsoToContrastColor(d),
+        markerColor: qsoToColour(d),
         shape: 'circle',
         prefix: 'fa',
         svg: true
     });
 }
 
-// Get Font Awesome icon name for the QSO
-function getIconName(qso) {
+// Get Font Awesome icon name for the data item. If multiple icons would be used, a star is used instead.
+function getIconName(d) {
     if (outdoorSymbols) {
-        if (qso.program) {
-            program = qso.program;
-            if (program === "POTA") {
-                return "fa-tree";
-            } else if (program === "SOTA") {
-                return "fa-mountain-sun";
-            } else if (program === "WWFF") {
-                return "fa-seedling";
-            } else if (program === "GMA") {
-                return "fa-person-hiking";
-            } else if (program === "WWBOTA" || program === "UKBOTA") {
-                return "fa-radiation";
-            } else if (program === "IOTA") {
-                return "fa-umbrella-beach";
-            } else if (program === "WCA") {
-                return "fa-chess-rook";
-            } else if (program === "ALHRS") {
-                return "fa-tower-observation";
-            } else if (program === "MOTA") {
-                return "fa-fan";
+        let qsoIcons = [];
+        d.qsos.forEach((qso) => {
+            if (qso.program) {
+                program = qso.program;
+                if (program === "POTA") {
+                    qsoIcons.push("fa-tree");
+                } else if (program === "SOTA") {
+                    qsoIcons.push("fa-mountain-sun");
+                } else if (program === "WWFF") {
+                    qsoIcons.push("fa-seedling");
+                } else if (program === "GMA") {
+                    qsoIcons.push("fa-person-hiking");
+                } else if (program === "WWBOTA" || program === "UKBOTA") {
+                    qsoIcons.push("fa-radiation");
+                } else if (program === "IOTA") {
+                    qsoIcons.push("fa-umbrella-beach");
+                } else if (program === "WCA") {
+                    qsoIcons.push("fa-chess-rook");
+                } else if (program === "ALHRS") {
+                    qsoIcons.push("fa-tower-observation");
+                } else if (program === "MOTA") {
+                    qsoIcons.push("fa-fan");
+                } else {
+                    qsoIcons.push("fa-crosshairs");
+                }
+            } else {
+                qsoIcons.push("fa-crosshairs");
             }
+        });
+        let allEqual = qsoIcons.every( (val, i, arr) => val === arr[0] );
+        if (allEqual) {
+            return qsoIcons[0];
+        } else {
+            return "fa-star";
         }
-        return "fa-crosshairs";
     } else if (smallIcons) {
         return "fa-none";
     } else {

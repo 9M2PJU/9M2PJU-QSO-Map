@@ -80,7 +80,7 @@ function loadAdif(text) {
                     qso.mode = qsoData.get("MODE");
                 }
                 if (qsoData.has("QSO_DATE") && qsoData.has("TIME_ON")) {
-                    qso.time = moment().utc(qsoData.has("QSO_DATE") + "T" + qsoData.has("TIME_ON"));
+                    qso.time = moment.utc(qsoData.get("QSO_DATE") + qsoData.get("TIME_ON").substring(0, 4), "YYYYMMDDHHmm");
                 }
                 if (qsoData.has("SIG")) {
                     qso.sig = qsoData.get("SIG");

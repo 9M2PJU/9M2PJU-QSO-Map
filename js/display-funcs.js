@@ -16,30 +16,30 @@ function updateMapObjects() {
 
     // Iterate through qsos, creating markers
     data.forEach(function (d) {
-        const pos = getIconPosition(d.grid);
+        const pos = getIconPosition(d);
         if (pos != null) {
             // For now, just get the first QSO to grab data from
             let q = d.qsos[0];
 
             // No existing marker, data is valid, so create
-            let m = L.marker(pos, { icon: getIcon(q) });
+            let m = L.marker(pos, { icon: getIcon(d) });
 
             // Add to map
             markersLayer.addLayer(m);
 
             // Set tooltip
-            m.bindPopup(getTooltipText(q));
+            m.bindPopup(getTooltipText(d));
 
             // Set label
             if (callsignLabels) {
                 m.bindTooltip("<span style='color: " + (basemapIsDark ? "white" : "black") + ";'>"
-                    + q.call + "</span>", {permanent: true, direction: 'center', offset: L.point(0, 10)});
+                    + d.call + "</span>", {permanent: true, direction: 'center', offset: L.point(0, 10)});
             }
 
             // Add geodesic line
             if (linesEnabled && qthPos != null) {
                 let line = L.geodesic([qthPos, m.getLatLng()], {
-                    color: qsoToColour(q),
+                    color: qsoToColour(d),
                     wrap: false,
                     steps: 5,
                     weight: 1
@@ -85,44 +85,47 @@ function enableMaidenheadGrid(show) {
 //  QSO DISPLAY FUNCTIONS //
 /////////////////////////////
 
-// Tooltip text for the normal click-to-appear tooltips
-function getTooltipText(qso) {
-    let text = "<a href='https://www.qrz.com/db/" + qso.call + "' target='_blank'><b>" + qso.call + "</b></a>";
-    if (qso.name) {
-        let displayName = qso.name;
+// Tooltip text for the normal click-to-appear tooltips. Takes a data item that may contain multiple QSOs.
+function getTooltipText(d) {
+    let text = "<a href='https://www.qrz.com/db/" + d.call + "' target='_blank'><b>" + d.call + "</b></a>";
+    if (d.qsos[0].name) {
+        let displayName = d.qsos[0].name;
         if (displayName.length > 30) {
             displayName = displayName.substring(0, 26).trim() + "..."
         }
         text += "&nbsp;&nbsp;" + displayName.replaceAll(" ", "&nbsp;");
     }
     text += "<br/>"
-    if (qso.qth) {
-        let displayQTH = qso.qth;
+    if (d.qsos[0].qth) {
+        let displayQTH = d.qsos[0].qth;
         if (displayQTH.length > 30) {
             displayQTH = displayQTH.substring(0, 26).trim() + "..."
         }
         text += displayQTH.replaceAll(" ", "&nbsp;") + ",&nbsp;";
     }
-    text += qso.grid;
-    if (qso.freq) {
-        text += "<br/>" + qso.freq.toFixed(3);
-        if (qso.mode) {
-            text += "&nbsp;MHz&nbsp;&nbsp;" + qso.mode;
+    text += d.grid;
+    d.qsos.forEach(qso => {
+        if (qso.freq) {
+            text += "<br/>" + qso.freq.toFixed(3);
+            if (qso.mode) {
+                text += "&nbsp;MHz&nbsp;&nbsp;" + qso.mode;
+            }
         }
-    }
-    if (qso.time) {
-        text += "<br/>" + qso.time.format("HH:mm [on] ddd D MMM YYYY");
-    }
+        if (qso.time) {
+            text += "&nbsp;&nbsp; &nbsp;&nbsp;" + qso.time.format("HH:mm DD/MM/YYYY");
+        }
+    });
     return text;
 }
 
 
-// Gets the lat/long position for a grid reference. Null is returned if the position
+// Gets the lat/long position for a data item's grid reference. Null is returned if the position
 // is unknown or 0,0. If the user QTH location has been provided, we adjust the longitude of the
 // qso to be their longitude +-180 degrees, so that we are correctly displaying markers either
 // side of them on the map, and calculating the great circle distance and bearing as the short
 // path.
-function getIconPosition(grid) {
+function getIconPosition(d) {
+    let grid = d.grid;
     if (grid && latLonForGrid(grid) != null) {
         [lat, lon] = latLonForGrid(grid);
         if (lat != null && lon != null && !isNaN(lat) && !isNaN(lon) && (lat !== 0.0 || lon !== 0.0)) {
