@@ -122,7 +122,7 @@ function latLonForGrid(grid) {
 function qsoToColour(qso) {
     if (bandColours) {
         for (band of BANDS) {
-            let f = parseFloat(qso.get("FREQ"));
+            let f = parseFloat(qso.freq);
             if (f >= band.startFreq && f <= band.stopFreq) {
                 return band.color;
             }
@@ -130,10 +130,10 @@ function qsoToColour(qso) {
         return "grey";
 
     } else if (modeColours) {
-        if (qso.has("MODE")) {
-            if (qso.get("MODE") === "SSB" || qso.get("MODE") === "USB" || qso.get("MODE") === "LSB") {
+        if (qso.mode) {
+            if (qso.mode === "SSB" || qso.mode === "USB" || qso.mode === "LSB") {
                 return "green";
-            } else if (qso.get("MODE") === "CW") {
+            } else if (qso.mode === "CW") {
                 return "red";
             } else {
                 return "blue";
@@ -149,7 +149,7 @@ function qsoToColour(qso) {
 // Returns a colour to contrast with the result of qsoToColor, based on QSO band, if enabled, otherwise returns white
 function qsoToContrastColor(qso) {
     if (bandColours) {
-        let f = parseFloat(qso.get("FREQ"));
+        let f = parseFloat(qso.freq);
         for (band of BANDS) {
             if (f >= band.startFreq && f <= band.stopFreq) {
                 return band.contrastColor;
@@ -177,8 +177,8 @@ function getIcon(qso) {
 // Get Font Awesome icon name for the QSO
 function getIconName(qso) {
     if (outdoorSymbols) {
-        if (qso.has("SIG")) {
-            program = qso.get("SIG");
+        if (qso.program) {
+            program = qso.program;
             if (program === "POTA") {
                 return "fa-tree";
             } else if (program === "SOTA") {

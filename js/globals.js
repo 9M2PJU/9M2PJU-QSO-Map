@@ -24,7 +24,10 @@ const BANDS = [
 //      DATA STORAGE       //
 /////////////////////////////
 
-let qsos = [];
+// Data is stored in a map. The key is CALLSIGN-GRID because we don't want more than one marker for the
+// same call & grid anyway. The value is an object that contains list of all QSOs with that call & grid,
+// a marker and geodesic line.
+let data = new Map();
 let markers = [];
 let lines = [];
 let qthPos = null;

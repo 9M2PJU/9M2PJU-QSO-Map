@@ -5,7 +5,7 @@
 // Update the objects that are rendered on the map. Clear old markers and draw new ones. This is
 // called when the data model changes due to a server query.
 function updateMapObjects() {
-    // Clear existing markers
+    // Clear existing markers and lines
     markers.forEach(marker => markersLayer.removeLayer(marker));
     markers = [];
     lines.forEach(line => linesLayer.removeLayer(line));
@@ -15,9 +15,12 @@ function updateMapObjects() {
     createOwnPosMarker(qthPos);
 
     // Iterate through qsos, creating markers
-    qsos.forEach(function (q) {
-        const pos = getIconPosition(q);
+    data.forEach(function (d) {
+        const pos = getIconPosition(d.grid);
         if (pos != null) {
+            // For now, just get the first QSO to grab data from
+            let q = d.qsos[0];
+
             // No existing marker, data is valid, so create
             let m = L.marker(pos, { icon: getIcon(q) });
 
@@ -30,7 +33,7 @@ function updateMapObjects() {
             // Set label
             if (callsignLabels) {
                 m.bindTooltip("<span style='color: " + (basemapIsDark ? "white" : "black") + ";'>"
-                    + q.get("CALL") + "</span>", {permanent: true, direction: 'center', offset: L.point(0, 10)});
+                    + q.call + "</span>", {permanent: true, direction: 'center', offset: L.point(0, 10)});
             }
 
             // Add geodesic line
@@ -84,46 +87,42 @@ function enableMaidenheadGrid(show) {
 
 // Tooltip text for the normal click-to-appear tooltips
 function getTooltipText(qso) {
-    let text = "<a href='https://www.qrz.com/db/" + qso.get("CALL") + "' target='_blank'><b>" + qso.get("CALL") + "</b></a>";
-    if (qso.has("NAME")) {
-        let displayName = qso.get("NAME");
+    let text = "<a href='https://www.qrz.com/db/" + qso.call + "' target='_blank'><b>" + qso.call + "</b></a>";
+    if (qso.name) {
+        let displayName = qso.name;
         if (displayName.length > 30) {
             displayName = displayName.substring(0, 26).trim() + "..."
         }
         text += "&nbsp;&nbsp;" + displayName.replaceAll(" ", "&nbsp;");
     }
     text += "<br/>"
-    if (qso.has("QTH")) {
-        let displayQTH = qso.get("QTH");
+    if (qso.qth) {
+        let displayQTH = qso.qth;
         if (displayQTH.length > 30) {
             displayQTH = displayQTH.substring(0, 26).trim() + "..."
         }
         text += displayQTH.replaceAll(" ", "&nbsp;") + ",&nbsp;";
     }
-    text += qso.get("GRIDSQUARE");
-    if (qso.has("FREQ")) {
-        text += "<br/>" + qso.get("FREQ").replaceAll("000", "");
-        if (qso.has("MODE")) {
-            text += "&nbsp;MHz&nbsp;&nbsp;" + qso.get("MODE");
+    text += qso.grid;
+    if (qso.freq) {
+        text += "<br/>" + qso.freq.toFixed(3);
+        if (qso.mode) {
+            text += "&nbsp;MHz&nbsp;&nbsp;" + qso.mode;
         }
     }
-    if (qso.has("TIME_ON")) {
-        text += "<br/>" + qso.get("TIME_ON").substring(0, 2) + ":" + qso.get("TIME_ON").substring(2, 4);
-        if (qso.has("QSO_DATE")) {
-            text += "&nbsp;UTC on&nbsp;" + qso.get("QSO_DATE").substring(0, 4) + "-" + qso.get("QSO_DATE").substring(4, 6) + "-" + qso.get("QSO_DATE").substring(6, 8);
-        }
+    if (qso.time) {
+        text += "<br/>" + qso.time.format("HH:mm [on] ddd D MMM YYYY");
     }
     return text;
 }
 
 
-// Gets the lat/long position for the icon representing a QSO. Null is returned if the position
-// is unknown or 0,0. If the QTH location has been provided, we adjust the longitude of the
+// Gets the lat/long position for a grid reference. Null is returned if the position
+// is unknown or 0,0. If the user QTH location has been provided, we adjust the longitude of the
 // qso to be their longitude +-180 degrees, so that we are correctly displaying markers either
 // side of them on the map, and calculating the great circle distance and bearing as the short
 // path.
-function getIconPosition(q) {
-    let grid = q.get("GRIDSQUARE");
+function getIconPosition(grid) {
     if (grid && latLonForGrid(grid) != null) {
         [lat, lon] = latLonForGrid(grid);
         if (lat != null && lon != null && !isNaN(lat) && !isNaN(lon) && (lat !== 0.0 || lon !== 0.0)) {
