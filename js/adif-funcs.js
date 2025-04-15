@@ -154,13 +154,16 @@ function processQSOFromQueue() {
                     // Update the map
                     // todo is doing this every second too much? Maybe every n, or in a separate thread every 10 sec if something has changed?
                     updateMapObjects();
+                    updateStatus();
                 } else {
                     // todo see what we are getting here, do we get lat/lon and not grid maybe? Or no position at all?
                     // todo how to handle failed lookups & display this
+                    updateStatus();
                 }
             },
             error: function () {
                 // todo how to handle failed lookups & display this
+                updateStatus();
             }
         });
     }
