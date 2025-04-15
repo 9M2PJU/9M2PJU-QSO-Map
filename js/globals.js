@@ -19,6 +19,8 @@ const BANDS = [
     {name: "70cm", startFreq: 420.0, stopFreq: 450.0, color: "#999900", contrastColor: "white"},
     {name: "23cm", startFreq: 1240.0, stopFreq: 1325.0, color: "#5AB8C7", contrastColor: "black"},
     {name: "13cm", startFreq: 2300.0, stopFreq: 2450.0, color: "#FF7F50", contrastColor: "black"}];
+const QRZ_API_BASE_URL = "https://xmldata.qrz.com/xml/current/";
+const QRZ_AGENT = "M0TRT_ADIF_Map_v1.0";
 
 /////////////////////////////
 //      DATA STORAGE       //
@@ -37,9 +39,13 @@ let qsoCount = 0;
 // Track whether we have tried to load something, and whether we are still loading. Used to control the status indicator.
 let loadedAtLeastOnce = false
 let loading = false;
+// Position of the grey home marker
+let qthPos = null;
+// Marker and geodesic line references. The objects themselves are added to the map but we also keep them in these
+// arrays so we can easily e.g. find them to remove them when we need to
 let markers = [];
 let lines = [];
-let qthPos = null;
+// Map and layers
 let map;
 let basemapLayer;
 let markersLayer;
@@ -47,6 +53,8 @@ let linesLayer;
 let ownPosLayer;
 let ownPosMarker;
 let maidenheadGrid;
+// Session token for QRZ.com lookups
+let qrzToken;
 
 
 /////////////////////////////
@@ -63,3 +71,4 @@ let smallIcons = false;
 let outdoorSymbols = false;
 let showMaidenheadGrid = false;
 let callsignLabels = false;
+let queryQRZ = false;

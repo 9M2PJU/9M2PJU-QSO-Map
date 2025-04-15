@@ -29,6 +29,7 @@ function updateModelFromUI() {
     smallIcons = $("#smallIcons").is(':checked');
     outdoorSymbols = $("#outdoorSymbols").is(':checked');
     callsignLabels = $("#showCallsignLabels").is(':checked');
+    queryQRZ = $("#queryQRZ").is(':checked');
     updateMapObjects();
 }
 
@@ -91,6 +92,43 @@ $("#showMaidenheadGrid").change(function () {
 // Show callsign labels
 $("#showCallsignLabels").change(function () {
     updateModelFromUI();
+});
+
+// Query missing info from QRZ.com
+$("#queryQRZ").change(function () {
+    updateModelFromUI();
+    // If QRZ username and password were filled in, but the user hasn't clicked Login yet, but they just turned on this
+    // option, simulate a login click.
+    if (queryQRZ && !qrzToken && $("#qrzUser").val().length > 0 && $("#qrzPass").val().length > 0) {
+        $("#qrzLogin").click();
+    }
+});
+
+// Log into QRZ.com, get a session token if the login was correct. Show a status indicator next to the login button.
+$("#qrzLogin").click(function(){
+    let username = $("#qrzUser").val();
+    let password = $("#qrzPass").val();
+    $.ajax({
+        url: QRZ_API_BASE_URL,
+        data: { username: username, password: encodeURI(password), agent: QRZ_AGENT },
+        dataType: 'xml',
+        timeout: 10000,
+        success: async function (result) {
+            let key = $(result).find("Key");
+            if (key && key.text().length > 0) {
+                qrzToken = key.text();
+                $("span#qrzApiStatus").html("<i class='fa-solid fa-check'></i>");
+                // If the user hasn't turned on QRZ querying yet, they probably want it on so do that for them.
+                $("#queryQRZ").prop('checked', true);
+
+            } else {
+                $("span#qrzApiStatus").html("<i class='fa-solid fa-xmark'></i>");
+            }
+        },
+        error: function () {
+            $("span#qrzApiStatus").html("<i class='fa-solid fa-triangle-exclamation'></i>");
+        }
+    });
 });
 
 // Open/close controls
