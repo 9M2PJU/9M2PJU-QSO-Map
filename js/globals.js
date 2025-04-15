@@ -26,8 +26,17 @@ const BANDS = [
 
 // Data is stored in a map. The key is CALLSIGN-GRID because we don't want more than one marker for the
 // same call & grid anyway. The value is an object that contains list of all QSOs with that call & grid,
-// a marker and geodesic line.
+// along with the call and grid itself for lookup. So we may have for example:
+// { "M0TRT-IO90BS" -> { call : "M0TRT", grid : "IO90BS". qsos : [ {time, freq, mode, etc.}, {time, freq, mode, etc.} ], } }
 let data = new Map();
+// A list of QSOs received without grid information, which have been held for lookup. Once they have
+// grid information, they are removed from here and added to data.
+let queue = [];
+// Count of all QSOs loaded from the ADIF
+let qsoCount = 0;
+// Track whether we have tried to load something, and whether we are still loading. Used to control the status indicator.
+let loadedAtLeastOnce = false
+let loading = false;
 let markers = [];
 let lines = [];
 let qthPos = null;

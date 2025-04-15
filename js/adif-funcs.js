@@ -5,12 +5,11 @@
 // Given the text of an adif file, populate the qsos map.
 function loadAdif(text) {
     data = new Map();
+    queue = [];
+    qsoCount = 0;
+    loading = true;
+    loadedAtLeastOnce = true;
     let cursor = 0;
-    let qsoCount = 0;
-    let qsoCountWithGrids = 0;
-
-    $("#loadingStatus").html("<i class=\"fa-solid fa-spinner\"></i> Loading...");
-    $("#loadingStatus").show();
 
     setTimeout(function () {
         try {
@@ -68,7 +67,7 @@ function loadAdif(text) {
                     qso.name = qsoData.get("NAME");
                 }
                 if (qsoData.has("GRIDSQUARE")) {
-                    qso.grid = qsoData.get("GRIDSQUARE");
+                    qso.grid = qsoData.get("GRIDSQUARE").toUpperCase();
                 }
                 if (qsoData.has("QTH")) {
                     qso.qth = qsoData.get("QTH");
@@ -86,24 +85,37 @@ function loadAdif(text) {
                     qso.sig = qsoData.get("SIG");
                 }
 
-                // For now, stop handling the QSO here if it doesn't have a grid.
+                // If the QSO has a grid, we can put it straight into the data map and it will be displayed immediately
+                // once we have finished parsing the ADIF.
                 if (qso.grid) {
-                    // Data is stored in a map. The key is CALLSIGN-GRID because we don't want more than one marker for the
-                    // same call & grid anyway. The value is an object that contains list of all QSOs with that call & grid
-                    // (and will eventually be populated with a marker and geodesic line too)
+                    // The data map is keyed by "CALL-GRID" so we do not duplicate the combination. If there has not
+                    // been a QSO with this combination before, we need to create it; we also add the "call", "grid"
+                    // properties at the top level for easier lookup. But if we have seen the combination before, this
+                    // is a dupe, and we just add the new qso to the existing qsos list.
                     let key = qso.call + "-" + qso.grid;
                     if (data.has(key)) {
                         data.get(key).qsos.push(qso);
                     } else {
                         data.set(key, {qsos: [qso], call: qso.call, grid: qso.grid});
                     }
+
+                    // If we haven't seen a name or a QTH description for this call & grid before, add them at the top
+                    // level, to avoid display functions having to iterate through qsos to find this.
+                    if (!data.get(key).name && qso.name) {
+                        data.get(key).name = qso.name;
+                    }
+                    if (!data.get(key).qth && qso.qth) {
+                        data.get(key).qth = qso.qth;
+                    }
+
+                } else {
+                    // The QSO has no grid, so we need to look it up. We place it in a queue, it will be dealt with
+                    // later asynchronously.
+                    queue.push(qso);
                 }
 
-                // Increment counters
+                // Increment counter
                 qsoCount++;
-                if (qso.grid) {
-                    qsoCountWithGrids++;
-                }
             }
 
             updateMapObjects();
@@ -111,25 +123,33 @@ function loadAdif(text) {
         } catch (e) {
             console.error(e);
         } finally {
-            updateStatus(qsoCount, qsoCountWithGrids);
+            loading = false;
         }
     }, 500);
 }
 
-function updateStatus(count, countWithGrids) {
-    let statusText = "";
-    if (count > 0) {
-        if (countWithGrids < count) {
-            statusText += "<i class=\"fa-solid fa-check\"></i>";
+// Update the status indicator. Called regularly, and uses internal software state to choose what to display.
+function updateStatus() {
+    if (loadedAtLeastOnce) {
+        let statusText = "";
+        if (loading) {
+            statusText = "<i class=\"fa-solid fa-spinner\"></i> Loading...";
         } else {
-            statusText += "<i class=\"fa-solid fa-triangle-exclamation\"></i>";
+            if (qsoCount > 0) {
+                if (queue.length === 0) {
+                    statusText += "<i class=\"fa-solid fa-check\"></i>";
+                } else {
+                    statusText += "<i class=\"fa-solid fa-triangle-exclamation\"></i>";
+                }
+                statusText += " Loaded " + qsoCount + " QSOs."
+                if (queue.length >= 0) {
+                    statusText += " " + (qsoCount - queue.length) + " contained grids.";
+                }
+            } else {
+                statusText += "<i class=\"fa-solid fa-triangle-exclamation\"></i> Failed to parse QSOs in this file";
+            }
         }
-        statusText += " Loaded " + count + " QSOs."
-        if (countWithGrids < count) {
-            statusText += " " + countWithGrids + " contained grids.";
-        }
-    } else {
-        statusText += "<i class=\"fa-solid fa-triangle-exclamation\"></i> Failed to parse QSOs in this file";
+        $("#loadingStatus").html(statusText);
+        $("#loadingStatus").show();
     }
-    $("#loadingStatus").html(statusText);
 }

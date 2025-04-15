@@ -18,9 +18,6 @@ function updateMapObjects() {
     data.forEach(function (d) {
         const pos = getIconPosition(d);
         if (pos != null) {
-            // For now, just get the first QSO to grab data from
-            let q = d.qsos[0];
-
             // No existing marker, data is valid, so create
             let m = L.marker(pos, { icon: getIcon(d) });
 
@@ -88,16 +85,16 @@ function enableMaidenheadGrid(show) {
 // Tooltip text for the normal click-to-appear tooltips. Takes a data item that may contain multiple QSOs.
 function getTooltipText(d) {
     let text = "<a href='https://www.qrz.com/db/" + d.call + "' target='_blank'><b>" + d.call + "</b></a>";
-    if (d.qsos[0].name) {
-        let displayName = d.qsos[0].name;
+    if (d.name) {
+        let displayName = d.name;
         if (displayName.length > 30) {
             displayName = displayName.substring(0, 26).trim() + "..."
         }
         text += "&nbsp;&nbsp;" + displayName.replaceAll(" ", "&nbsp;");
     }
     text += "<br/>"
-    if (d.qsos[0].qth) {
-        let displayQTH = d.qsos[0].qth;
+    if (d.qth) {
+        let displayQTH = d.qth;
         if (displayQTH.length > 30) {
             displayQTH = displayQTH.substring(0, 26).trim() + "..."
         }
@@ -163,7 +160,7 @@ function setBasemap(basemapname) {
 
         // Identify dark basemaps to ensure we use white text for unselected icons
         // and change the background colour appropriately
-        basemapIsDark = basemapname == "CartoDB.DarkMatter" || basemapname == "Esri.WorldImagery";
+        basemapIsDark = basemapname === "CartoDB.DarkMatter" || basemapname === "Esri.WorldImagery";
         $("#map").css('background-color', basemapIsDark ? "black" : "white");
     }
 }
