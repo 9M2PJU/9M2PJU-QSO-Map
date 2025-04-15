@@ -118,14 +118,52 @@ function loadAdif(text) {
                 qsoCount++;
             }
 
+            // Update the map
             updateMapObjects();
+            // Zoom the map to fit the markers
             zoomToFit();
+
         } catch (e) {
             console.error(e);
         } finally {
             loading = false;
         }
     }, 500);
+}
+
+// Process an item from the queue. Called regularly, this looks for a queued QSO (i.e. no grid) and tries to use QRZ.com
+// or our local cache of QRZ.com results to populate the grid fields. If successful, the QSO will be removed from the
+// queue and inserted into the proper data map. The map objects will then be updated to match. We only clear one at a
+// time this way to avoid overloading the QRZ.com API.
+function processQSOFromQueue() {
+    // todo cache save & restore, do >1 process per tick if we are only loading from local store?
+    if (queue.length > 0 && qrzToken) {
+        let qso = queue.pop();
+        $.ajax({
+            url: QRZ_API_BASE_URL,
+            data: { s: qrzToken, callsign: encodeURI(qso.call), agent: QRZ_AGENT },
+            dataType: 'xml',
+            timeout: 10000,
+            success: async function (result) {
+                let grid = $(result).find("grid");
+                if (grid && grid.text().length > 0) {
+                    console.log(grid.text());
+                    // todo get fname+name, something for qth? (see what PoLo does?)
+                    // todo move qso into data map
+
+                    // Update the map
+                    // todo is doing this every second too much? Maybe every n, or in a separate thread every 10 sec if something has changed?
+                    updateMapObjects();
+                } else {
+                    // todo see what we are getting here, do we get lat/lon and not grid maybe? Or no position at all?
+                    // todo how to handle failed lookups & display this
+                }
+            },
+            error: function () {
+                // todo how to handle failed lookups & display this
+            }
+        });
+    }
 }
 
 // Update the status indicator. Called regularly, and uses internal software state to choose what to display.

@@ -57,10 +57,12 @@ function updateMapObjects() {
     }
 }
 
-// Zoom the display to fit all markers
+// Zoom the display to fit all markers, so long as we have at least three so the zoom isn't janky
 function zoomToFit() {
-    var group = new L.featureGroup(markers);
-    map.fitBounds(group.getBounds().pad(0.1));
+    if (markers.length > 3) {
+        var group = new L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.1));
+    }
 }
 
 // Shows/hides the Maidenhead grid overlay

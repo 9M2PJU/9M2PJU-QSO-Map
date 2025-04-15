@@ -4,6 +4,13 @@
 
 // Listen for file select
 $("#fileSelect").change(function () {
+    // If QRZ username and password were filled in, but the user hasn't clicked Login yet, but they have QRZ lookup
+    // enabled, simulate a login click.
+    if (queryQRZ && !qrzToken && $("#qrzUser").val().length > 0 && $("#qrzPass").val().length > 0) {
+        $("#qrzLogin").click();
+    }
+
+    // Get the file and parse it
     let file = $(this).prop('files')[0];
     const reader = new FileReader();
     reader.addEventListener(
@@ -110,7 +117,7 @@ $("#qrzLogin").click(function(){
     let password = $("#qrzPass").val();
     $.ajax({
         url: QRZ_API_BASE_URL,
-        data: { username: username, password: encodeURI(password), agent: QRZ_AGENT },
+        data: { username: encodeURI(username), password: encodeURI(password), agent: QRZ_AGENT },
         dataType: 'xml',
         timeout: 10000,
         success: async function (result) {
