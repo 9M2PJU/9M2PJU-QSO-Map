@@ -111,6 +111,7 @@ function loadAdif(text) {
                 } else {
                     // The QSO has no grid, so we need to look it up. We place it in a queue, it will be dealt with
                     // later asynchronously.
+                    // todo change to map indexed by callsign
                     queue.push(qso);
                 }
 
