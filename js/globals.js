@@ -34,6 +34,9 @@ let data = new Map();
 // A list of QSOs received without grid information, which have been held for lookup. Once they have
 // grid information, they are removed from here and added to data.
 let queue = [];
+// A map of callsign to data we looked up from QRZ.com. Used so that we don't re-query QRZ again for a call we have
+// already seen.
+let lookupData = new Map();
 // Count of all QSOs loaded from the ADIF
 let qsoCount = 0;
 // Count of all QSOs we tried but failed to look up. Used for status reporting.

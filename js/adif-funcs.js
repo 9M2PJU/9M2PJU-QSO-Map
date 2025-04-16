@@ -145,54 +145,70 @@ function loadAdif(text) {
 // queue and inserted into the proper data map. The map objects will then be updated to match. We only clear one at a
 // time this way to avoid overloading the QRZ.com API.
 function processQSOFromQueue() {
-    // todo cache save & restore, do >1 process per tick if we are only loading from local store?
     if (queue.length > 0 && qrzToken) {
         // Pop the next QSO out of the queue
         let qso = queue.pop();
         if (qso.call) {
-            $.ajax({
-                url: QRZ_API_BASE_URL,
-                data: {s: qrzToken, callsign: encodeURI(qso.call), agent: QRZ_AGENT},
-                dataType: 'xml',
-                timeout: 10000,
-                success: async function (result) {
-                    let grid = $(result).find("grid");
-                    if (grid && grid.text().length > 0) {
-                        // We have a good grid, so assign it to the QSO to make it ready to go into the data map.
-                        qso.grid = grid.text();
+            // See if we already have data about this callsign cached from a previous lookup
+            if (lookupData.has(qso.call)) {
+                // Already looked up this call, so just use that data and don't re-query
+                qso.grid = lookupData.get(qso.call).grid;
+                qso.name = lookupData.get(qso.call).name;
+                qso.qth = lookupData.get(qso.call).qth;
+                putQSOIntoDataMap(qso);
+                updateMapObjects();
 
-                        // Get some name & QTH information for the QSO if we have it
-                        let fname = $(result).find("fname");
-                        let name = $(result).find("name");
-                        let country = $(result).find("country");
-                        let nameJoined = "";
-                        if (fname && fname.text().length > 0) {
-                            nameJoined += fname.text();
-                        }
-                        if (name && name.text().length > 0) {
-                            nameJoined += " " + name.text();
-                        }
-                        qso.name = nameJoined;
-                        if (country && country.text().length > 0) {
-                            qso.qth = country.text();
-                        }
+            } else {
+                // Nothing in the cache, so make a lookup request.
+                $.ajax({
+                    url: QRZ_API_BASE_URL,
+                    data: {s: qrzToken, callsign: encodeURI(qso.call), agent: QRZ_AGENT},
+                    dataType: 'xml',
+                    timeout: 10000,
+                    success: async function (result) {
+                        let grid = $(result).find("grid");
+                        if (grid && grid.text().length > 0) {
+                            // We have a good grid, so assign it to the QSO to make it ready to go into the data map.
+                            qso.grid = grid.text();
 
-                        // Update the data map
-                        putQSOIntoDataMap(qso);
+                            // Get some name & QTH information for the QSO if we have it
+                            let fname = $(result).find("fname");
+                            let name = $(result).find("name");
+                            let country = $(result).find("country");
+                            let nameJoined = "";
+                            if (fname && fname.text().length > 0) {
+                                nameJoined += fname.text();
+                            }
+                            if (name && name.text().length > 0) {
+                                nameJoined += " " + name.text();
+                            }
+                            qso.name = nameJoined;
+                            if (country && country.text().length > 0) {
+                                qso.qth = country.text();
+                            }
 
-                        // Update the (geographic) map
-                        updateMapObjects();
-                    } else {
-                        // No grid in response or call is not in the QRZ database.
+                            // Update the data map
+                            putQSOIntoDataMap(qso);
+
+                            // Update the (geographic) map
+                            updateMapObjects();
+
+                            // Store the looked up info in case we see this callsign again, then we don't need to query the
+                            // API unnecessarily.
+                            lookupData.set(qso.call, {grid: qso.grid, name: qso.name, qth: qso.qth});
+
+                        } else {
+                            // No grid in response or call is not in the QRZ database.
+                            failedLookupCount++;
+                            console.log("QRZ.com had no grid for " + qso.call);
+                        }
+                    },
+                    error: function () {
                         failedLookupCount++;
-                        console.log("QRZ.com had no grid for " + qso.call);
+                        console.log("Error from QRZ.com when looking up " + qso.call);
                     }
-                },
-                error: function () {
-                    failedLookupCount++;
-                    console.log("Error from QRZ.com when looking up " + qso.call);
-                }
-            });
+                });
+            }
         } else {
             // QSO had no call, nothing to look up!
             failedLookupCount++;
