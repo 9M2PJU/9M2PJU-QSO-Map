@@ -8,5 +8,16 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="leaflet" level="application" />
+    <orderEntry type="library" name="leaflet-extra-markers" level="application" />
+    <orderEntry type="library" name="eb1770b90a" level="application" />
+    <orderEntry type="library" name="jquery" level="application" />
+    <orderEntry type="library" name="jquery-ui" level="application" />
+    <orderEntry type="library" name="moment" level="application" />
+    <orderEntry type="library" name="leaflet-providers" level="application" />
+    <orderEntry type="library" name="leaflet-edgebuffer" level="application" />
+    <orderEntry type="library" name="leaflet-geometryutil" level="application" />
+    <orderEntry type="library" name="leaflet.geodesic" level="application" />
+    <orderEntry type="library" name="L.Maidenhead" level="application" />
   </component>
 </module>
