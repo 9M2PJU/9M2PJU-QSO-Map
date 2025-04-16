@@ -12,7 +12,7 @@ div#controls {
     left: 1em;
     width: 19em;
     margin: 0;
-    padding: 1em 1em 0em 1em;
+    padding: 1em 1em 0 1em;
     z-index: 1001;
     overflow: hidden;
 }
@@ -32,8 +32,10 @@ input#fileSelect {
 }
 
 /* Hide loading status until we have something to put in there */
-p#loadingStatus {
+p#loadingStatus, p#qrzApiStatus {
     display: none;
+    position: relative;
+    top: -1em;
     margin-top: 0;
     font-size: 0.8em;
     text-align: center;

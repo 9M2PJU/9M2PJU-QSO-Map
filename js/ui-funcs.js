@@ -118,7 +118,10 @@ $("#queryQRZ").change(function () {
 });
 
 // Log into QRZ.com, get a session token if the login was correct. Show a status indicator next to the login button.
-$("#qrzLogin").click(function(){
+$("#qrzLogin").click(function() {
+    $("#qrzApiStatus").show();
+    $("#qrzApiStatus").html("<i class=\"fa-solid fa-spinner\"></i> Logging into QRZ.com...");
+
     let username = $("#qrzUser").val();
     let password = $("#qrzPass").val();
     $.ajax({
@@ -129,17 +132,24 @@ $("#qrzLogin").click(function(){
         success: async function (result) {
             let key = $(result).find("Key");
             if (key && key.text().length > 0) {
-                qrzToken = key.text();
-                $("span#qrzApiStatus").html("<i class='fa-solid fa-check'></i>");
-                // If the user hasn't turned on QRZ querying yet, they probably want it on so do that for them.
-                $("#queryQRZ").prop('checked', true);
+                if ($(result).find("SubExp") === "non-subscriber") {
+                    // Non-subscriber, warn the user
+                    $("#qrzApiStatus").html("<i class='fa-solid fa-triangle-exclamation'></i> User has no QRZ.com XML API subscription");
+                } else {
+                    // Got a token and a proper "subscription expiry" string so we are good to go.
+                    qrzToken = key.text();
+                    $("#qrzApiStatus").html("<i class='fa-solid fa-check'></i> QRZ.com authentication successful");
+                    // If the user hasn't turned on QRZ querying yet, they probably want it on so do that for them.
+                    $("#queryQRZ").prop('checked', true);
+                }
 
             } else {
-                $("span#qrzApiStatus").html("<i class='fa-solid fa-xmark'></i>");
+                // No key, so login failed
+                $("#qrzApiStatus").html("<i class='fa-solid fa-xmark'></i> Incorrect username or password");
             }
         },
         error: function () {
-            $("span#qrzApiStatus").html("<i class='fa-solid fa-triangle-exclamation'></i>");
+            $("#qrzApiStatus").html("<i class='fa-solid fa-triangle-exclamation'></i> QRZ.com API error, please try again later");
         }
     });
 });
