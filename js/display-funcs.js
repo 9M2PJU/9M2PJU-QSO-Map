@@ -36,7 +36,7 @@ function updateMapObjects() {
             // Add geodesic line
             if (linesEnabled && qthPos != null) {
                 let line = L.geodesic([qthPos, m.getLatLng()], {
-                    color: qsoToColour(d),
+                    color: colourLines ? qsoToColour(d) : "black",
                     wrap: false,
                     steps: 5,
                     weight: 1

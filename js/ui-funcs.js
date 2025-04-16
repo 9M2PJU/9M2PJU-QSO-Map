@@ -31,6 +31,7 @@ function updateModelFromUI() {
     updatePosFromGridInput();
     enableMaidenheadGrid($("#showMaidenheadGrid").is(':checked'));
     linesEnabled = $("#linesEnabled").is(':checked');
+    colourLines = $("#colourLines").is(':checked');
     bandColours = $("#bandColours").is(':checked');
     modeColours = $("#modeColours").is(':checked');
     smallIcons = $("#smallIcons").is(':checked');
@@ -58,12 +59,17 @@ $("#basemapOpacity").change(function() {
 });
 
 // Listen for QTH grid input
-$("#qthGrid").on("input", function(e) {
+$("#qthGrid").on("input", function() {
     updateModelFromUI();
 });
 
 // Listen for lines enabled toggle
 $("#linesEnabled").change(function () {
+    updateModelFromUI();
+});
+
+// Listen for colour lines toggle
+$("#colourLines").change(function () {
     updateModelFromUI();
 });
 
