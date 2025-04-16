@@ -7,6 +7,7 @@ function loadAdif(text) {
     data = new Map();
     queue = [];
     qsoCount = 0;
+    failedLookupCount = 0;
     loading = true;
     loadedAtLeastOnce = true;
     let cursor = 0;
@@ -141,7 +142,7 @@ function processQSOFromQueue() {
         let qso = queue.pop();
         $.ajax({
             url: QRZ_API_BASE_URL,
-            data: { s: qrzToken, callsign: encodeURI(qso.call), agent: QRZ_AGENT },
+            data: {s: qrzToken, callsign: encodeURI(qso.call), agent: QRZ_AGENT},
             dataType: 'xml',
             timeout: 10000,
             success: async function (result) {
@@ -154,16 +155,13 @@ function processQSOFromQueue() {
                     // Update the map
                     // todo is doing this every second too much? Maybe every n, or in a separate thread every 10 sec if something has changed?
                     updateMapObjects();
-                    updateStatus();
                 } else {
                     // todo see what we are getting here, do we get lat/lon and not grid maybe? Or no position at all?
                     // todo how to handle failed lookups & display this
-                    updateStatus();
                 }
             },
             error: function () {
                 // todo how to handle failed lookups & display this
-                updateStatus();
             }
         });
     }
@@ -173,23 +171,38 @@ function processQSOFromQueue() {
 function updateStatus() {
     if (loadedAtLeastOnce) {
         let statusText = "";
-        if (loading) {
-            statusText = "<i class=\"fa-solid fa-spinner\"></i> Loading...";
+
+        // Icon. Spinner if we are doing something, check if all done and every QSO has a grid, exclamation mark if
+        // we have qsos without grids.
+        if (loading || (queue.length > 0 && qrzToken)) {
+            statusText = "<i class=\"fa-solid fa-spinner\"></i> ";
+        } else if (queue.length > 0 || failedLookupCount > 0) {
+            statusText += "<i class=\"fa-solid fa-triangle-exclamation\"></i> ";
         } else {
-            if (qsoCount > 0) {
-                if (queue.length === 0) {
-                    statusText += "<i class=\"fa-solid fa-check\"></i>";
+            statusText += "<i class=\"fa-solid fa-check\"></i> ";
+        }
+
+        // Status text
+        if (loading) {
+            statusText += "Loading...";
+        } else if (qsoCount > 0) {
+            if (queue.length === 0 && failedLookupCount === 0) {
+                statusText += "Loaded and displayed " + qsoCount + " QSOs.";
+            } else if (queue.length === 0) {
+                statusText += "Loaded " + qsoCount + " QSOs, failed to find grids for " + failedLookupCount + ".";
+            } else if (failedLookupCount === 0) {
+                if (qrzToken) {
+                    statusText += "Loaded " + qsoCount + " QSOs, " + failedLookupCount + " in lookup queue.";
                 } else {
-                    statusText += "<i class=\"fa-solid fa-triangle-exclamation\"></i>";
-                }
-                statusText += " Loaded " + qsoCount + " QSOs."
-                if (queue.length >= 0) {
-                    statusText += " " + (qsoCount - queue.length) + " contained grids.";
+                    statusText += "Loaded " + qsoCount + " QSOs, " + queue.length + " had no grid.";
                 }
             } else {
-                statusText += "<i class=\"fa-solid fa-triangle-exclamation\"></i> Failed to parse QSOs in this file";
+                statusText += "Loaded " + qsoCount + " QSOs, " + queue.length + " in queue, failed to find grids for " + failedLookupCount + ".";
             }
+        } else {
+            statusText += "<i class=\"fa-solid fa-triangle-exclamation\"></i> Failed to parse QSOs in this file";
         }
+
         $("#loadingStatus").html(statusText);
         $("#loadingStatus").show();
     }
