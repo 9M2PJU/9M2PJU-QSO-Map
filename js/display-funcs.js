@@ -126,8 +126,8 @@ function getTooltipText(d) {
 // path.
 function getIconPosition(d) {
     let grid = d.grid;
-    if (grid && latLonForGrid(grid) != null) {
-        [lat, lon] = latLonForGrid(grid);
+    if (grid && latLonForGridCentre(grid) != null) {
+        [lat, lon] = latLonForGridCentre(grid);
         if (lat != null && lon != null && !isNaN(lat) && !isNaN(lon) && (lat !== 0.0 || lon !== 0.0)) {
             let wrapEitherSideOfLon = 0;
             if (qthPos != null) {

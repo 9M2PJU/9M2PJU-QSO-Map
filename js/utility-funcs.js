@@ -45,8 +45,28 @@ function createOwnPosMarker(newPos) {
     }
 }
 
-// Convert a Maidenhead grid reference of arbitrary precision to lat/long.
-function latLonForGrid(grid) {
+// Convert a Maidenhead grid reference of arbitrary precision to the lat/long of the southwest corner of the square.
+function latLonForGridSWCorner(grid) {
+    [lat, lon, latCellSize, lonCellSize] = latLonForGridSWCornerPlusSize(grid);
+    return [lat, lon];
+}
+
+// Convert a Maidenhead grid reference of arbitrary precision to the lat/long of the northeast corner of the square.
+function latLonForGridNECorner(grid) {
+    [lat, lon, latCellSize, lonCellSize] = latLonForGridSWCornerPlusSize(grid);
+    return [lat + latCellSize, lon + lonCellSize];
+}
+
+// Convert a Maidenhead grid reference of arbitrary precision to the lat/long of the centre point of the square.
+function latLonForGridCentre(grid) {
+    [lat, lon, latCellSize, lonCellSize] = latLonForGridSWCornerPlusSize(grid);
+    return [lat + latCellSize / 2.0, lon + lonCellSize / 2.0];
+}
+
+// Convert a Maidenhead grid reference of arbitrary precision to lat/long, including in the result the size of the
+// lowest grid square. This is a utility method used by the main methods that return the centre, southwest, and
+// northeast coordinates of a grid square.
+function latLonForGridSWCornerPlusSize(grid) {
     // Make sure we are in upper case so our maths works. Case is arbitrary for Maidenhead references
     grid = grid.toUpperCase();
 
@@ -91,8 +111,7 @@ function latLonForGrid(grid) {
         lat += latCellNo * latCellSize;
         lon += lonCellNo * lonCellSize;
 
-        // Reduce the cell size for the next block, unless we are on the last cell. If we are on the last cell, instead
-        // move the position into the middle of the cell rather than its south-west corner.
+        // Reduce the cell size for the next block, unless we are on the last cell.
         if (block * 2 < len - 2) {
             // Still have more work to do, so reduce the cell size
             if (block % 2 === 0) {
@@ -104,10 +123,6 @@ function latLonForGrid(grid) {
                 latCellSize = latCellSize / 24.0;
                 lonCellSize = lonCellSize / 24.0;
             }
-        } else {
-            // This is the last block, so move the marker to the middle.
-            lat += latCellSize / 2;
-            lon += lonCellSize / 2;
         }
     }
 
@@ -115,7 +130,7 @@ function latLonForGrid(grid) {
     lon -= 180.0;
     lat -= 90.0;
 
-    return [lat, lon];
+    return [lat, lon, latCellSize, lonCellSize];
 }
 
 // Returns a colour based on data item's QSOs' band or mode, if enabled, otherwise returns neutral blue.

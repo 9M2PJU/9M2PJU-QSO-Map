@@ -53,7 +53,7 @@ function updatePosFromGridInput() {
     let grid = $("#qthGrid").val().toUpperCase();
     let pos = null;
     if (/^[A-R]{2}[0-9]{2}([A-X]{2})?$/.test(grid)) {
-        pos = latLonForGrid(grid);
+        pos = latLonForGridCentre(grid);
     }
     setQTH(pos);
     localStorage.setItem('qthGrid', JSON.stringify(grid));
