@@ -76,6 +76,7 @@ function enableMaidenheadGrid(show) {
             map.removeLayer(maidenheadGrid);
         }
     }
+    localStorage.setItem('showMaidenheadGrid', showMaidenheadGrid);
 }
 
 
@@ -165,6 +166,7 @@ function setBasemap(basemapname) {
         basemapIsDark = basemapname === "CartoDB.DarkMatter" || basemapname === "Esri.WorldImagery";
         $("#map").css('background-color', basemapIsDark ? "black" : "white");
     }
+    localStorage.setItem('basemap', JSON.stringify(basemap));
 }
 
 // Set the basemap opacity
@@ -173,4 +175,5 @@ function setBasemapOpacity(opacity) {
     if (typeof basemapLayer !== 'undefined') {
         basemapLayer.setOpacity(opacity);
     }
+    localStorage.setItem('basemapOpacity', basemapOpacity);
 }

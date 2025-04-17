@@ -31,13 +31,21 @@ function updateModelFromUI() {
     updatePosFromGridInput();
     enableMaidenheadGrid($("#showMaidenheadGrid").is(':checked'));
     linesEnabled = $("#linesEnabled").is(':checked');
+    localStorage.setItem('linesEnabled', linesEnabled);
     colourLines = $("#colourLines").is(':checked');
+    localStorage.setItem('colourLines', colourLines);
     bandColours = $("#bandColours").is(':checked');
+    localStorage.setItem('bandColours', bandColours);
     modeColours = $("#modeColours").is(':checked');
+    localStorage.setItem('modeColours', modeColours);
     smallIcons = $("#smallIcons").is(':checked');
+    localStorage.setItem('smallIcons', smallIcons);
     outdoorSymbols = $("#outdoorSymbols").is(':checked');
+    localStorage.setItem('outdoorSymbols', outdoorSymbols);
     callsignLabels = $("#showCallsignLabels").is(':checked');
+    localStorage.setItem('callsignLabels', callsignLabels);
     queryQRZ = $("#queryQRZ").is(':checked');
+    localStorage.setItem('queryQRZ', queryQRZ);
     updateMapObjects();
 }
 
@@ -48,6 +56,7 @@ function updatePosFromGridInput() {
         pos = latLonForGrid(grid);
     }
     setQTH(pos);
+    localStorage.setItem('qthGrid', JSON.stringify(grid));
 }
 
 // Listen for basemap & opacity changes
@@ -152,6 +161,8 @@ $("#qrzLogin").click(function() {
             $("#qrzApiStatus").html("<i class='fa-solid fa-triangle-exclamation'></i> QRZ.com API error, please try again later");
         }
     });
+    localStorage.setItem('qrzUser', JSON.stringify(username));
+    localStorage.setItem('qrzPass', JSON.stringify(password));
 });
 
 // Open/close controls
