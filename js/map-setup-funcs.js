@@ -8,9 +8,7 @@ function setUpMap() {
         zoomControl: false,
         minZoom: 2,
         maxZoom: 17,
-        zoomDelta: 0.25,
-        wheelPxPerZoomLevel: 200,
-        zoomSnap: 0
+        zoomSnap: 1
     });
 
     // Add basemap
@@ -25,9 +23,6 @@ function setUpMap() {
     maidenheadGrid = L.maidenhead({
         color : 'rgba(0, 0, 0, 0.4)'
     });
-    if (showMaidenheadGrid) {
-        maidenheadGrid.addTo(map);
-    }
 
     // Add marker layer
     markersLayer = new L.LayerGroup();
