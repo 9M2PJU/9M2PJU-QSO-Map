@@ -196,6 +196,7 @@ function processQSOFromQueue() {
                             // Store the looked up info in case we see this callsign again, then we don't need to query the
                             // API unnecessarily.
                             lookupData.set(qso.call, {grid: qso.grid, name: qso.name, qth: qso.qth});
+                            localStorage.setItem('lookupData', JSON.stringify(lookupData));
 
                         } else {
                             // No grid in response or call is not in the QRZ database.

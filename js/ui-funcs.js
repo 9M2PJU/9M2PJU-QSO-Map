@@ -30,8 +30,12 @@ function updateModelFromUI() {
     setBasemapOpacity($("#basemapOpacity").val());
     updatePosFromGridInput();
     enableMaidenheadGrid($("#showMaidenheadGrid").is(':checked'));
+    markersEnabled = $("#markersEnabled").is(':checked');
+    localStorage.setItem('markersEnabled', markersEnabled);
     linesEnabled = $("#linesEnabled").is(':checked');
     localStorage.setItem('linesEnabled', linesEnabled);
+    gridSquaresEnabled = $("#gridSquaresEnabled").is(':checked');
+    localStorage.setItem('gridSquaresEnabled', gridSquaresEnabled);
     colourLines = $("#colourLines").is(':checked');
     localStorage.setItem('colourLines', colourLines);
     bandColours = $("#bandColours").is(':checked');
@@ -72,8 +76,18 @@ $("#qthGrid").on("input", function() {
     updateModelFromUI();
 });
 
+// Listen for markers enabled toggle
+$("#markersEnabled").change(function () {
+    updateModelFromUI();
+});
+
 // Listen for lines enabled toggle
 $("#linesEnabled").change(function () {
+    updateModelFromUI();
+});
+
+// Listen for grid squares worked enabled toggle
+$("#gridSquaresEnabled").change(function () {
     updateModelFromUI();
 });
 

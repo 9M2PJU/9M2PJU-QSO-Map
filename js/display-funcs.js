@@ -10,6 +10,8 @@ function updateMapObjects() {
     markers = [];
     lines.forEach(line => linesLayer.removeLayer(line));
     lines = [];
+    gridSquares.forEach(square => gridSquaresWorkedLayer.removeLayer(square));
+    gridSquares = new Map();
 
     // Add own position marker
     createOwnPosMarker(qthPos);
@@ -18,24 +20,21 @@ function updateMapObjects() {
     data.forEach(function (d) {
         const pos = getIconPosition(d);
         if (pos != null) {
-            // No existing marker, data is valid, so create
-            let m = L.marker(pos, { icon: getIcon(d) });
-
-            // Add to map
-            markersLayer.addLayer(m);
-
-            // Set tooltip
-            m.bindPopup(getTooltipText(d));
-
-            // Set label
-            if (callsignLabels) {
-                m.bindTooltip("<span style='color: " + (basemapIsDark ? "white" : "black") + ";'>"
-                    + d.call + "</span>", {permanent: true, direction: 'center', offset: L.point(0, 10)});
+            // Add marker
+            if (markersEnabled) {
+                let m = L.marker(pos, {icon: getIcon(d)});
+                m.bindPopup(getTooltipText(d));
+                if (callsignLabels) {
+                    m.bindTooltip("<span style='color: " + (basemapIsDark ? "white" : "black") + ";'>"
+                        + d.call + "</span>", {permanent: true, direction: 'center', offset: L.point(0, 10)});
+                }
+                markersLayer.addLayer(m);
+                markers.push(m);
             }
 
             // Add geodesic line
             if (linesEnabled && qthPos != null) {
-                let line = L.geodesic([qthPos, m.getLatLng()], {
+                let line = L.geodesic([qthPos, pos], {
                     color: colourLines ? qsoToColour(d) : "black",
                     wrap: false,
                     steps: 5,
@@ -45,8 +44,16 @@ function updateMapObjects() {
                 lines.push(line);
             }
 
-            // Add to internal data store
-            markers.push(m);
+            // Add worked square. Must not be a dupe of one we have already added.
+            let fourDigitGrid = d.grid.substring(0, 4);
+            if (gridSquaresEnabled && !gridSquares.has(fourDigitGrid)) {
+                let swCorner = latLonForGridSWCorner(fourDigitGrid);
+                let neCorner = latLonForGridNECorner(fourDigitGrid);
+                let square = L.rectangle([swCorner, neCorner], {color: 'blue'});
+                square.bindPopup(fourDigitGrid);
+                gridSquaresWorkedLayer.addLayer(square);
+                gridSquares.set(fourDigitGrid, square);
+            }
         }
     });
 

@@ -46,15 +46,19 @@ let loadedAtLeastOnce = false
 let loading = false;
 // Position of the grey home marker
 let qthPos = null;
-// Marker and geodesic line references. The objects themselves are added to the map but we also keep them in these
-// arrays so we can easily e.g. find them to remove them when we need to
+// Marker, geodesic line and grid square graphic references. The graphics themselves are added to the map but we also
+// keep them in these arrays so we can easily e.g. find them to remove them when we need to. Gridsquares is a map rather
+// than a list because we index by 4-digit square. Several QSOs can share the same square, so we use this to prevent
+// drawing multiple overlapping squares.
 let markers = [];
 let lines = [];
+let gridSquares = new Map();
 // Map and layers
 let map;
 let basemapLayer;
 let markersLayer;
 let linesLayer;
+let gridSquaresWorkedLayer;
 let ownPosLayer;
 let ownPosMarker;
 let maidenheadGrid;
@@ -69,7 +73,9 @@ let qrzToken;
 let basemap = "Esri.NatGeoWorldMap";
 let basemapOpacity = 0.5;
 let basemapIsDark = false;
+let markersEnabled = true;
 let linesEnabled = true;
+let gridSquaresEnabled = false;
 let colourLines = true;
 let bandColours = true;
 let modeColours = true;

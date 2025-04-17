@@ -23,8 +23,12 @@ function loadLocalStorage() {
     $("#qthGrid").val(tmpQthGrid);
     let tmpShowMaidenheadGrid = localStorageGetOrDefault('showMaidenheadGrid', showMaidenheadGrid);
     $("#showMaidenheadGrid").prop('checked', tmpShowMaidenheadGrid);
+    let tmpMarkersEnabled = localStorageGetOrDefault('markersEnabled', markersEnabled);
+    $("#markersEnabled").prop('checked', tmpMarkersEnabled);
     let tmpLinesEnabled = localStorageGetOrDefault('linesEnabled', linesEnabled);
     $("#linesEnabled").prop('checked', tmpLinesEnabled);
+    let tmpGridSquaresEnabled = localStorageGetOrDefault('gridSquaresEnabled', gridSquaresEnabled);
+    $("#gridSquaresEnabled").prop('checked', tmpGridSquaresEnabled);
     let tmpColourLines = localStorageGetOrDefault('colourLines', colourLines);
     $("#colourLines").prop('checked', tmpColourLines);
     let tmpBandColours = localStorageGetOrDefault('bandColours', bandColours);
@@ -43,6 +47,7 @@ function loadLocalStorage() {
     $("#qrzUser").val(tmpQrzUser);
     let tmpQrzPass = localStorageGetOrDefault('qrzPass', '');
     $("#qrzPass").val(tmpQrzPass);
+    lookupData = localStorageGetOrDefault('lookupData', lookupData);
 
     updateModelFromUI();
 }
