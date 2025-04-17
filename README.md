@@ -1,6 +1,6 @@
 # ADIF Map Tool
 
-A utility to amateur radio operators, to show the contents of an ADIF file visually on a map. This is what I use to generate maps of my contacts for my blog posts about portable radio operations.
+A utility for amateur radio operators, to show the contents of an ADIF file visually on a map. This is what I use to generate maps for my blog posts about portable radio operations.
 
 This was originally intended to be a replacement of sorts for the tool that used to live at [http://qsomap.adventureradio.de/](http://qsomap.adventureradio.de/), sadly now offline. I have since added more features; it also does all the processing client-side rather than using a database and processing on the back end.
 
