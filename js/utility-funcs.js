@@ -222,10 +222,12 @@ function getIcon(d) {
 // Get Font Awesome icon name for the data item. If multiple icons would be used, a star is used instead.
 function getIconName(d) {
     if (outdoorSymbols) {
+        // Outdoor activity symbols in use, so figure out what they are for each QSO.
         let qsoIcons = [];
         d.qsos.forEach((qso) => {
-            if (qso.program) {
-                program = qso.program;
+            console.log(qso.program);
+            if (qso.program && qso.program.length > 0) {
+                let program = qso.program;
                 if (program === "POTA") {
                     qsoIcons.push("fa-tree");
                 } else if (program === "SOTA") {
@@ -247,19 +249,27 @@ function getIconName(d) {
                 } else {
                     qsoIcons.push("fa-crosshairs");
                 }
+            } else if (hybridMarkerSize) {
+                // This is a QSO with a hunter, and we have hybrid size turned on, so this will be a small marker, and we want no icon.
+                qsoIcons.push("fa-none");
             } else {
+                // This is a QSO with a hunter, and we don't have hybrid size on, so use crosshairs symbol.
                 qsoIcons.push("fa-crosshairs");
             }
         });
         let allEqual = qsoIcons.every( (val, i, arr) => val === arr[0] );
         if (allEqual) {
+            // All QSOs with this callsign + grid have the same icon, so use it
             return qsoIcons[0];
         } else {
+            // Multiple different icons are specified by this QSO set, so show a star
             return "fa-star";
         }
-    } else if (smallIcons) {
+    } else if (smallMarkers) {
+        // Outdoor activity icons not in use, and small icons set, so use no symbol.
         return "fa-none";
     } else {
+        // Outdoor activity icons not in use, and small icons not set, so use a circle symbol like a "standard" map marker.
         return "fa-circle"
     }
 }

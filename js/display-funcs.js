@@ -30,6 +30,12 @@ function updateMapObjects() {
                 }
                 markersLayer.addLayer(m);
                 markers.push(m);
+
+                // Use small icons if requested. This is if "small icons" is enabled, of if "hybrid marker size"
+                // is selected and the marker has no icon.
+                if (smallMarkers || (hybridMarkerSize && getIconName(d) === "fa-none")) {
+                    $(m._icon).addClass("smallmarker");
+                }
             }
 
             // Add geodesic line
@@ -56,12 +62,6 @@ function updateMapObjects() {
             }
         }
     });
-
-    // Use small icons if requested
-    if (smallIcons) {
-        $(".leaflet-marker-icon svg").addClass("smallicon");
-        $(".extra-marker i.fa").addClass("fa-smallicon");
-    }
 }
 
 // Zoom the display to fit all markers, so long as we have at least three so the zoom isn't janky

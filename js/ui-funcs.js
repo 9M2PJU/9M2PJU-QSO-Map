@@ -42,8 +42,10 @@ function updateModelFromUI() {
     localStorage.setItem('bandColours', bandColours);
     modeColours = $("#modeColours").is(':checked');
     localStorage.setItem('modeColours', modeColours);
-    smallIcons = $("#smallIcons").is(':checked');
-    localStorage.setItem('smallIcons', smallIcons);
+    smallMarkers = $("#smallMarkers").is(':checked');
+    localStorage.setItem('smallMarkers', smallMarkers);
+    hybridMarkerSize = $("#hybridMarkerSize").is(':checked');
+    localStorage.setItem('hybridMarkerSize', hybridMarkerSize);
     outdoorSymbols = $("#outdoorSymbols").is(':checked');
     localStorage.setItem('outdoorSymbols', outdoorSymbols);
     callsignLabels = $("#showCallsignLabels").is(':checked');
@@ -111,12 +113,29 @@ $("#modeColours").change(function () {
 });
 
 // Listen for small icons toggle
-$("#smallIcons").change(function () {
+$("#smallMarkers").change(function () {
+    if ($("#smallMarkers").is(':checked')) {
+        $("#hybridMarkerSize").prop('checked', false);
+    }
     updateModelFromUI();
 });
 
 // Listen for outdoor activity symbols toggle
 $("#outdoorSymbols").change(function () {
+    if (!$("#outdoorSymbols").is(':checked')) {
+        $("#hybridMarkerSize").prop('checked', false);
+    }
+    updateModelFromUI();
+});
+
+// Listen for hybrid marker size toggle
+$("#hybridMarkerSize").change(function () {
+    if ($("#hybridMarkerSize").is(':checked')) {
+        $("#smallMarkers").prop('checked', false);
+    }
+    if ($("#hybridMarkerSize").is(':checked')) {
+        $("#outdoorSymbols").prop('checked', true);
+    }
     updateModelFromUI();
 });
 

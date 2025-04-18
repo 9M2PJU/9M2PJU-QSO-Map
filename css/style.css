@@ -55,11 +55,11 @@ a.closeButton {
 }
 
 /* Small markers */
-.leaflet-map-pane svg.smallicon {
+.leaflet-map-pane div.smallmarker svg {
     width: 22px;
     margin-top: 5px;
 }
-.extra-marker i.fa-smallicon {
+.leaflet-map-pane div.smallmarker i.fa {
     margin-top: 18px;
     font-size: 11px;
 }

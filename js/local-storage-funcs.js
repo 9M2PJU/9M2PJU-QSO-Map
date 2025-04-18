@@ -35,10 +35,12 @@ function loadLocalStorage() {
     $("#bandColours").prop('checked', tmpBandColours);
     let tmpModeColours = localStorageGetOrDefault('modeColours', modeColours);
     $("#modeColours").prop('checked', tmpModeColours);
-    let tmpSmallIcons = localStorageGetOrDefault('smallIcons', smallIcons);
-    $("#smallIcons").prop('checked', tmpSmallIcons);
+    let tmpSmallMarkers = localStorageGetOrDefault('smallMarkers', smallMarkers);
+    $("#smallMarkers").prop('checked', tmpSmallMarkers);
     let tmpOutdoorSymbols = localStorageGetOrDefault('outdoorSymbols', outdoorSymbols);
     $("#outdoorSymbols").prop('checked', tmpOutdoorSymbols);
+    let tmpHybridMarkerSize = localStorageGetOrDefault('hybridMarkerSize', hybridMarkerSize);
+    $("#hybridMarkerSize").prop('checked', tmpHybridMarkerSize);
     let tmpCallsignLabels = localStorageGetOrDefault('callsignLabels', callsignLabels);
     $("#callsignLabels").prop('checked', tmpCallsignLabels);
     let tmpQueryQRZ = localStorageGetOrDefault('queryQRZ', queryQRZ);

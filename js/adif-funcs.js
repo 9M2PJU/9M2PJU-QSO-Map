@@ -109,7 +109,11 @@ function loadAdif(text) {
                         qso.time = moment.utc(qsoData.get("QSO_DATE") + qsoData.get("TIME_ON").substring(0, 4), "YYYYMMDDHHmm");
                     }
                     if (qsoData.has("SIG")) {
-                        qso.sig = qsoData.get("SIG");
+                        qso.program = qsoData.get("SIG");
+                        // If we have no other QTH info recorded for the contact, but we do have SIG_INFO (e.g. POTA ref), use that as QTH
+                        if (qsoData.has("SIG_INFO") && !qso.qth) {
+                            qso.qth = qsoData.get("SIG") + " " + qsoData.get("SIG_INFO");
+                        }
                     }
 
                     if (qso.grid) {
