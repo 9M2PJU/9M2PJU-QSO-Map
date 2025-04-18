@@ -49,7 +49,12 @@ function loadLocalStorage() {
     $("#qrzUser").val(tmpQrzUser);
     let tmpQrzPass = localStorageGetOrDefault('qrzPass', '');
     $("#qrzPass").val(tmpQrzPass);
-    lookupData = localStorageGetOrDefault('lookupData', lookupData);
+
+    // Load lookup data. This had to be converted to an object for storage, now we need it back as a map.
+    const lookupDataStr = localStorage.getItem('lookupData');
+    if (lookupDataStr !== null) {
+        lookupData = new Map(Object.entries(JSON.parse(lookupDataStr)));
+    }
 
     updateModelFromUI();
 }

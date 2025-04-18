@@ -176,19 +176,23 @@ function processQSOFromQueue() {
                             qso.grid = grid.text();
 
                             // Get some name & QTH information for the QSO if we have it
-                            let fname = $(result).find("fname");
-                            let name = $(result).find("name");
-                            let country = $(result).find("country");
-                            let nameJoined = "";
-                            if (fname && fname.text().length > 0) {
-                                nameJoined += fname.text();
+                            if (!qso.name) {
+                                let fname = $(result).find("fname");
+                                let name = $(result).find("name");
+                                let nameJoined = "";
+                                if (fname && fname.text().length > 0) {
+                                    nameJoined += fname.text();
+                                }
+                                if (name && name.text().length > 0) {
+                                    nameJoined += " " + name.text();
+                                }
+                                qso.name = nameJoined;
                             }
-                            if (name && name.text().length > 0) {
-                                nameJoined += " " + name.text();
-                            }
-                            qso.name = nameJoined;
-                            if (country && country.text().length > 0) {
-                                qso.qth = country.text();
+                            if (!qso.qth) {
+                                let country = $(result).find("country");
+                                if (country && country.text().length > 0) {
+                                    qso.qth = country.text();
+                                }
                             }
 
                             // Update the data map
@@ -200,7 +204,7 @@ function processQSOFromQueue() {
                             // Store the looked up info in case we see this callsign again, then we don't need to query the
                             // API unnecessarily.
                             lookupData.set(qso.call, {grid: qso.grid, name: qso.name, qth: qso.qth});
-                            localStorage.setItem('lookupData', JSON.stringify(lookupData));
+                            localStorage.setItem('lookupData', JSON.stringify(Object.fromEntries(lookupData)));
 
                         } else {
                             // No grid in response or call is not in the QRZ database.

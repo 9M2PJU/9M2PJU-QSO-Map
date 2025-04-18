@@ -93,7 +93,6 @@ function latLonForGridSWCornerPlusSize(grid) {
             // A-X (0-23) thereafter.
             let maxCellNo = (block === 0) ? 17 : 23;
             if (latCellNo < 0 || latCellNo > maxCellNo || lonCellNo < 0 || lonCellNo > maxCellNo) {
-                console.log("A " + grid);
                 return null;
             }
         } else {
@@ -102,7 +101,6 @@ function latLonForGridSWCornerPlusSize(grid) {
             latCellNo = parseInt(grid.charAt(block * 2 + 1));
             // Bail if the values aren't in range 0-9..
             if (latCellNo < 0 || latCellNo > 9 || lonCellNo < 0 || lonCellNo > 9) {
-                console.log("A " + grid);
                 return null;
             }
         }
@@ -225,7 +223,6 @@ function getIconName(d) {
         // Outdoor activity symbols in use, so figure out what they are for each QSO.
         let qsoIcons = [];
         d.qsos.forEach((qso) => {
-            console.log(qso.program);
             if (qso.program && qso.program.length > 0) {
                 let program = qso.program;
                 if (program === "POTA") {
