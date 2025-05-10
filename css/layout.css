@@ -27,6 +27,23 @@ div#menuButton {
     z-index: 1001;
 }
 
+h4.menu-heading {
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+}
+
+h4.menu-heading span.arrow {
+    font-size: 0.8em;
+    margin-left: 0.2em;
+    position: relative;
+    top: -0.15em;
+}
+
+div.menu-content {
+    display: none;
+    margin: 0.5em 0 1em 0.5em;
+}
+
 input#fileSelect {
     width: 17em;
 }
@@ -34,10 +51,12 @@ input#fileSelect {
 /* Hide loading status until we have something to put in there */
 p#loadingStatus, p#qrzApiStatus {
     display: none;
-    position: relative;
-    top: -1em;
     margin-top: 0;
     margin-bottom: 0;
     font-size: 0.8em;
     text-align: center;
+}
+p#loadingStatus {
+    position: relative;
+    top: -1em;
 }

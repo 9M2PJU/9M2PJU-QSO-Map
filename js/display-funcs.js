@@ -44,7 +44,7 @@ function updateMapObjects() {
                     color: colourLines ? qsoToColour(d) : "black",
                     wrap: false,
                     steps: 5,
-                    weight: 1
+                    weight: thickLines ? 3 : 1
                 });
                 linesLayer.addLayer(line);
                 lines.push(line);

@@ -25,12 +25,16 @@ function loadLocalStorage() {
     $("#showMaidenheadGrid").prop('checked', tmpShowMaidenheadGrid);
     let tmpMarkersEnabled = localStorageGetOrDefault('markersEnabled', markersEnabled);
     $("#markersEnabled").prop('checked', tmpMarkersEnabled);
+    let tmpQTHMarker = localStorageGetOrDefault('qthMarker', qthMarker);
+    $("#qthMarker").prop('checked', tmpQTHMarker);
     let tmpLinesEnabled = localStorageGetOrDefault('linesEnabled', linesEnabled);
     $("#linesEnabled").prop('checked', tmpLinesEnabled);
     let tmpGridSquaresEnabled = localStorageGetOrDefault('gridSquaresEnabled', gridSquaresEnabled);
     $("#gridSquaresEnabled").prop('checked', tmpGridSquaresEnabled);
     let tmpColourLines = localStorageGetOrDefault('colourLines', colourLines);
     $("#colourLines").prop('checked', tmpColourLines);
+    let tmpThickLines = localStorageGetOrDefault('thickLines', thickLines);
+    $("#thickLines").prop('checked', tmpThickLines);
     let tmpBandColours = localStorageGetOrDefault('bandColours', bandColours);
     $("#bandColours").prop('checked', tmpBandColours);
     let tmpModeColours = localStorageGetOrDefault('modeColours', modeColours);

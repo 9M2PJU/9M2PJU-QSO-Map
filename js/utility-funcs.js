@@ -29,7 +29,7 @@ function createOwnPosMarker(newPos) {
         ownPosLayer.removeLayer(ownPosMarker);
     }
 
-    if (newPos != null) {
+    if (qthMarker && newPos != null) {
         ownPosMarker = L.marker(newPos, {
             icon: L.ExtraMarkers.icon({
                 icon: 'fa-tower-cell',

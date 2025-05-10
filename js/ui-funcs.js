@@ -32,12 +32,16 @@ function updateModelFromUI() {
     enableMaidenheadGrid($("#showMaidenheadGrid").is(':checked'));
     markersEnabled = $("#markersEnabled").is(':checked');
     localStorage.setItem('markersEnabled', markersEnabled);
+    qthMarker = $("#qthMarker").is(':checked');
+    localStorage.setItem('qthMarker', qthMarker);
     linesEnabled = $("#linesEnabled").is(':checked');
     localStorage.setItem('linesEnabled', linesEnabled);
     gridSquaresEnabled = $("#gridSquaresEnabled").is(':checked');
     localStorage.setItem('gridSquaresEnabled', gridSquaresEnabled);
     colourLines = $("#colourLines").is(':checked');
     localStorage.setItem('colourLines', colourLines);
+    thickLines = $("#thickLines").is(':checked');
+    localStorage.setItem('thickLines', thickLines);
     bandColours = $("#bandColours").is(':checked');
     localStorage.setItem('bandColours', bandColours);
     modeColours = $("#modeColours").is(':checked');
@@ -83,6 +87,11 @@ $("#markersEnabled").change(function () {
     updateModelFromUI();
 });
 
+// Listen for QTH marker toggle
+$("#qthMarker").change(function () {
+    updateModelFromUI();
+});
+
 // Listen for lines enabled toggle
 $("#linesEnabled").change(function () {
     updateModelFromUI();
@@ -95,6 +104,11 @@ $("#gridSquaresEnabled").change(function () {
 
 // Listen for colour lines toggle
 $("#colourLines").change(function () {
+    updateModelFromUI();
+});
+
+// Listen for thick lines toggle
+$("#thickLines").change(function () {
     updateModelFromUI();
 });
 
@@ -207,3 +221,15 @@ function closeControls() {
     $("#controls").hide();
     $("#menuButton").show();
 }
+
+// Open/close menu sections
+$(".menu-heading").click(function () {
+    let contentDiv = $(this).next();
+    if (contentDiv.is(":visible")) {
+        contentDiv.hide(100);
+        $(this).find(".arrow").html("&#9654;");
+    } else {
+        contentDiv.show(100);
+        $(this).find(".arrow").html("&#9660;");
+    }
+});
