@@ -49,14 +49,10 @@ input#fileSelect {
 }
 
 /* Hide loading status until we have something to put in there */
-p#loadingStatus, p#qrzApiStatus {
+div#loadingStatus, div#qrzApiStatus {
     display: none;
     margin-top: 0;
     margin-bottom: 0;
     font-size: 0.8em;
     text-align: center;
-}
-p#loadingStatus {
-    position: relative;
-    top: -1em;
 }

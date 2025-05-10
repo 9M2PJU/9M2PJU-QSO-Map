@@ -51,12 +51,12 @@
 <div id="controls">
     <h1 id="title">ADIF Map Tool</h1>
     <p id="subtitle">By <a href="https://ianrenton.com" target="_blank">Ian Renton MØTRT</a> | <a href="https://github.com/ianrenton/adifmap/blob/main/README.md" target="_blank">About</a> | <a href="https://github.com/ianrenton/adifmap" target="_blank">Source Code</a></p>
-    <p><label for="fileSelect" class="configLabel">ADIF file:&nbsp;<input type="file" id="fileSelect"
-           accept=".adi,.adif" /></label></p>
-    <p id="loadingStatus"></p>
+    <div><label for="fileSelect" class="configLabel">ADIF file:&nbsp;<input type="file" id="fileSelect"
+           accept=".adi,.adif" /></label></div>
+    <div id="loadingStatus"></div>
 
 
-    <h4 class="menu-heading">My Callsign & QTH <span class="arrow">&#9654;</span></h4>
+    <h4 class="menu-heading" style="margin-top: 1em">My Callsign & QTH <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
         <table><tr>
             <td><label for="myCall" class="configLabel">My callsign:</label></td>
@@ -156,7 +156,7 @@
         <!--suppress HtmlFormInputWithoutLabel -->
         <input type="password" id="qrzPass" name="qrzPass" placeholder="Password" size="11">&nbsp;
         <button type="button" id="qrzLogin" name="qrzLogin">Log in</button>
-        <p id="qrzApiStatus"></p>
+        <div id="qrzApiStatus"></div>
     </div>
 
     <p style="text-align: right"><a class="closeButton" onClick="closeControls();"><i class="fa-solid fa-xmark"></i> Close</a></p>
