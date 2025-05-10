@@ -44,6 +44,8 @@ let failedLookupCount = 0;
 // Track whether we have tried to load something, and whether we are still loading. Used to control the status indicator.
 let loadedAtLeastOnce = false
 let loading = false;
+// My callsign
+let myCall;
 // Position of the grey home marker
 let qthPos = null;
 // Marker, geodesic line and grid square graphic references. The graphics themselves are added to the map but we also

@@ -55,32 +55,50 @@
            accept=".adi,.adif" /></label></p>
     <p id="loadingStatus"></p>
 
-    <h4 class="menu-heading">Basemap Options <span class="arrow">&#9654;</span></h4>
+
+    <h4 class="menu-heading">My Callsign & QTH <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
-        <label for="basemap">Basemap:</label>
-        <select id="basemap" class="configSelect">
-            <option value="Esri.NatGeoWorldMap" selected="selected">ESRI NatGeo World Map</option>
-            <option value="Esri.WorldTopoMap">ESRI World Topo Map</option>
-            <option value="Esri.WorldShadedRelief">ESRI World Shaded Relief</option>
-            <option value="Esri.WorldImagery">ESRI World Imagery</option>
-            <option value="OpenStreetMap.Mapnik">OpenStreetMap Mapnik</option>
-            <option value="CartoDB.Voyager">CartoDB Voyager</option>
-            <option value="CartoDB.DarkMatter">CartoDB DarkMatter</option>
-        </select><br/>
-        <label for="basemapOpacity">Opacity:</label>
-        <select id="basemapOpacity" class="configSelect" style="margin-left: 0.9em;">
-            <option value="1">100%</option>
-            <option value="0.75">75%</option>
-            <option value="0.5" selected="selected">50%</option>
-            <option value="0.25">25%</option>
-        </select>
+        <table><tr>
+            <td><label for="myCall" class="configLabel">My callsign:</label></td>
+            <td><input type="text" id="myCall" class="textBox" name="myCall" placeholder="N0CALL" size="8"></td>
+        </tr><tr>
+            <td><label for="qthGrid" class="configLabel" >My QTH grid:</label></td>
+            <td><input type="text" id="qthGrid" class="textBox" name="qthGrid" placeholder="AA00aa" size="8"></td>
+        </tr></table>
     </div>
 
 
-    <h4 class="menu-heading">Marker Options <span class="arrow">&#9654;</span></h4>
+    <h4 class="menu-heading">Basemaps <span class="arrow">&#9654;</span></h4>
+    <div class="menu-content">
+        <table><tr>
+            <td><label for="basemap">Basemap:</label></td>
+            <td><select id="basemap" class="configSelect">
+                <option value="Esri.NatGeoWorldMap" selected="selected">ESRI NatGeo World Map</option>
+                <option value="Esri.WorldTopoMap">ESRI World Topo Map</option>
+                <option value="Esri.WorldShadedRelief">ESRI World Shaded Relief</option>
+                <option value="Esri.WorldImagery">ESRI World Imagery</option>
+                <option value="OpenStreetMap.Mapnik">OpenStreetMap Mapnik</option>
+                <option value="CartoDB.Voyager">CartoDB Voyager</option>
+                <option value="CartoDB.DarkMatter">CartoDB DarkMatter</option>
+            </select></td>
+        </tr><tr>
+            <td><label for="basemapOpacity">Opacity:</label></td>
+            <td><select id="basemapOpacity" class="configSelect">
+                <option value="1">100%</option>
+                <option value="0.75">75%</option>
+                <option value="0.5" selected="selected">50%</option>
+                <option value="0.25">25%</option>
+            </select></td>
+        </tr></table>
+    </div>
+
+
+    <h4 class="menu-heading">Markers <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
         <label for="markersEnabled" class="configLabel">
             <input type="checkbox" id="markersEnabled" name="markersEnabled" checked="checked">&nbsp;Draw QSO markers</label><br/>
+        <label for="qthMarker" class="configLabel">
+            <input type="checkbox" id="qthMarker" name="qthMarker" checked="checked">&nbsp;Draw QTH marker</label><br/>
         <label for="bandColours" class="configLabel">
             <input type="checkbox" id="bandColours" name="bandColours" checked="checked">&nbsp;Colour according to band</label><br/>
         <label for="modeColours" class="configLabel">
@@ -94,16 +112,7 @@
     </div>
 
 
-    <h4 class="menu-heading">QTH Options <span class="arrow">&#9654;</span></h4>
-    <div class="menu-content">
-        <label for="qthMarker" class="configLabel">
-            <input type="checkbox" id="qthMarker" name="qthMarker" checked="checked">&nbsp;Draw QTH marker</label><br/>
-        <label for="qthGrid" class="configLabel" style="margin-left: 1.6em; margin-top: 0.2em;">QTH grid:&nbsp;
-            <input type="text" id="qthGrid" class="textBox" name="qthGrid" placeholder="AA00aa" size="6"></label>
-    </div>
-
-
-    <h4 class="menu-heading">Label Options <span class="arrow">&#9654;</span></h4>
+    <h4 class="menu-heading">Labels <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
         <label for="showCallsignLabels" class="configLabel">
             <input type="checkbox" id="showCallsignLabels" name="showCallsignLabels">&nbsp;Callsign labels</label><br/>
@@ -114,7 +123,7 @@
     </div>
 
 
-    <h4 class="menu-heading">Line Options <span class="arrow">&#9654;</span></h4>
+    <h4 class="menu-heading">Lines <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
         <label for="linesEnabled" class="configLabel">
             <input type="checkbox" id="linesEnabled" name="linesEnabled" checked="checked">&nbsp;Draw geodesic lines</label><br/>
@@ -125,7 +134,7 @@
     </div>
 
 
-    <h4 class="menu-heading">Grid Options <span class="arrow">&#9654;</span></h4>
+    <h4 class="menu-heading">Grids <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
         <label for="showMaidenheadGrid" class="configLabel">
             <input type="checkbox" id="showMaidenheadGrid" name="showMaidenheadGrid">&nbsp;Maidenhead grid</label><br/>
@@ -134,7 +143,7 @@
     </div>
 
 
-    <h4 class="menu-heading">Lookup Options <span class="arrow">&#9654;</span></h4>
+    <h4 class="menu-heading">Online Lookup <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
         <label for="queryQRZ" class="configLabel">
             <input type="checkbox" id="queryQRZ" name="queryQRZ">&nbsp;Look up missing info from QRZ.com</label><br/>

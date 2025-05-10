@@ -32,6 +32,10 @@ function setUpMap() {
     linesLayer = new L.LayerGroup();
     linesLayer.addTo(map);
 
+    // Add own position marker layer
+    ownPosLayer = new L.LayerGroup();
+    ownPosLayer.addTo(map);
+
     // Add gridsquares worked layer
     gridSquaresWorkedLayer = new L.LayerGroup();
     gridSquaresWorkedLayer.addTo(map);

@@ -19,6 +19,8 @@ function loadLocalStorage() {
     $("#basemap").val(tmpBbasemap);
     let tmpBasemapOpacity = localStorageGetOrDefault('basemapOpacity', basemapOpacity);
     $("#basemapOpacity").val(tmpBasemapOpacity);
+    let tmpMyCall = localStorageGetOrDefault('myCall', '');
+    $("#myCall").val(tmpMyCall);
     let tmpQthGrid = localStorageGetOrDefault('qthGrid', '');
     $("#qthGrid").val(tmpQthGrid);
     let tmpShowMaidenheadGrid = localStorageGetOrDefault('showMaidenheadGrid', showMaidenheadGrid);

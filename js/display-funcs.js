@@ -153,6 +153,16 @@ function getTooltipText(d) {
     return labelHTML;
 }
 
+// Get text for the permanent labels underneath the own QTH marker (referred to by Leaflet as a tooltip).
+function getOwnQTHTooltipText(callsign) {
+    let labelHTML = "<div style='color: " + (basemapIsDark ? "white" : "black") + "; text-align: center;'>";
+    if (showCallsignLabels) {
+        labelHTML += callsign;
+    }
+    labelHTML += "</div>";
+    return labelHTML;
+}
+
 
 // Gets the lat/long position for a data item's grid reference. Null is returned if the position
 // is unknown or 0,0. If the user QTH location has been provided, we adjust the longitude of the

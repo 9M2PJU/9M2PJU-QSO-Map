@@ -32,6 +32,8 @@ function updateModelFromUI() {
     enableMaidenheadGrid($("#showMaidenheadGrid").is(':checked'));
     markersEnabled = $("#markersEnabled").is(':checked');
     localStorage.setItem('markersEnabled', markersEnabled);
+    myCall = $("#myCall").val();
+    localStorage.setItem('myCall', JSON.stringify(myCall));
     qthMarker = $("#qthMarker").is(':checked');
     localStorage.setItem('qthMarker', qthMarker);
     linesEnabled = $("#linesEnabled").is(':checked');
@@ -78,6 +80,11 @@ $("#basemap").change(function() {
     updateModelFromUI();
 });
 $("#basemapOpacity").change(function() {
+    updateModelFromUI();
+});
+
+// Listen for callsign input
+$("#myCall").on("input", function() {
     updateModelFromUI();
 });
 

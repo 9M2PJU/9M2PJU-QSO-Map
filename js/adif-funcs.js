@@ -47,6 +47,7 @@ function loadAdif(text) {
 
             // In the content. Parse the QSOs
             let finishedFile = false;
+            let setStationCallsign = false;
             while (!finishedFile) {
                 let qsoData = new Map();
                 let finishedRecord = false;
@@ -81,6 +82,19 @@ function loadAdif(text) {
                     if (fieldName === "MY_GRIDSQUARE") {
                         $("#qthGrid").val(fieldValue.substring(0, 6));
                         updatePosFromGridInput();
+                    }
+
+                    // If we have STATION_CALLSIGN or OPERATOR, use it. Only use OPERATOR if we haven't already set
+                    // something from STATION_CALLSIGN, as that takes precedence.
+                    if (fieldName === "STATION_CALLSIGN") {
+                        myCall = fieldValue;
+                        $("#myCall").val(fieldValue);
+                        localStorage.setItem('myCall', JSON.stringify(myCall));
+                        setStationCallsign = true;
+                    } else if (fieldName === "OPERATOR" && !setStationCallsign) {
+                        myCall = fieldValue;
+                        $("#myCall").val(fieldValue);
+                        localStorage.setItem('myCall', JSON.stringify(myCall));
                     }
 
                     // Move the cursor ready for the next one

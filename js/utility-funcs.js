@@ -12,10 +12,6 @@ function setQTH(newPos) {
 
 // Create and apply the own position marker
 function createOwnPosMarker(newPos) {
-    if (ownPosLayer == null) {
-        ownPosLayer = new L.LayerGroup();
-        ownPosLayer.addTo(map);
-    }
     if (ownPosMarker != null) {
         ownPosLayer.removeLayer(ownPosMarker);
     }
@@ -32,6 +28,11 @@ function createOwnPosMarker(newPos) {
             }),
             autoPan: true
         });
+
+        if (showCallsignLabels && myCall) {
+            ownPosMarker.bindTooltip(getOwnQTHTooltipText(myCall), {permanent: true, direction: 'bottom', offset: L.point(0, -10)});
+        }
+
         ownPosLayer.addLayer(ownPosMarker);
     }
 }
