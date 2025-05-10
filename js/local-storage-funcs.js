@@ -33,6 +33,8 @@ function loadLocalStorage() {
     $("#linesEnabled").prop('checked', tmpLinesEnabled);
     let tmpGridSquaresEnabled = localStorageGetOrDefault('gridSquaresEnabled', gridSquaresEnabled);
     $("#gridSquaresEnabled").prop('checked', tmpGridSquaresEnabled);
+    let tmpLabelGridSquaresWorked = localStorageGetOrDefault('labelGridSquaresWorked', labelGridSquaresWorked);
+    $("#labelGridSquaresWorked").prop('checked', tmpLabelGridSquaresWorked);
     let tmpColourLines = localStorageGetOrDefault('colourLines', colourLines);
     $("#colourLines").prop('checked', tmpColourLines);
     let tmpThickLines = localStorageGetOrDefault('thickLines', thickLines);

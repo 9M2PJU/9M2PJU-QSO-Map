@@ -12,6 +12,8 @@ function updateMapObjects() {
     lines = [];
     gridSquares.forEach(square => gridSquaresWorkedLayer.removeLayer(square));
     gridSquares = new Map();
+    gridSquareLabels.forEach(label => gridSquaresWorkedLabelsLayer.removeLayer(label));
+    gridSquareLabels = [];
 
     // Add own position marker
     createOwnPosMarker(qthPos);
@@ -62,9 +64,19 @@ function updateMapObjects() {
                 let swCorner = latLonForGridSWCorner(fourDigitGrid);
                 let neCorner = latLonForGridNECorner(fourDigitGrid);
                 let square = L.rectangle([swCorner, neCorner], {color: 'blue'});
-                square.bindPopup(fourDigitGrid);
                 gridSquaresWorkedLayer.addLayer(square);
                 gridSquares.set(fourDigitGrid, square);
+
+                if (labelGridSquaresWorked) {
+                    let centre = latLonForGridCentre(fourDigitGrid);
+                    let label = new L.marker(centre, {
+                        icon: new L.DivIcon({
+                            html: "<div class='gridSquareLabel'>" + fourDigitGrid + "</div>",
+                        })
+                    });
+                    gridSquaresWorkedLabelsLayer.addLayer(label);
+                    gridSquareLabels.push(label);
+                }
             }
         }
     });

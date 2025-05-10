@@ -36,9 +36,11 @@ function setUpMap() {
     ownPosLayer = new L.LayerGroup();
     ownPosLayer.addTo(map);
 
-    // Add gridsquares worked layer
+    // Add gridsquares worked layers
     gridSquaresWorkedLayer = new L.LayerGroup();
     gridSquaresWorkedLayer.addTo(map);
+    gridSquaresWorkedLabelsLayer = new L.LayerGroup();
+    gridSquaresWorkedLabelsLayer.addTo(map);
 
     // Display a default view.
     map.setView([30, 0], 3);

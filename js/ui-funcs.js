@@ -40,6 +40,8 @@ function updateModelFromUI() {
     localStorage.setItem('linesEnabled', linesEnabled);
     gridSquaresEnabled = $("#gridSquaresEnabled").is(':checked');
     localStorage.setItem('gridSquaresEnabled', gridSquaresEnabled);
+    labelGridSquaresWorked = $("#labelGridSquaresWorked").is(':checked');
+    localStorage.setItem('labelGridSquaresWorked', labelGridSquaresWorked);
     colourLines = $("#colourLines").is(':checked');
     localStorage.setItem('colourLines', colourLines);
     thickLines = $("#thickLines").is(':checked');
@@ -113,6 +115,11 @@ $("#linesEnabled").change(function () {
 
 // Listen for grid squares worked enabled toggle
 $("#gridSquaresEnabled").change(function () {
+    updateModelFromUI();
+});
+
+// Listen for label grid squares worked enabled toggle
+$("#labelGridSquaresWorked").change(function () {
     updateModelFromUI();
 });
 
