@@ -56,6 +56,8 @@ function updateModelFromUI() {
     localStorage.setItem('outdoorSymbols', outdoorSymbols);
     showCallsignLabels = $("#showCallsignLabels").is(':checked');
     localStorage.setItem('showCallsignLabels', showCallsignLabels);
+    showGridSquareLabels = $("#showGridSquareLabels").is(':checked');
+    localStorage.setItem('showGridSquareLabels', showGridSquareLabels);
     showDistanceLabels = $("#showDistanceLabels").is(':checked');
     localStorage.setItem('showDistanceLabels', showDistanceLabels);
     distancesInMiles = $("#distancesInMiles").is(':checked');
@@ -66,13 +68,14 @@ function updateModelFromUI() {
 }
 
 function updatePosFromGridInput() {
-    let grid = $("#qthGrid").val().toUpperCase();
+    qthGrid = $("#qthGrid").val().toUpperCase();
+    localStorage.setItem('qthGrid', JSON.stringify(qthGrid));
+
     let pos = null;
-    if (/^[A-R]{2}[0-9]{2}([A-X]{2})?$/.test(grid)) {
-        pos = latLonForGridCentre(grid);
+    if (/^[A-R]{2}[0-9]{2}([A-X]{2})?$/.test(qthGrid)) {
+        pos = latLonForGridCentre(qthGrid);
     }
     setQTH(pos);
-    localStorage.setItem('qthGrid', JSON.stringify(grid));
 }
 
 // Listen for basemap & opacity changes
@@ -171,6 +174,11 @@ $("#showMaidenheadGrid").change(function () {
 
 // Show callsign labels
 $("#showCallsignLabels").change(function () {
+    updateModelFromUI();
+});
+
+// Show gridsquare labels
+$("#showGridSquareLabels").change(function () {
     updateModelFromUI();
 });
 

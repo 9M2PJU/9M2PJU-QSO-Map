@@ -29,8 +29,9 @@ function createOwnPosMarker(newPos) {
             autoPan: true
         });
 
-        if (showCallsignLabels && myCall) {
-            ownPosMarker.bindTooltip(getOwnQTHTooltipText(myCall), {permanent: true, direction: 'bottom', offset: L.point(0, -10)});
+        let tooltipText = getOwnQTHTooltipText();
+        if (tooltipText) {
+            ownPosMarker.bindTooltip(tooltipText, {permanent: true, direction: 'bottom', offset: L.point(0, -10)});
         }
 
         ownPosLayer.addLayer(ownPosMarker);
@@ -277,4 +278,16 @@ function getDistanceString(d) {
         }
     }
     return ret;
+}
+
+// Format a Maidenhead grid with alternating alphabetic blocks in lower case
+function formatGrid(grid) {
+    grid = grid.toUpperCase();
+    if (grid.length >= 6) {
+        grid = grid.substring(0, 4) + grid.substring(4, 6).toLowerCase() + grid.substring(6);
+    }
+    if (grid.length >= 12) {
+        grid = grid.substring(0, 10) + grid.substring(10, 12).toLowerCase() + grid.substring(14);
+    }
+    return grid;
 }

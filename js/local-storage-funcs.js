@@ -49,6 +49,8 @@ function loadLocalStorage() {
     $("#hybridMarkerSize").prop('checked', tmpHybridMarkerSize);
     let tmpShowCallsignLabels = localStorageGetOrDefault('showCallsignLabels', showCallsignLabels);
     $("#showCallsignLabels").prop('checked', tmpShowCallsignLabels);
+    let tmpShowGridSquareLabels = localStorageGetOrDefault('showGridSquareLabels', showGridSquareLabels);
+    $("#showGridSquareLabels").prop('checked', tmpShowGridSquareLabels);
     let tmpShowDistanceLabels = localStorageGetOrDefault('showDistanceLabels', showDistanceLabels);
     $("#showDistanceLabels").prop('checked', tmpShowDistanceLabels);
     let tmpDistancesInMiles = localStorageGetOrDefault('distancesInMiles', distancesInMiles);

@@ -28,8 +28,9 @@ function updateMapObjects() {
                 m.bindPopup(getPopupText(d));
 
                 // Create label under the marker
-                if (showCallsignLabels || showDistanceLabels) {
-                    m.bindTooltip(getTooltipText(d), {permanent: true, direction: 'bottom', offset: L.point(0, -10)});
+                let tooltipText = getTooltipText(d);
+                if (tooltipText) {
+                    m.bindTooltip(tooltipText, {permanent: true, direction: 'bottom', offset: L.point(0, -10)});
                 }
 
                 // Add to the map
@@ -117,7 +118,7 @@ function getPopupText(d) {
         text += displayQTH.replaceAll(" ", "&nbsp;") + ",&nbsp;";
     }
     if (d.grid) {
-        text += d.grid;
+        text += formatGrid(d.grid);
     }
     if (d.grid && qthPos) {
         text += "&nbsp;(" + getDistanceString(d) + ")";
@@ -139,28 +140,55 @@ function getPopupText(d) {
 
 // Get text for the permanent labels underneath the markers (referred to by Leaflet as tooltips)
 function getTooltipText(d) {
-    let labelHTML = "<div style='color: " + (basemapIsDark ? "white" : "black") + "; text-align: center;'>";
-    if (showCallsignLabels) {
-        labelHTML += d.call;
+    let showCall = showCallsignLabels && d.call;
+    let showGrid = showGridSquareLabels && d.grid;
+    let showDist = showDistanceLabels && d.grid;
+    let labelText = "";
+
+    if (showCall) {
+        labelText += d.call;
     }
-    if (showCallsignLabels && showDistanceLabels) {
-        labelHTML += "<br/>";
+    if (showGrid) {
+        if (labelText) {
+            labelText += "<br/>";
+        }
+        labelText += formatGrid(d.grid);
     }
-    if (showDistanceLabels) {
-        labelHTML += getDistanceString(d);
+    if (showDist) {
+        if (labelText) {
+            labelText += "<br/>";
+        }
+        labelText += getDistanceString(d);
     }
-    labelHTML += "</div>";
-    return labelHTML;
+
+    if (labelText) {
+        return "<div style='color: " + (basemapIsDark ? "white" : "black") + "; text-align: center;'>" + labelText + "</div>";
+    } else {
+        return "";
+    }
 }
 
 // Get text for the permanent labels underneath the own QTH marker (referred to by Leaflet as a tooltip).
-function getOwnQTHTooltipText(callsign) {
-    let labelHTML = "<div style='color: " + (basemapIsDark ? "white" : "black") + "; text-align: center;'>";
-    if (showCallsignLabels) {
-        labelHTML += callsign;
+function getOwnQTHTooltipText() {
+    let showCall = showCallsignLabels && myCall;
+    let showGrid = showGridSquareLabels && qthGrid;
+    let labelText = "";
+
+    if (showCall) {
+        labelText += myCall;
     }
-    labelHTML += "</div>";
-    return labelHTML;
+    if (showGrid) {
+        if (labelText) {
+            labelText += "<br/>";
+        }
+        labelText += formatGrid(qthGrid);
+    }
+
+    if (labelText) {
+        return "<div style='color: " + (basemapIsDark ? "white" : "black") + "; text-align: center;'>" + labelText + "</div>";
+    } else {
+        return "";
+    }
 }
 
 

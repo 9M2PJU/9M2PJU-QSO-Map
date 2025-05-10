@@ -47,7 +47,8 @@ let loading = false;
 // My callsign
 let myCall;
 // Position of the grey home marker
-let qthPos = null;
+let qthGrid;
+let qthPos;
 // Marker, geodesic line and grid square graphic references. The graphics themselves are added to the map but we also
 // keep them in these arrays so we can easily e.g. find them to remove them when we need to. Gridsquares is a map rather
 // than a list because we index by 4-digit square. Several QSOs can share the same square, so we use this to prevent
@@ -88,6 +89,7 @@ let outdoorSymbols = false;
 let hybridMarkerSize = false;
 let showMaidenheadGrid = false;
 let showCallsignLabels = false;
+let showGridSquareLabels = false;
 let showDistanceLabels = false;
 let distancesInMiles = false;
 let queryQRZ = false;

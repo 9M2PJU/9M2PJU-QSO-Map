@@ -80,7 +80,7 @@ function loadAdif(text) {
 
                     // If we have MY_GRIDSQUARE, use it
                     if (fieldName === "MY_GRIDSQUARE") {
-                        $("#qthGrid").val(fieldValue.substring(0, 6));
+                        $("#qthGrid").val(formatGrid(fieldValue.substring(0, 6)));
                         updatePosFromGridInput();
                     }
 
