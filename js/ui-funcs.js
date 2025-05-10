@@ -271,10 +271,10 @@ $("#qrzLogin").click(function() {
 // Open/close controls
 function openControls() {
     $("#menuButton").hide();
-    $("#controls").show();
+    $("#controls").show(100);
 }
 function closeControls() {
-    $("#controls").hide();
+    $("#controls").hide(100);
     $("#menuButton").show();
 }
 
