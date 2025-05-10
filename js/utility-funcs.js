@@ -2,15 +2,6 @@
 //    UTILITY FUNCTIONS    //
 /////////////////////////////
 
-// Utility to convert an object created by JSON.parse() into a proper JS map.
-function objectToMap(o) {
-    let m = new Map();
-    for (let k of Object.keys(o)) {
-        m.set(k, o[k]);
-    }
-    return m;
-}
-
 // Set the QTH location to the provided grid
 function setQTH(newPos) {
     // Store position
@@ -269,4 +260,20 @@ function getIconName(d) {
         // Outdoor activity icons not in use, and small icons not set, so use a circle symbol like a "standard" map marker.
         return "fa-circle"
     }
+}
+
+// Utility function to get the distance to a QSO's grid from your grid, in a format for displaying on screen.
+// If there is insufficient data, a blank string is returned.
+function getDistanceString(d) {
+    let ret = "";
+    if (d.grid && qthPos) {
+        let iconPos = getIconPosition(d);
+        let distanceMetres = L.GeometryUtil.length([new L.LatLng(qthPos[0], qthPos[1]), new L.LatLng(iconPos[0], iconPos[1])]);
+        if (distancesInMiles) {
+            ret = (distanceMetres / 1609.0).toFixed(0) + "&nbsp;mi";
+        } else {
+            ret = (distanceMetres / 1000.0).toFixed(0) + "&nbsp;km";
+        }
+    }
+    return ret;
 }

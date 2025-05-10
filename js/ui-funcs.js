@@ -52,8 +52,12 @@ function updateModelFromUI() {
     localStorage.setItem('hybridMarkerSize', hybridMarkerSize);
     outdoorSymbols = $("#outdoorSymbols").is(':checked');
     localStorage.setItem('outdoorSymbols', outdoorSymbols);
-    callsignLabels = $("#showCallsignLabels").is(':checked');
-    localStorage.setItem('callsignLabels', callsignLabels);
+    showCallsignLabels = $("#showCallsignLabels").is(':checked');
+    localStorage.setItem('showCallsignLabels', showCallsignLabels);
+    showDistanceLabels = $("#showDistanceLabels").is(':checked');
+    localStorage.setItem('showDistanceLabels', showDistanceLabels);
+    distancesInMiles = $("#distancesInMiles").is(':checked');
+    localStorage.setItem('distancesInMiles', distancesInMiles);
     queryQRZ = $("#queryQRZ").is(':checked');
     localStorage.setItem('queryQRZ', queryQRZ);
     updateMapObjects();
@@ -160,6 +164,16 @@ $("#showMaidenheadGrid").change(function () {
 
 // Show callsign labels
 $("#showCallsignLabels").change(function () {
+    updateModelFromUI();
+});
+
+// Show distance labels
+$("#showDistanceLabels").change(function () {
+    updateModelFromUI();
+});
+
+// Show distances in miles
+$("#distancesInMiles").change(function () {
     updateModelFromUI();
 });
 

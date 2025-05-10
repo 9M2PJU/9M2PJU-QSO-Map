@@ -33,6 +33,13 @@ label.configLabel {
     font-size: 14px;
 }
 
+.leaflet-tooltip {
+    line-height: 1em;
+}
+.leaflet-tooltip-bottom::before {
+    display: none;
+}
+
 /* Marker and popup styles */
 
 /*noinspection CssUnusedSymbol*/

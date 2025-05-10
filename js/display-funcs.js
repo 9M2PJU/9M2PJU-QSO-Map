@@ -23,11 +23,16 @@ function updateMapObjects() {
             // Add marker
             if (markersEnabled) {
                 let m = L.marker(pos, {icon: getIcon(d)});
-                m.bindPopup(getTooltipText(d));
-                if (callsignLabels) {
-                    m.bindTooltip("<span style='color: " + (basemapIsDark ? "white" : "black") + ";'>"
-                        + d.call + "</span>", {permanent: true, direction: 'center', offset: L.point(0, 10)});
+
+                // Create popup
+                m.bindPopup(getPopupText(d));
+
+                // Create label under the marker
+                if (showCallsignLabels || showDistanceLabels) {
+                    m.bindTooltip(getTooltipText(d), {permanent: true, direction: 'bottom', offset: L.point(0, -10)});
                 }
+
+                // Add to the map
                 markersLayer.addLayer(m);
                 markers.push(m);
 
@@ -92,8 +97,8 @@ function enableMaidenheadGrid(show) {
 //  QSO DISPLAY FUNCTIONS //
 /////////////////////////////
 
-// Tooltip text for the normal click-to-appear tooltips. Takes a data item that may contain multiple QSOs.
-function getTooltipText(d) {
+// Get text for the normal click-to-appear popups. Takes a data item that may contain multiple QSOs.
+function getPopupText(d) {
     let text = "<a href='https://www.qrz.com/db/" + d.call + "' target='_blank'><b>" + d.call + "</b></a>";
     if (d.name) {
         let displayName = d.name;
@@ -103,14 +108,21 @@ function getTooltipText(d) {
         text += "&nbsp;&nbsp;" + displayName.replaceAll(" ", "&nbsp;");
     }
     text += "<br/>"
+
     if (d.qth) {
         let displayQTH = d.qth;
         if (displayQTH.length > 30) {
-            displayQTH = displayQTH.substring(0, 26).trim() + "..."
+            displayQTH = displayQTH.substring(0, 22).trim() + "..."
         }
         text += displayQTH.replaceAll(" ", "&nbsp;") + ",&nbsp;";
     }
-    text += d.grid;
+    if (d.grid) {
+        text += d.grid;
+    }
+    if (d.grid && qthPos) {
+        text += "&nbsp;(" + getDistanceString(d) + ")";
+    }
+
     d.qsos.forEach(qso => {
         if (qso.freq) {
             text += "<br/>" + qso.freq.toFixed(3);
@@ -123,6 +135,22 @@ function getTooltipText(d) {
         }
     });
     return text;
+}
+
+// Get text for the permanent labels underneath the markers (referred to by Leaflet as tooltips)
+function getTooltipText(d) {
+    let labelHTML = "<div style='color: " + (basemapIsDark ? "white" : "black") + "; text-align: center;'>";
+    if (showCallsignLabels) {
+        labelHTML += d.call;
+    }
+    if (showCallsignLabels && showDistanceLabels) {
+        labelHTML += "<br/>";
+    }
+    if (showDistanceLabels) {
+        labelHTML += getDistanceString(d);
+    }
+    labelHTML += "</div>";
+    return labelHTML;
 }
 
 
