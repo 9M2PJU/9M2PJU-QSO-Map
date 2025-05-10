@@ -29,6 +29,14 @@ label.configLabel {
     white-space: nowrap;
 }
 
+/* Style for small info indicators */
+div#qsoFilterWaitingForLoad, div#loadingStatus, div#qrzApiStatus {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 0.8em;
+    text-align: center;
+}
+
 .leaflet-popup {
     font-size: 14px;
 }

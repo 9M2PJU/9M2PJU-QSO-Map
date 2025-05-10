@@ -147,11 +147,23 @@
     </div>
 
 
-    <!--h4 class="menu-heading">QSO Filters <span class="arrow">&#9654;</span></h4>
+    <h4 class="menu-heading">QSO Filters <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
         <div id="qsoFilterWaitingForLoad"><i class='fa-solid fa-triangle-exclamation'></i> Please load an ADIF file before applying filters</div>
-
-    </div-->
+        <table id="qsoFiltersTable"><tr>
+            <td><label for="filter-year">Year:</label></td>
+            <td><select id="filter-year" class="configSelect">
+            </select></td>
+        </tr><tr>
+            <td><label for="filter-mode">Mode:</label></td>
+            <td><select id="filter-mode" class="configSelect">
+            </select></td>
+        </tr><tr>
+            <td><label for="filter-band">Band:</label></td>
+            <td><select id="filter-band" class="configSelect">
+            </select></td>
+        </tr></table>
+    </div>
 
 
     <h4 class="menu-heading">Online Lookup <span class="arrow">&#9654;</span></h4>

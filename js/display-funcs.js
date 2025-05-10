@@ -21,7 +21,7 @@ function updateMapObjects() {
     // Iterate through qsos, creating markers
     data.forEach(function (d) {
         const pos = getIconPosition(d);
-        if (pos != null) {
+        if (anyQSOMatchesFilter(d) && pos != null) {
             // Add marker
             if (markersEnabled) {
                 let m = L.marker(pos, {icon: getIcon(d)});
@@ -136,7 +136,7 @@ function getPopupText(d) {
         text += "&nbsp;(" + getDistanceString(d) + ")";
     }
 
-    d.qsos.forEach(qso => {
+    getQSOsMatchingFilter(d).forEach(qso => {
         if (qso.freq) {
             text += "<br/>" + qso.freq.toFixed(3);
             if (qso.mode) {

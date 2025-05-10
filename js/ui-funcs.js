@@ -64,6 +64,15 @@ function updateModelFromUI() {
     localStorage.setItem('showDistanceLabels', showDistanceLabels);
     distancesInMiles = $("#distancesInMiles").is(':checked');
     localStorage.setItem('distancesInMiles', distancesInMiles);
+    if ($("#filter-year").val()) {
+        filterYear = $("#filter-year").val();
+    }
+    if ($("#filter-mode").val()) {
+        filterMode = $("#filter-mode").val();
+    }
+    if ($("#filter-band").val()) {
+        filterBand = $("#filter-band").val();
+    }
     queryQRZ = $("#queryQRZ").is(':checked');
     localStorage.setItem('queryQRZ', queryQRZ);
     updateMapObjects();
@@ -199,6 +208,17 @@ $("#distancesInMiles").change(function () {
     updateModelFromUI();
 });
 
+// Listen for filter changes
+$("#filter-year").change(function() {
+    updateModelFromUI();
+});
+$("#filter-band").change(function() {
+    updateModelFromUI();
+});
+$("#filter-mode").change(function() {
+    updateModelFromUI();
+});
+
 // Query missing info from QRZ.com
 $("#queryQRZ").change(function () {
     updateModelFromUI();
@@ -269,3 +289,34 @@ $(".menu-heading").click(function () {
         $(this).find(".arrow").html("&#9660;");
     }
 });
+
+// Populate the filter controls based on the years, bands and modes in the data we have loaded
+function populateFilterControls(years, bands, modes) {
+    $("#filter-year").empty();
+    $("#filter-year").append($("<option></option>").attr("value", "*").text("All years"));
+    // Years are sorted in reverse
+    Array.from(years).sort().reverse().forEach(function (y) {
+        $("#filter-year").append($("<option></option>").attr("value", y).text(y));
+    });
+
+    $("#filter-band").empty();
+    $("#filter-band").append($("<option></option>").attr("value", "*").text("All bands"));
+    // Bands are sorted according to the order they appear in our BANDS global
+    Array.from(bands).filter(b => b != null && b.length > 0)
+        .sort((a, b) => BANDS.findIndex((band) => band.name === a) - BANDS.findIndex((band) => band.name === b)).forEach(function (b) {
+        $("#filter-band").append($("<option></option>").attr("value", b).text(b));
+    });
+
+    $("#filter-mode").empty();
+    $("#filter-mode").append($("<option></option>").attr("value", "*").text("All modes"));
+    // Modes are sorted alphabetically
+    Array.from(modes).filter(m => m.length > 0).sort().forEach(function (m) {
+        $("#filter-mode").append($("<option></option>").attr("value", m).text(m));
+    });
+}
+
+// Clear the lookup queue, cancelling any pending requests.
+function clearQueue() {
+    failedLookupCount += queue.length;
+    queue = [];
+}

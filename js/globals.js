@@ -95,4 +95,7 @@ let showCallsignLabels = false;
 let showGridSquareLabels = false;
 let showDistanceLabels = false;
 let distancesInMiles = false;
+let filterYear = "*";
+let filterMode = "*";
+let filterBand = "*";
 let queryQRZ = false;

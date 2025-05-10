@@ -48,11 +48,7 @@ input#fileSelect {
     width: 17em;
 }
 
-/* Hide loading status until we have something to put in there */
-div#loadingStatus, div#qrzApiStatus {
+/* Hide certain elements until we have something to put in there */
+div#loadingStatus, div#qrzApiStatus, table#qsoFiltersTable {
     display: none;
-    margin-top: 0;
-    margin-bottom: 0;
-    font-size: 0.8em;
-    text-align: center;
 }

@@ -36,9 +36,17 @@ function loadAdif(text) {
     loading = true;
     loadedAtLeastOnce = true;
     let cursor = 0;
+    let years = new Set();
+    let bands = new Set();
+    let modes = new Set();
 
     setTimeout(function () {
         try {
+            // Temporary values to help us track progress
+            let finishedFile = false;
+            let setStationCallsign = false;
+            let setStationGrid = false;
+
             // Find the end of the header and the start of actual records
             while (text.substring(cursor, cursor + 5).toUpperCase() !== "<EOH>") {
                 cursor += 1;
@@ -46,9 +54,6 @@ function loadAdif(text) {
             cursor += 5;
 
             // In the content. Parse the QSOs
-            let finishedFile = false;
-            let setStationCallsign = false;
-            let setStationGrid = false;
             while (!finishedFile) {
                 let qsoData = new Map();
                 let finishedRecord = false;
@@ -97,12 +102,19 @@ function loadAdif(text) {
                     }
                     if (qsoData.has("FREQ")) {
                         qso.freq = parseFloat(qsoData.get("FREQ"));
+                        qso.band = freqToBandName(qso.freq);
+                        bands.add(qso.band);
                     }
                     if (qsoData.has("MODE")) {
                         qso.mode = qsoData.get("MODE");
+                        modes.add(qso.mode);
                     }
                     if (qsoData.has("QSO_DATE") && qsoData.has("TIME_ON")) {
                         qso.time = moment.utc(qsoData.get("QSO_DATE") + qsoData.get("TIME_ON").substring(0, 4), "YYYYMMDDHHmm");
+                    }
+                    if (qsoData.has("QSO_DATE")) {
+                        qso.year = parseInt(qsoData.get("QSO_DATE").substring(0, 4));
+                        years.add(qso.year);
                     }
                     if (qsoData.has("SIG")) {
                         qso.program = qsoData.get("SIG");
@@ -155,8 +167,10 @@ function loadAdif(text) {
             zoomToFit();
 
             // Populate the filter controls
+            populateFilterControls(years, bands, modes);
             // Remove the warning about loading an ADIF before applying filters
             $("#qsoFilterWaitingForLoad").hide();
+            $("#qsoFiltersTable").show();
 
         } catch (e) {
             console.error(e);
@@ -281,6 +295,11 @@ function updateStatus() {
             }
         } else {
             statusText += "<i class=\"fa-solid fa-triangle-exclamation\"></i> Failed to parse QSOs in this file";
+        }
+
+        // Abort option
+        if (queue.length > 0 && qrzToken) {
+            statusText += "&nbsp;&nbsp;<a href='#' onClick='clearQueue();'>Cancel</a>";
         }
 
         $("#loadingStatus").html(statusText);

@@ -128,14 +128,14 @@ function latLonForGridSWCornerPlusSize(grid) {
 // If there would be multiple colours, purple is used.
 function qsoToColour(d) {
     let qsoColours = [];
-    d.qsos.forEach((qso) => {
+    getQSOsMatchingFilter(d).forEach((qso) => {
         if (bandColours) {
             let found = false;
             for (band of BANDS) {
-                let f = parseFloat(qso.freq);
-                if (f >= band.startFreq && f <= band.stopFreq) {
+                if (qso.band === band.name) {
                     qsoColours.push(band.color);
                     found = true;
+                    break;
                 }
             }
             if (!found) {
@@ -171,14 +171,14 @@ function qsoToColour(d) {
 // otherwise returns white.
 function qsoToContrastColor(d) {
     let qsoColours = [];
-    d.qsos.forEach((qso) => {
+    getQSOsMatchingFilter(d).forEach((qso) => {
         if (bandColours) {
             let found = false;
-            let f = parseFloat(qso.freq);
             for (band of BANDS) {
-                if (f >= band.startFreq && f <= band.stopFreq) {
+                if (qso.band === band.name) {
                     qsoColours.push(band.contrastColor);
                     found = true;
+                    break;
                 }
             }
             if (!found) {
@@ -215,7 +215,7 @@ function getIconName(d) {
     if (outdoorSymbols) {
         // Outdoor activity symbols in use, so figure out what they are for each QSO.
         let qsoIcons = [];
-        d.qsos.forEach((qso) => {
+        getQSOsMatchingFilter(d).forEach((qso) => {
             if (qso.program && qso.program.length > 0) {
                 let program = qso.program;
                 if (program === "POTA") {
@@ -290,4 +290,31 @@ function formatGrid(grid) {
         grid = grid.substring(0, 10) + grid.substring(10, 12).toLowerCase() + grid.substring(14);
     }
     return grid;
+}
+
+// Takes a frequency and determines which band it belongs to, returned as a string.
+// Null is returned if the frequency is null, invalid, or outside the ham bands.
+function freqToBandName(f) {
+    for (band of BANDS) {
+        if (f >= band.startFreq && f <= band.stopFreq) {
+            return band.name;
+        }
+    }
+    return null;
+}
+
+// Return true if the QSO matches the current filter, false otherwise.
+function qsoMatchesFilter(qso) {
+    return (filterYear === "*" ||  qso.year === parseInt(filterYear)) && (filterMode === "*" || qso.mode === filterMode)
+        && (filterBand === "*" || qso.band === filterBand);
+}
+
+// Return any QSOs in this data object that match the current filter.
+function getQSOsMatchingFilter(d) {
+    return d.qsos.filter(q => qsoMatchesFilter(q));
+}
+
+// Return true if any QSO in this data object matches the current filter, false otherwise.
+function anyQSOMatchesFilter(d) {
+    return getQSOsMatchingFilter(d).length > 0;
 }
