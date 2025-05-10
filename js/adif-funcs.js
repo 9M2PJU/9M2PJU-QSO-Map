@@ -48,6 +48,7 @@ function loadAdif(text) {
             // In the content. Parse the QSOs
             let finishedFile = false;
             let setStationCallsign = false;
+            let setStationGrid = false;
             while (!finishedFile) {
                 let qsoData = new Map();
                 let finishedRecord = false;
@@ -77,25 +78,6 @@ function loadAdif(text) {
 
                     // Populate QSO field
                     qsoData.set(fieldName, fieldValue);
-
-                    // If we have MY_GRIDSQUARE, use it
-                    if (fieldName === "MY_GRIDSQUARE") {
-                        $("#qthGrid").val(formatGrid(fieldValue.substring(0, 6)));
-                        updatePosFromGridInput();
-                    }
-
-                    // If we have STATION_CALLSIGN or OPERATOR, use it. Only use OPERATOR if we haven't already set
-                    // something from STATION_CALLSIGN, as that takes precedence.
-                    if (fieldName === "STATION_CALLSIGN") {
-                        myCall = fieldValue;
-                        $("#myCall").val(fieldValue);
-                        localStorage.setItem('myCall', JSON.stringify(myCall));
-                        setStationCallsign = true;
-                    } else if (fieldName === "OPERATOR" && !setStationCallsign) {
-                        myCall = fieldValue;
-                        $("#myCall").val(fieldValue);
-                        localStorage.setItem('myCall', JSON.stringify(myCall));
-                    }
 
                     // Move the cursor ready for the next one
                     cursor = closeBracketPos + 1 + fieldLength;
@@ -143,12 +125,38 @@ function loadAdif(text) {
                     // Increment counter
                     qsoCount++;
                 }
+
+                // Go through the data and apply the station's callsign and gridsquare if we have the data.
+                if (!setStationGrid && qsoData.has("MY_GRIDSQUARE")) {
+                    $("#qthGrid").val(formatGrid(qsoData.get("MY_GRIDSQUARE").substring(0, 6)));
+                    updatePosFromGridInput();
+                    setStationGrid = true;
+                }
+                // If we have STATION_CALLSIGN or OPERATOR, use it. Only use OPERATOR if we haven't already set
+                // something from STATION_CALLSIGN, as that takes precedence.
+                if (!setStationCallsign) {
+                    if (qsoData.has("STATION_CALLSIGN")) {
+                        myCall = qsoData.get("STATION_CALLSIGN");
+                        $("#myCall").val(myCall);
+                        localStorage.setItem('myCall', JSON.stringify(myCall));
+                        setStationCallsign = true;
+                    } else if (qsoData.has("OPERATOR")) {
+                        myCall = qsoData.get("OPERATOR");
+                        $("#myCall").val(myCall);
+                        localStorage.setItem('myCall', JSON.stringify(myCall));
+                        setStationCallsign = true;
+                    }
+                }
             }
 
             // Update the map
             updateMapObjects();
             // Zoom the map to fit the markers
             zoomToFit();
+
+            // Populate the filter controls
+            // Remove the warning about loading an ADIF before applying filters
+            $("#qsoFilterWaitingForLoad").hide();
 
         } catch (e) {
             console.error(e);
