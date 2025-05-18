@@ -82,11 +82,10 @@ function updatePosFromGridInput() {
     qthGrid = $("#qthGrid").val().toUpperCase();
     localStorage.setItem('qthGrid', JSON.stringify(qthGrid));
 
-    let pos = null;
-    if (/^[A-R]{2}[0-9]{2}([A-X]{2})?$/.test(qthGrid)) {
-        pos = latLonForGridCentre(qthGrid);
+    let pos = latLonForGridCentre(qthGrid);
+    if (pos != null) {
+        setQTH(pos);
     }
-    setQTH(pos);
 }
 
 // Listen for basemap & opacity changes

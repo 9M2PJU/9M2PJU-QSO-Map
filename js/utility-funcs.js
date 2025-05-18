@@ -39,26 +39,42 @@ function createOwnPosMarker(newPos) {
 }
 
 // Convert a Maidenhead grid reference of arbitrary precision to the lat/long of the southwest corner of the square.
+// Returns null if the grid format is invalid.
 function latLonForGridSWCorner(grid) {
-    [lat, lon, latCellSize, lonCellSize] = latLonForGridSWCornerPlusSize(grid);
-    return [lat, lon];
+    let [lat, lon, latCellSize, lonCellSize] = latLonForGridSWCornerPlusSize(grid);
+    if (lat != null && lon != null) {
+        return [lat, lon];
+    } else {
+        return null;
+    }
 }
 
 // Convert a Maidenhead grid reference of arbitrary precision to the lat/long of the northeast corner of the square.
+// Returns null if the grid format is invalid.
 function latLonForGridNECorner(grid) {
-    [lat, lon, latCellSize, lonCellSize] = latLonForGridSWCornerPlusSize(grid);
-    return [lat + latCellSize, lon + lonCellSize];
+    let [lat, lon, latCellSize, lonCellSize] = latLonForGridSWCornerPlusSize(grid);
+    if (lat != null && lon != null && latCellSize != null && lonCellSize != null) {
+        return [lat + latCellSize, lon + lonCellSize];
+    } else {
+        return null;
+    }
 }
 
 // Convert a Maidenhead grid reference of arbitrary precision to the lat/long of the centre point of the square.
+// Returns null if the grid format is invalid.
 function latLonForGridCentre(grid) {
-    [lat, lon, latCellSize, lonCellSize] = latLonForGridSWCornerPlusSize(grid);
-    return [lat + latCellSize / 2.0, lon + lonCellSize / 2.0];
+    let [lat, lon, latCellSize, lonCellSize] = latLonForGridSWCornerPlusSize(grid);
+    if (lat != null && lon != null && latCellSize != null && lonCellSize != null) {
+        return [lat + latCellSize / 2.0, lon + lonCellSize / 2.0];
+    } else {
+        return null;
+    }
 }
 
 // Convert a Maidenhead grid reference of arbitrary precision to lat/long, including in the result the size of the
 // lowest grid square. This is a utility method used by the main methods that return the centre, southwest, and
 // northeast coordinates of a grid square.
+// The return type is always an array of size 4. The elements in it are null if the grid format is invalid.
 function latLonForGridSWCornerPlusSize(grid) {
     // Make sure we are in upper case so our maths works. Case is arbitrary for Maidenhead references
     grid = grid.toUpperCase();
@@ -66,7 +82,7 @@ function latLonForGridSWCornerPlusSize(grid) {
     // Return null if our Maidenhead string is invalid or too short
     let len = grid.length;
     if (len <= 0 || (len % 2) !== 0) {
-        return null;
+        return [null, null, null, null];
     }
 
     let lat = 0.0; // aggregated latitude
@@ -86,7 +102,7 @@ function latLonForGridSWCornerPlusSize(grid) {
             // A-X (0-23) thereafter.
             let maxCellNo = (block === 0) ? 17 : 23;
             if (latCellNo < 0 || latCellNo > maxCellNo || lonCellNo < 0 || lonCellNo > maxCellNo) {
-                return null;
+                return [null, null, null, null];
             }
         } else {
             // Numbers in this block
@@ -94,7 +110,7 @@ function latLonForGridSWCornerPlusSize(grid) {
             latCellNo = parseInt(grid.charAt(block * 2 + 1));
             // Bail if the values aren't in range 0-9..
             if (latCellNo < 0 || latCellNo > 9 || lonCellNo < 0 || lonCellNo > 9) {
-                return null;
+                return [null, null, null, null];
             }
         }
 
@@ -120,6 +136,11 @@ function latLonForGridSWCornerPlusSize(grid) {
     // Offset back to (-180, -90) where the grid starts
     lon -= 180.0;
     lat -= 90.0;
+
+    // Return nulls on maths errors
+    if (isNaN(lat) || isNaN(lon) || isNaN(latCellSize) ||  isNaN(lonCellSize)) {
+        return [null, null, null, null];
+    }
 
     return [lat, lon, latCellSize, lonCellSize];
 }
