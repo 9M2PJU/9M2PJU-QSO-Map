@@ -64,6 +64,10 @@ function updateModelFromUI() {
     localStorage.setItem('showDistanceLabels', showDistanceLabels);
     distancesInMiles = $("#distancesInMiles").is(':checked');
     localStorage.setItem('distancesInMiles', distancesInMiles);
+    showComments = $("#showComments").is(':checked');
+    localStorage.setItem('showComments', showComments);
+    inferOutdoorActivitiesFromComments = $("#inferOutdoorActivitiesFromComments").is(':checked');
+    localStorage.setItem('inferOutdoorActivitiesFromComments', inferOutdoorActivitiesFromComments);
     if ($("#filter-year").val()) {
         filterYear = $("#filter-year").val();
     }
@@ -204,6 +208,16 @@ $("#showDistanceLabels").change(function () {
 
 // Show distances in miles
 $("#distancesInMiles").change(function () {
+    updateModelFromUI();
+});
+
+// Listen for show comments toggle
+$("#showComments").change(function () {
+    updateModelFromUI();
+});
+
+// Listen for infer outdoor activities from comments toggle
+$("#inferOutdoorActivitiesFromComments").change(function () {
     updateModelFromUI();
 });
 

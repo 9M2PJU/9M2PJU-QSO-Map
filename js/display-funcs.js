@@ -146,6 +146,9 @@ function getPopupText(d) {
         if (qso.time) {
             text += "&nbsp;&nbsp; &nbsp;&nbsp;" + qso.time.format("HH:mm DD/MM/YYYY");
         }
+        if (qso.comment && showComments) {
+            text += "<br/>&nbsp;&nbsp;&nbsp;" + qso.comment;
+        }
     });
     return text;
 }
