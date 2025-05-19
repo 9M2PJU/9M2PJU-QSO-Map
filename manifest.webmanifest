@@ -1,0 +1,22 @@
+{
+    "dir": "ltr",
+    "lang": "English",
+    "name": "ADIF Map Tool",
+    "short_name": "ADIF Map Tool",
+    "scope": "/",
+    "display": "standalone",
+    "start_url": "https://adifmap.m0trt.radio/",
+    "background_color": "white",
+    "theme_color": "white",
+    "description": "A tool for plotting the contents of an ADIF file on a map.",
+    "related_applications": [],
+    "prefer_related_applications": false,
+    "icons": [
+    {
+      "src": "/img/favicon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "url": "https://adifmap.m0trt.radio"
+}
