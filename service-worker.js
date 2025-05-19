@@ -1,4 +1,4 @@
-const CACHE_NAME = 'Field Spotter';
+const CACHE_NAME = 'ADIF Map Tool';
 const CACHE_URLS = [
   'index.html',
   './',
