@@ -21,6 +21,10 @@ const BANDS = [
     {name: "13cm", startFreq: 2300.0, stopFreq: 2450.0, color: "#FF7F50", contrastColor: "black"}];
 const QRZ_API_BASE_URL = "https://xmldata.qrz.com/xml/current/";
 const QRZ_AGENT = "M0TRT_QSO_Map_v1.0";
+const POTA_PARK_BASE_URL = "https://api.pota.app/park/";
+const SOTA_SUMMIT_BASE_URL = "https://api-db2.sota.org.uk/api/summits/";
+const WWBOTA_BUNKER_BASE_URL = "https://api.wwbota.org/bunkers/";
+const GMA_REF_BASE_URL = "https://www.cqgma.org/api/ref/?";
 
 /////////////////////////////
 //      DATA STORAGE       //

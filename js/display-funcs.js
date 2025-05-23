@@ -127,7 +127,7 @@ function getPopupText(d) {
         if (displayQTH.length > 30) {
             displayQTH = displayQTH.substring(0, 22).trim() + "..."
         }
-        text += displayQTH.replaceAll(" ", "&nbsp;") + ",&nbsp;";
+        text += displayQTH.replaceAll(" ", "&nbsp;") + ", ";
     }
     if (d.grid) {
         text += formatGrid(d.grid);
