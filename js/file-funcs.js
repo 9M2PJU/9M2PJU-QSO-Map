@@ -1,10 +1,10 @@
 /////////////////////////////
-//   ADIF LOAD FUNCTIONS   //
+//   FILE LOAD FUNCTIONS   //
 /////////////////////////////
 
 // Put a QSO into the main data map. It must have a callsign and grid at this point. This can be called either from
-// loadAdif() if the QSO is fully populated in ADIF, or from processQSOFromQueue() if the QSO was in the queue and we
-// now have a lookup successfully returning a grid.
+// loadFile() if the QSO is fully populated in the file, or from processQSOFromQueue() if the QSO was in the queue and
+// we now have a lookup successfully returning a grid.
 function putQSOIntoDataMap(qso) {
     // The data map is keyed by "CALL-GRID" so we do not duplicate the combination. If there has not
     // been a QSO with this combination before, we need to create it; we also add the "call", "grid"
@@ -40,8 +40,8 @@ function clearData() {
     modes = new Set();
 }
 
-// Given the text of an adif file, populate the qsos map.
-function loadAdif(text) {
+// Given the text of a supported log file, populate the qsos map.
+function loadFile(text) {
     // Figure out if we are appending to any previously loaded data, or replacing it, in which case call clearData().
     if (!appendOnLoad) {
         clearData();
@@ -142,7 +142,7 @@ function loadAdif(text) {
 
                     if (qso.grid) {
                         // If the QSO has a grid, we can put it straight into the data map and it will be displayed immediately
-                        // once we have finished parsing the ADIF.
+                        // once we have finished parsing the file.
                         putQSOIntoDataMap(qso);
                     } else {
                         // The QSO has no grid, so we need to look it up. We place it in a queue, it will be dealt with
@@ -184,7 +184,7 @@ function loadAdif(text) {
 
             // Populate the filter controls
             populateFilterControls(years, bands, modes);
-            // Remove the warning about loading an ADIF before applying filters
+            // Remove the warning about loading a file before applying filters
             $("#qsoFilterWaitingForLoad").hide();
             $("#qsoFiltersTable").show();
 

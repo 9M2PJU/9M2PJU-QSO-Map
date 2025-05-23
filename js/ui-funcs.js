@@ -15,7 +15,7 @@ $("#fileSelect").change(function () {
     const reader = new FileReader();
     reader.addEventListener(
         "load",
-        () => loadAdif(reader.result),
+        () => loadFile(reader.result),
         false,
     );
     if (file) {

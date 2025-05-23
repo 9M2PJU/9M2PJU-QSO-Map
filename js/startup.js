@@ -5,9 +5,9 @@
 // Set up map
 setUpMap();
 
-// Restore previous values and clear the ADIF file selector.
+// Clear the file selector.
 $("#fileSelect").val("");
-// Add a hort delay before we load the rest of the UI control settings into the model,
+// Add a short delay before we load the rest of the UI control settings into the model,
 // to remove some issues with the ExtraMarkers library having an asynchronous load.
 setTimeout(function () {
     loadLocalStorage();

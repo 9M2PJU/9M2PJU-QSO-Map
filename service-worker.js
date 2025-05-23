@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ADIF Map Tool';
+const CACHE_NAME = 'QSO Map Tool';
 const CACHE_URLS = [
   'index.html',
   './',
@@ -7,7 +7,7 @@ const CACHE_URLS = [
   'css/style.css',
   'css/mobile.css',
   'js/globals.js',
-  'js/adif-funcs.js',
+  'js/file-funcs.js',
   'js/display-funcs.js',
   'js/utility-funcs.js',
   'js/map-setup-funcs.js',

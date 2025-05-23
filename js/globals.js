@@ -20,7 +20,7 @@ const BANDS = [
     {name: "23cm", startFreq: 1240.0, stopFreq: 1325.0, color: "#5AB8C7", contrastColor: "black"},
     {name: "13cm", startFreq: 2300.0, stopFreq: 2450.0, color: "#FF7F50", contrastColor: "black"}];
 const QRZ_API_BASE_URL = "https://xmldata.qrz.com/xml/current/";
-const QRZ_AGENT = "M0TRT_ADIF_Map_v1.0";
+const QRZ_AGENT = "M0TRT_QSO_Map_v1.0";
 
 /////////////////////////////
 //      DATA STORAGE       //
@@ -37,7 +37,7 @@ let queue = [];
 // A map of callsign to data we looked up from QRZ.com. Used so that we don't re-query QRZ again for a call we have
 // already seen.
 let lookupData = new Map();
-// Count of all QSOs loaded from the ADIF
+// Count of all QSOs loaded from file(s)
 let qsoCount = 0;
 // Count of all QSOs we tried but failed to look up. Used for status reporting.
 let failedLookupCount = 0;
