@@ -10,7 +10,7 @@ Use it at [https://qsomap.m0trt.radio](https://qsomap.m0trt.radio).
 
 ### Features
 
-* Load ADIF files (other file formats coming soon)
+* Load ADIF & SOTA CSV files (other file formats coming soon)
 * Combine data from multiple files
 * Configurable base maps
 * Configurable icons, including POTA/SOTA/etc. symbols

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/adif-map.iml" filepath="$PROJECT_DIR$/.idea/adif-map.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/qsomap.iml" filepath="$PROJECT_DIR$/.idea/qsomap.iml" />
     </modules>
   </component>
 </project>

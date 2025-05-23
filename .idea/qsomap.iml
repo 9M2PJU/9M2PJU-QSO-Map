@@ -19,5 +19,6 @@
     <orderEntry type="library" name="leaflet-geometryutil" level="application" />
     <orderEntry type="library" name="leaflet.geodesic" level="application" />
     <orderEntry type="library" name="L.Maidenhead" level="application" />
+    <orderEntry type="library" name="jquery-csv" level="application" />
   </component>
 </module>

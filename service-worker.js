@@ -7,7 +7,7 @@ const CACHE_URLS = [
   'css/style.css',
   'css/mobile.css',
   'js/globals.js',
-  'js/file-funcs.js',
+  'js/data-funcs.js',
   'js/display-funcs.js',
   'js/utility-funcs.js',
   'js/map-setup-funcs.js',
