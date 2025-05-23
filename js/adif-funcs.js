@@ -27,19 +27,32 @@ function putQSOIntoDataMap(qso) {
     }
 }
 
-// Given the text of an adif file, populate the qsos map.
-function loadAdif(text) {
+// Clear the main "data" map, queue, associated counters, and our tracking of what years/bands/modes we have loaded.
+// Called from the Clear button or before loading a new data file if we are in Replace rather than Append mode.
+function clearData() {
     data = new Map();
     queue = [];
     qsoCount = 0;
     failedLookupCount = 0;
+    loadedAtLeastOnce = false;
+    years = new Set();
+    bands = new Set();
+    modes = new Set();
+}
+
+// Given the text of an adif file, populate the qsos map.
+function loadAdif(text) {
+    // Figure out if we are appending to any previously loaded data, or replacing it, in which case call clearData().
+    if (!appendOnLoad) {
+        clearData();
+    }
+    // Set variables to tell the UI that we are loading
     loading = true;
     loadedAtLeastOnce = true;
+    // Reset the cursor to the start of the file
     let cursor = 0;
-    let years = new Set();
-    let bands = new Set();
-    let modes = new Set();
 
+    // Run the file loading task in a new thread.
     setTimeout(function () {
         try {
             // Temporary values to help us track progress
@@ -307,5 +320,7 @@ function updateStatus() {
 
         $("#loadingStatus").html(statusText);
         $("#loadingStatus").show();
+    } else {
+        $("#loadingStatus").hide();
     }
 }

@@ -59,7 +59,17 @@
     <div id="loadingStatus"></div>
 
 
-    <h4 class="menu-heading" style="margin-top: 1em">My Callsign & QTH <span class="arrow">&#9654;</span></h4>
+    <h4 class="menu-heading" style="margin-top: 1em">File Loading Behaviour <span class="arrow">&#9654;</span></h4>
+    <div class="menu-content">
+        <label for="replaceOnLoad" class="configLabel">
+            <input type="radio" id="replaceOnLoad" class="loadBehaviourControl" name="loadBehaviour" checked="checked">&nbsp;Replace existing QSOs</label><br/>
+        <label for="appendOnLoad" class="configLabel">
+            <input type="radio" id="appendOnLoad" class="loadBehaviourControl" name="loadBehaviour">&nbsp;Add to existing QSOs</label><br/>
+        <button type="button" id="clearQSOs" name="clearQSOs" style="margin-left: 1.8em; margin-top: 0.2em;">Clear existing QSOs</button>
+    </div>
+
+
+    <h4 class="menu-heading">My Callsign & QTH <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
         <table><tr>
             <td><label for="myCall" class="configLabel">My callsign:</label></td>

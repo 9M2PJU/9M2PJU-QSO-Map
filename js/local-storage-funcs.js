@@ -15,6 +15,9 @@ function localStorageGetOrDefault(key, defaultVal) {
 
 // Load from local storage and set GUI up appropriately
 function loadLocalStorage() {
+    let tmpAppendOnLoad = localStorageGetOrDefault('appendOnLoad', appendOnLoad);
+    appendOnLoad = tmpAppendOnLoad;
+    $("#appendOnLoad").prop('checked', tmpAppendOnLoad);
     let tmpBbasemap = localStorageGetOrDefault('basemap', basemap);
     $("#basemap").val(tmpBbasemap);
     let tmpBasemapOpacity = localStorageGetOrDefault('basemapOpacity', basemapOpacity);

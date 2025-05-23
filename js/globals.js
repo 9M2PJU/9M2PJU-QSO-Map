@@ -69,12 +69,17 @@ let ownPosMarker;
 let maidenheadGrid;
 // Session token for QRZ.com lookups
 let qrzToken;
+// Tracker for how many years, bands and modes we have in our data set.
+let years = new Set();
+let bands = new Set();
+let modes = new Set();
 
 
 /////////////////////////////
 //  UI CONFIGURABLE VARS   //
 /////////////////////////////
 
+let appendOnLoad = false;
 let basemap = "Esri.NatGeoWorldMap";
 let basemapOpacity = 0.5;
 let basemapIsDark = false;

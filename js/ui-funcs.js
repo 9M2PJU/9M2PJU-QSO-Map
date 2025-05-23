@@ -88,6 +88,18 @@ function updatePosFromGridInput() {
     }
 }
 
+// Handle switching between append and replace existing QSOs on load
+$(".loadBehaviourControl").change(function () {
+    appendOnLoad = $("#appendOnLoad").is(':checked');
+    localStorage.setItem('appendOnLoad', appendOnLoad);
+});
+
+// Handle clearing existing QSOs
+$("#clearQSOs").click(function () {
+    clearData();
+    updateMapObjects();
+});
+
 // Listen for toggle changes where another should be toggled off when this is toggled on. These are called before the
 // generic binding to .control so that their action happens before updateModelFromUI gets called.
 $("#bandColours").change(function () {
