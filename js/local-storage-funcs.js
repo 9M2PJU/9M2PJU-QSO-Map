@@ -57,6 +57,10 @@ function loadLocalStorage() {
     $("#showDistanceLabels").prop('checked', tmpShowDistanceLabels);
     let tmpDistancesInMiles = localStorageGetOrDefault('distancesInMiles', distancesInMiles);
     $("#distancesInMiles").prop('checked', tmpDistancesInMiles);
+    let tmpShowComments = localStorageGetOrDefault('showComments', showComments);
+    $("#showComments").prop('checked', tmpShowComments);
+    let tmpInferOutdoorActivitiesFromComments = localStorageGetOrDefault('inferOutdoorActivitiesFromComments', inferOutdoorActivitiesFromComments);
+    $("#inferOutdoorActivitiesFromComments").prop('checked', tmpInferOutdoorActivitiesFromComments);
     let tmpQueryQRZ = localStorageGetOrDefault('queryQRZ', queryQRZ);
     $("#queryQRZ").prop('checked', tmpQueryQRZ);
     let tmpQrzUser = localStorageGetOrDefault('qrzUser', '');

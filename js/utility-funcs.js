@@ -237,6 +237,7 @@ function getIconName(d) {
         // Outdoor activity symbols in use, so figure out what they are for each QSO.
         let qsoIcons = [];
         getQSOsMatchingFilter(d).forEach((qso) => {
+            // First, see if the QSO has a "program" set.
             if (qso.program && qso.program.length > 0) {
                 let program = qso.program;
                 if (program === "POTA") {
@@ -258,13 +259,41 @@ function getIconName(d) {
                 } else if (program === "MOTA") {
                     qsoIcons.push("fa-fan");
                 } else {
+                    // A program was set but not one we recognise, so show a question mark
+                    qsoIcons.push("fa-question");
+                }
+
+            } else if (inferOutdoorActivitiesFromComments && qso.comment && qso.comment.length > 0) {
+                // Now if we are allowed to infer outdoor activities from comments, parse the comments for anything useful
+                let comment = qso.comment.toUpperCase();
+                if (comment.includes("POTA") || comment.includes("P2P") || comment.includes("PARK")) {
+                    qsoIcons.push("fa-tree");
+                } else if (comment.includes("SOTA") || comment.includes("S2S") || comment.includes("SUMMIT")) {
+                    qsoIcons.push("fa-mountain-sun");
+                } else if (comment.includes("WWFF")) {
+                    qsoIcons.push("fa-seedling");
+                } else if (comment.includes("GMA")) {
+                    qsoIcons.push("fa-person-hiking");
+                } else if (comment.includes("BOTA") || comment.includes("BUNKER")) {
+                    qsoIcons.push("fa-radiation");
+                } else if (comment.includes("IOTA") || comment.includes("ISLAND")) {
+                    qsoIcons.push("fa-umbrella-beach");
+                } else if (comment.includes("WCA") || comment.includes("CASTLE")) {
+                    qsoIcons.push("fa-chess-rook");
+                } else if (comment.includes("ALHRS") || comment.includes("LIGHTHOUSE")) {
+                    qsoIcons.push("fa-tower-observation");
+                } else if (comment.includes("MOTA") || comment.includes("MILL")) {
+                    qsoIcons.push("fa-fan");
+                } else {
                     qsoIcons.push("fa-crosshairs");
                 }
             } else if (hybridMarkerSize) {
-                // This is a QSO with a hunter, and we have hybrid size turned on, so this will be a small marker, and we want no icon.
+                // No outdoor activity program could be inferred. Since "show activity symbols" is on, we assume we were portable, so
+                // this is a QSO with a hunter, and we have hybrid size turned on, so this will be a small marker, and we want no icon.
                 qsoIcons.push("fa-none");
             } else {
-                // This is a QSO with a hunter, and we don't have hybrid size on, so use crosshairs symbol.
+                // No outdoor activity program could be inferred. Since "show activity symbols" is on, we assume we were portable, so
+                // this is a QSO with a hunter, and we don't have hybrid size on, so use crosshairs symbol.
                 qsoIcons.push("fa-crosshairs");
             }
         });

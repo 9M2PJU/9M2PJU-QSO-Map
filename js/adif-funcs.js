@@ -123,6 +123,9 @@ function loadAdif(text) {
                             qso.qth = qsoData.get("SIG") + " " + qsoData.get("SIG_INFO");
                         }
                     }
+                    if (qsoData.has("COMMENT")) {
+                        qso.comment = qsoData.get("COMMENT");
+                    }
 
                     if (qso.grid) {
                         // If the QSO has a grid, we can put it straight into the data map and it will be displayed immediately

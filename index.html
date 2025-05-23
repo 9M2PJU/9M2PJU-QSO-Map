@@ -44,8 +44,11 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet.geodesic"></script>
     <script src="https://ha8tks.github.io/Leaflet.Maidenhead/src/L.Maidenhead.js"></script>
 
-    <link rel="alternate icon" type="image/png" href="img/favicon.png">
+    <link rel="icon" type="image/png" href="img/favicon.png">
     <link rel="alternate icon" type="image/png" href="img/favicon-32.png">
+    <link rel="alternate icon" type="image/png" href="img/favicon-192.png">
+    <link rel="apple-touch-icon" type="image/png" href="img/favicon-192.png">
+    <link rel="manifest" href="manifest.webmanifest">
 </head>
 <body>
 <div id="controls">
@@ -144,6 +147,15 @@
             <input type="checkbox" id="gridSquaresEnabled" class="control" name="gridSquaresEnabled">&nbsp;Draw worked grid squares</label><br/>
         <label for="labelGridSquaresWorked" class="configLabel">
             <input type="checkbox" id="labelGridSquaresWorked" class="control" name="labelGridSquaresWorked">&nbsp;Label worked grid squares</label>
+    </div>
+
+
+    <h4 class="menu-heading">Comments <span class="arrow">&#9654;</span></h4>
+    <div class="menu-content">
+        <label for="showComments" class="configLabel">
+            <input type="checkbox" id="showComments" name="showComments">&nbsp;Show ADIF comments in popups</label><br/>
+        <label for="inferOutdoorActivitiesFromComments" class="configLabel">
+            <input type="checkbox" id="inferOutdoorActivitiesFromComments" name="inferOutdoorActivitiesFromComments">&nbsp;Infer outdoor activity from comment</label>
     </div>
 
 
