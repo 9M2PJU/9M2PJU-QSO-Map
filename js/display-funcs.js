@@ -112,22 +112,15 @@ function enableMaidenheadGrid(show) {
 
 // Get text for the normal click-to-appear popups. Takes a data item that may contain multiple QSOs.
 function getPopupText(d) {
-    let text = "<a href='https://www.qrz.com/db/" + d.call + "' target='_blank'><b>" + d.call + "</b></a>";
+    let text = "<span style='display:inline-block; white-space: nowrap;'><i class='fa-solid fa-user markerPopupIcon'></i>&nbsp;<span class='popupBlock'><a href='https://www.qrz.com/db/" + d.call + "' target='_blank'><b>" + d.call + "</b></a>";
     if (d.name) {
-        let displayName = d.name;
-        if (displayName.length > 30) {
-            displayName = displayName.substring(0, 26).trim() + "..."
-        }
-        text += "&nbsp;&nbsp;" + displayName.replaceAll(" ", "&nbsp;");
+        text += "&nbsp;&nbsp;" + d.name;
     }
-    text += "<br/>"
+    text += "</span></span><br/>"
 
+    text += "<span style='display:inline-block; white-space: nowrap;'><i class='fa-solid fa-location-dot markerPopupIcon'></i>&nbsp;<span class='popupBlock'>";
     if (d.qth) {
-        let displayQTH = d.qth;
-        if (displayQTH.length > 30) {
-            displayQTH = displayQTH.substring(0, 22).trim() + "..."
-        }
-        text += displayQTH.replaceAll(" ", "&nbsp;") + ", ";
+        text += d.qth + ", ";
     }
     if (d.grid) {
         text += formatGrid(d.grid);
@@ -135,19 +128,26 @@ function getPopupText(d) {
     if (d.grid && qthPos) {
         text += "&nbsp;(" + getDistanceString(d) + ")";
     }
+    text += "</span></span>"
 
     getQSOsMatchingFilter(d).forEach(qso => {
+        if (qso.freq || qso.time || (qso.comment && showComments)) {
+            text += "<br/><span style='display:inline-block; white-space: nowrap;'><i class='fa-solid fa-comment markerPopupIcon'></i>&nbsp;<span class='popupBlock'>";
+        }
         if (qso.freq) {
-            text += "<br/>" + qso.freq.toFixed(3);
+            text += qso.freq.toFixed(3);
             if (qso.mode) {
                 text += "&nbsp;MHz&nbsp;&nbsp;" + qso.mode;
             }
         }
         if (qso.time) {
-            text += "&nbsp;&nbsp; &nbsp;&nbsp;" + qso.time.format("HH:mm DD/MM/YYYY");
+            text += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + qso.time.format("HH:mm[&nbsp;UTC,&nbsp;]DD[&nbsp;]MMM[&nbsp;]YYYY");
         }
         if (qso.comment && showComments) {
             text += "<br/>&nbsp;&nbsp;&nbsp;" + qso.comment;
+        }
+        if (qso.freq || qso.time || (qso.comment && showComments)) {
+            text += "</span></span>";
         }
     });
     return text;
