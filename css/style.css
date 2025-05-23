@@ -30,11 +30,15 @@ label.configLabel {
 }
 
 /* Style for small info indicators */
-div#qsoFilterWaitingForLoad, div#loadingStatus, div#qrzApiStatus {
-    margin-top: 0;
+div#qsoFilterMessage, div#loadingStatus, div#qrzApiStatus {
+    margin-top: 0.1em;
     margin-bottom: 0;
     font-size: 0.8em;
-    text-align: center;
+}
+
+/* Style for small info indicators */
+div#qsoFilterMessage {
+    margin-bottom: 0.3em;
 }
 
 .leaflet-popup {

@@ -118,18 +118,44 @@ function loadADIF(text) {
         // something from STATION_CALLSIGN, as that takes precedence.
         if (!setStationCallsign) {
             if (qsoData.has("STATION_CALLSIGN")) {
-                myCall = qsoData.get("STATION_CALLSIGN");
-                $("#myCall").val(myCall);
-                localStorage.setItem('myCall', JSON.stringify(myCall));
+                setMyCall(qsoData.get("STATION_CALLSIGN"));
                 setStationCallsign = true;
             } else if (qsoData.has("OPERATOR")) {
-                myCall = qsoData.get("OPERATOR");
-                $("#myCall").val(myCall);
-                localStorage.setItem('myCall', JSON.stringify(myCall));
+                setMyCall(qsoData.get("OPERATOR"));
                 setStationCallsign = true;
             }
         }
     }
+}
+
+// Loads Cabrillo content
+function loadCabrillo(text) {
+    var lines = text.split(/\r?\n|\r|\n/g);
+    lines.forEach(line => {
+        if (line.startsWith("CALLSIGN:")) {
+            setMyCall(line.substring(10));
+        }
+
+        if (line.startsWith("QSO:")) {
+            let parts = line.split(/\s+/);
+            let qso = {
+                call: parts[8],
+                freq: parseFloat(parts[1]) / 1000.0,
+                mode: parts[2],
+                time: moment.utc(parts[3] + " " + parts[4], "YYYY-MM-DD HHmm"),
+                year: parseInt(parts[3].substring(0, 4))
+            };
+
+            qso.band = freqToBandName(qso.freq);
+            bands.add(qso.band);
+            modes.add(qso.mode);
+            years.add(qso.year);
+
+            // There are no grids in Cabrillo data, so we will have to add the QSO to the lookup queue.
+            queue.push(qso);
+            qsoCount++;
+        }
+    });
 }
 
 // Loads SOTA CSV content
@@ -140,9 +166,7 @@ function loadSOTACSV(text) {
     csvData = $.csv.toArrays(text);
     csvData.forEach(row => {
         if (!setStationCallsign) {
-            myCall = row[1];
-            $("#myCall").val(myCall);
-            localStorage.setItem('myCall', JSON.stringify(myCall));
+            setMyCall(row[1]);
             setStationCallsign = true;
         }
 
@@ -177,11 +201,8 @@ function loadSOTACSV(text) {
             years.add(qso.year);
         }
 
-        // There are no grids in SOTA data, so we will have to add the QSO to the lookup queue. Currently this will fetch
-        // the operator's home QTH or whatever they have set in QRZ - see #27 for SOTA (and other) program lookups.
+        // There are no grids in SOTA data, so we will have to add the QSO to the lookup queue.
         queue.push(qso);
-
-        // Increment counter
         qsoCount++;
     });
 }
@@ -203,6 +224,9 @@ function loadFile(text) {
             if (text.substring(0, 4) === "ADIF") {
                 loadADIF(text);
                 lastLoadTypeRecognised = true;
+            } else if (text.substring(0, 13) === "START-OF-LOG:") {
+                loadCabrillo(text);
+                lastLoadTypeRecognised = true;
             } else if (text.substring(0, 3) === "V2,") {
                 loadSOTACSV(text);
                 lastLoadTypeRecognised = true;
@@ -219,7 +243,7 @@ function loadFile(text) {
                 // Populate the filter controls
                 populateFilterControls(years, bands, modes);
                 // Remove the warning about loading a file before applying filters
-                $("#qsoFilterWaitingForLoad").hide();
+                $("#qsoFilterMessage").text("The list of available filters is based on the contents of your log.");
                 $("#qsoFiltersTable").show();
             }
         } catch (e) {

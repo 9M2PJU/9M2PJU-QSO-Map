@@ -249,3 +249,10 @@ function clearQueue() {
     failedLookupCount += queue.length;
     queue = [];
 }
+
+// Set my callsign and save to local storage.
+function setMyCall(call) {
+    myCall = call;
+    $("#myCall").val(myCall);
+    localStorage.setItem('myCall', JSON.stringify(myCall));
+}

@@ -38,6 +38,5 @@ function clearData() {
     years = new Set();
     bands = new Set();
     modes = new Set();
-    $("#qsoFilterWaitingForLoad").show();
     $("#qsoFiltersTable").hide();
 }

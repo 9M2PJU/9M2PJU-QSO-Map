@@ -10,8 +10,8 @@ Use it at [https://qsomap.m0trt.radio](https://qsomap.m0trt.radio).
 
 ### Features
 
-* Load ADIF & SOTA CSV files (other file formats coming soon)
-* Combine data from multiple files
+* Load ADIF, Cabrillo & SOTA CSV files
+* Combine data from multiple files of any type
 * Configurable base maps
 * Configurable icons, including POTA/SOTA/etc. symbols
 * Maidenhead grid map with worked grid highlighting
@@ -24,6 +24,6 @@ For upcoming features, see the [issues backlog](https://github.com/ianrenton/qso
 
 ### Privacy
 
-All the code for the QSO map runs locally in your browser, so your data file "uploads" don't leave your computer. If you enter your QRZ.com username and password to use the lookup service, the credentials are sent to QRZ.com via HTTPS, which encrypts them in transit. The callsigns of your QSO partners are also sent. The POTA, SOTA etc. APIs may also be queried for the grid square of any references in your logs; this does not include your QSO partners' callsigns.
+All the code for the QSO map runs locally in your browser, so your log file "uploads" don't leave your computer. If you enter your QRZ.com username and password to use the lookup service, the credentials are sent to QRZ.com via HTTPS, which encrypts them in transit. The callsigns of your QSO partners are also sent. The POTA, SOTA etc. APIs may also be queried for the grid square of any references in your logs; this does not include your QSO partners' callsigns.
 
 The website itself does not use cookies, is not monetised, does not contain advertising, and does not receive or store any user data. It is open source and the code is released into the Public Domain.

@@ -286,7 +286,7 @@ function updateStatus() {
         if (loading) {
             statusText += "Loading...";
         } else if (!lastLoadTypeRecognised) {
-            statusText += "Could not parse this file as a supported format (ADIF or SOTA CSV)"
+            statusText += "Could not parse this file as a supported format (ADIF, Cabrillo or SOTA CSV)"
         } else if (qsoCount > 0) {
             if (queue.length === 0 && failedLookupCount === 0) {
                 statusText += "Loaded and displayed " + qsoCount + " QSOs.";
@@ -311,8 +311,5 @@ function updateStatus() {
         }
 
         $("#loadingStatus").html(statusText);
-        $("#loadingStatus").show();
-    } else {
-        $("#loadingStatus").hide();
     }
 }

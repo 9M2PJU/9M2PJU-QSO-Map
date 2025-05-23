@@ -48,7 +48,13 @@ input#fileSelect {
     width: 17em;
 }
 
+/* Style for things in the controls menu that are indented from the left by the width of a checkbox, to make them line
+up with a checkbox's accompanying label. */
+.indentControl {
+    margin-left: 1.8em;
+}
+
 /* Hide certain elements until we have something to put in there */
-div#loadingStatus, div#qrzApiStatus, table#qsoFiltersTable {
+div#qrzApiStatus, table#qsoFiltersTable {
     display: none;
 }

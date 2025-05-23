@@ -56,8 +56,8 @@
     <h1 id="title">QSO Map Tool</h1>
     <p id="subtitle">By <a href="https://ianrenton.com" target="_blank">Ian Renton MØTRT</a> | <a href="https://github.com/ianrenton/qsomap/blob/main/README.md" target="_blank">About</a> | <a href="https://github.com/ianrenton/qsomap" target="_blank">Source Code</a></p>
     <div><label for="fileSelect" class="configLabel">Log file:&nbsp;<input type="file" id="fileSelect"
-           accept=".adi,.adif,.csv" /></label></div>
-    <div id="loadingStatus"></div>
+           accept=".adi,.adif,.csv,.cbr,.log,.txt" /></label></div>
+    <div id="loadingStatus">ADIF, Cabrillo and SOTA CSV files are supported.</div>
 
 
     <h4 class="menu-heading" style="margin-top: 1em">File Loading Behaviour <span class="arrow">&#9654;</span></h4>
@@ -66,7 +66,7 @@
             <input type="radio" id="replaceOnLoad" class="loadBehaviourControl" name="loadBehaviour" checked="checked">&nbsp;Replace existing QSOs</label><br/>
         <label for="appendOnLoad" class="configLabel">
             <input type="radio" id="appendOnLoad" class="loadBehaviourControl" name="loadBehaviour">&nbsp;Add to existing QSOs</label><br/>
-        <button type="button" id="clearQSOs" name="clearQSOs" style="margin-left: 1.8em; margin-top: 0.2em;">Clear existing QSOs</button>
+        <button type="button" id="clearQSOs" name="clearQSOs" class="indentControl" style="margin-top: 0.2em;">Clear existing QSOs</button>
     </div>
 
 
@@ -172,7 +172,7 @@
 
     <h4 class="menu-heading">QSO Filters <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
-        <div id="qsoFilterWaitingForLoad"><i class='fa-solid fa-triangle-exclamation'></i> Please load a file before applying filters</div>
+        <div id="qsoFilterMessage"><i class='fa-solid fa-triangle-exclamation'></i> Please load a file before applying filters.</div>
         <table id="qsoFiltersTable"><tr>
             <td><label for="filter-year">Year:</label></td>
             <td><select id="filter-year" class="control configSelect">
@@ -196,11 +196,11 @@
         <label for="queryQRZ" class="configLabel">
             <input type="checkbox" id="queryQRZ" class="control" name="queryQRZ">&nbsp;Look up missing info from QRZ.com</label><br/>
         <!--suppress HtmlFormInputWithoutLabel -->
-        <input type="text" id="qrzUser" name="qrzUser" placeholder="Username" size="8" style="margin-left: 1.8em;">&nbsp;
+        <input type="text" id="qrzUser" name="qrzUser" placeholder="Username" size="8" class="indentControl">&nbsp;
         <!--suppress HtmlFormInputWithoutLabel -->
         <input type="password" id="qrzPass" name="qrzPass" placeholder="Password" size="11">&nbsp;
         <button type="button" id="qrzLogin" name="qrzLogin">Log in</button>
-        <div id="qrzApiStatus"></div>
+        <div id="qrzApiStatus" class="indentControl"></div>
     </div>
 
     <p style="text-align: right"><a class="closeButton" onClick="closeControls();"><i class="fa-solid fa-xmark"></i> Close</a></p>
