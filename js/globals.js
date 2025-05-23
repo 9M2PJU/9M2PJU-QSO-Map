@@ -110,4 +110,5 @@ let inferOutdoorActivitiesFromComments = false;
 let filterYear = "*";
 let filterMode = "*";
 let filterBand = "*";
+let queryXOTA = true;
 let queryQRZ = false;

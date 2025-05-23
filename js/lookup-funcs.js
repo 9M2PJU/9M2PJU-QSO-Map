@@ -141,7 +141,7 @@ function processQSOFromQueue() {
         let qso = queue.pop();
         // We have something in the queue. First see if it has a POTA/SOTA/WWBOTA reference; we can then query the
         // appropriate API for the details.
-        if (qso.program && qso.ref && qso.ref.length > 0) {
+        if (queryXOTA && qso.program && qso.ref && qso.ref.length > 0) {
             if (qso.program === "POTA") {
                 performPOTALookup(qso);
             } else if (qso.program === "SOTA") {

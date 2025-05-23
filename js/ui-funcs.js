@@ -73,6 +73,8 @@ function updateModelFromUI() {
     if ($("#filter-band").val()) {
         filterBand = $("#filter-band").val();
     }
+    queryXOTA = $("#queryXOTA").is(':checked');
+    localStorage.setItem('queryXOTA', queryXOTA);
     queryQRZ = $("#queryQRZ").is(':checked');
     localStorage.setItem('queryQRZ', queryQRZ);
     updateMapObjects();

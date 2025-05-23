@@ -64,6 +64,8 @@ function loadLocalStorage() {
     $("#showComments").prop('checked', tmpShowComments);
     let tmpInferOutdoorActivitiesFromComments = localStorageGetOrDefault('inferOutdoorActivitiesFromComments', inferOutdoorActivitiesFromComments);
     $("#inferOutdoorActivitiesFromComments").prop('checked', tmpInferOutdoorActivitiesFromComments);
+    let tmpQueryXOTA = localStorageGetOrDefault('queryXOTA', queryXOTA);
+    $("#queryXOTA").prop('checked', tmpQueryXOTA);
     let tmpQueryQRZ = localStorageGetOrDefault('queryQRZ', queryQRZ);
     $("#queryQRZ").prop('checked', tmpQueryQRZ);
     let tmpQrzUser = localStorageGetOrDefault('qrzUser', '');
