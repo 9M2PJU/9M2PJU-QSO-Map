@@ -60,10 +60,10 @@
     <div class="menu-content">
         <table><tr>
             <td><label for="myCall" class="configLabel">My callsign:</label></td>
-            <td><input type="text" id="myCall" class="textBox" name="myCall" placeholder="N0CALL" size="8"></td>
+            <td><input type="text" id="myCall" class="textControl textBox" name="myCall" placeholder="N0CALL" size="8"></td>
         </tr><tr>
             <td><label for="qthGrid" class="configLabel" >My QTH grid:</label></td>
-            <td><input type="text" id="qthGrid" class="textBox" name="qthGrid" placeholder="AA00aa" size="8"></td>
+            <td><input type="text" id="qthGrid" class="textControl textBox" name="qthGrid" placeholder="AA00aa" size="8"></td>
         </tr></table>
     </div>
 
@@ -72,7 +72,7 @@
     <div class="menu-content">
         <table><tr>
             <td><label for="basemap">Basemap:</label></td>
-            <td><select id="basemap" class="configSelect">
+            <td><select id="basemap" class="control configSelect">
                 <option value="Esri.NatGeoWorldMap" selected="selected">ESRI NatGeo World Map</option>
                 <option value="Esri.WorldTopoMap">ESRI World Topo Map</option>
                 <option value="Esri.WorldShadedRelief">ESRI World Shaded Relief</option>
@@ -83,7 +83,7 @@
             </select></td>
         </tr><tr>
             <td><label for="basemapOpacity">Opacity:</label></td>
-            <td><select id="basemapOpacity" class="configSelect">
+            <td><select id="basemapOpacity" class="control configSelect">
                 <option value="1">100%</option>
                 <option value="0.75">75%</option>
                 <option value="0.5" selected="selected">50%</option>
@@ -96,54 +96,54 @@
     <h4 class="menu-heading">Markers <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
         <label for="markersEnabled" class="configLabel">
-            <input type="checkbox" id="markersEnabled" name="markersEnabled" checked="checked">&nbsp;Draw QSO markers</label><br/>
+            <input type="checkbox" id="markersEnabled" class="control" name="markersEnabled" checked="checked">&nbsp;Draw QSO markers</label><br/>
         <label for="qthMarker" class="configLabel">
-            <input type="checkbox" id="qthMarker" name="qthMarker" checked="checked">&nbsp;Draw QTH marker</label><br/>
+            <input type="checkbox" id="qthMarker" class="control" name="qthMarker" checked="checked">&nbsp;Draw QTH marker</label><br/>
         <label for="bandColours" class="configLabel">
-            <input type="checkbox" id="bandColours" name="bandColours" checked="checked">&nbsp;Colour according to band</label><br/>
+            <input type="checkbox" id="bandColours" class="control" name="bandColours" checked="checked">&nbsp;Colour according to band</label><br/>
         <label for="modeColours" class="configLabel">
-            <input type="checkbox" id="modeColours" name="modeColours">&nbsp;Colour according to mode</label><br/>
+            <input type="checkbox" id="modeColours" class="control" name="modeColours">&nbsp;Colour according to mode</label><br/>
         <label for="smallMarkers" class="configLabel">
-            <input type="checkbox" id="smallMarkers" name="smallMarkers">&nbsp;Small markers</label><br/>
+            <input type="checkbox" id="smallMarkers" class="control" name="smallMarkers">&nbsp;Small markers</label><br/>
         <label for="outdoorSymbols" class="configLabel">
-            <input type="checkbox" id="outdoorSymbols" name="outdoorSymbols">&nbsp;xOTA activity symbols</label><br/>
+            <input type="checkbox" id="outdoorSymbols" class="control" name="outdoorSymbols">&nbsp;xOTA activity symbols</label><br/>
         <label for="hybridMarkerSize" class="configLabel">
-            <input type="checkbox" id="hybridMarkerSize" name="hybridMarkerSize">&nbsp;xOTA markers large, hunters small</label>
+            <input type="checkbox" id="hybridMarkerSize" class="control" name="hybridMarkerSize">&nbsp;xOTA markers large, hunters small</label>
     </div>
 
 
     <h4 class="menu-heading">Marker Labels <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
         <label for="showCallsignLabels" class="configLabel">
-            <input type="checkbox" id="showCallsignLabels" name="showCallsignLabels">&nbsp;Callsign labels</label><br/>
+            <input type="checkbox" id="showCallsignLabels" class="control" name="showCallsignLabels">&nbsp;Callsign labels</label><br/>
         <label for="showGridSquareLabels" class="configLabel">
-            <input type="checkbox" id="showGridSquareLabels" name="showGridSquareLabels">&nbsp;Grid square labels</label><br/>
+            <input type="checkbox" id="showGridSquareLabels" class="control" name="showGridSquareLabels">&nbsp;Grid square labels</label><br/>
         <label for="showDistanceLabels" class="configLabel">
-            <input type="checkbox" id="showDistanceLabels" name="showDistanceLabels">&nbsp;Distance labels</label><br/>
+            <input type="checkbox" id="showDistanceLabels" class="control" name="showDistanceLabels">&nbsp;Distance labels</label><br/>
         <label for="distancesInMiles" class="configLabel">
-            <input type="checkbox" id="distancesInMiles" name="distancesInMiles">&nbsp;Distances in miles</label>
+            <input type="checkbox" id="distancesInMiles" class="control" name="distancesInMiles">&nbsp;Distances in miles</label>
     </div>
 
 
     <h4 class="menu-heading">Lines <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
         <label for="linesEnabled" class="configLabel">
-            <input type="checkbox" id="linesEnabled" name="linesEnabled" checked="checked">&nbsp;Draw geodesic lines</label><br/>
+            <input type="checkbox" id="linesEnabled" class="control" name="linesEnabled" checked="checked">&nbsp;Draw geodesic lines</label><br/>
         <label for="colourLines" class="configLabel">
-            <input type="checkbox" id="colourLines" name="colourLines" checked="checked">&nbsp;Coloured lines</label><br/>
+            <input type="checkbox" id="colourLines" class="control" name="colourLines" checked="checked">&nbsp;Coloured lines</label><br/>
         <label for="thickLines" class="configLabel">
-            <input type="checkbox" id="thickLines" name="thickLines" checked="checked">&nbsp;Thick lines</label>
+            <input type="checkbox" id="thickLines" class="control" name="thickLines" checked="checked">&nbsp;Thick lines</label>
     </div>
 
 
     <h4 class="menu-heading">Maidenhead Grid <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
         <label for="showMaidenheadGrid" class="configLabel">
-            <input type="checkbox" id="showMaidenheadGrid" name="showMaidenheadGrid">&nbsp;Maidenhead grid layer</label><br/>
+            <input type="checkbox" id="showMaidenheadGrid" class="control" name="showMaidenheadGrid">&nbsp;Maidenhead grid layer</label><br/>
         <label for="gridSquaresEnabled" class="configLabel">
-            <input type="checkbox" id="gridSquaresEnabled" name="gridSquaresEnabled">&nbsp;Draw worked grid squares</label><br/>
+            <input type="checkbox" id="gridSquaresEnabled" class="control" name="gridSquaresEnabled">&nbsp;Draw worked grid squares</label><br/>
         <label for="labelGridSquaresWorked" class="configLabel">
-            <input type="checkbox" id="labelGridSquaresWorked" name="labelGridSquaresWorked">&nbsp;Label worked grid squares</label>
+            <input type="checkbox" id="labelGridSquaresWorked" class="control" name="labelGridSquaresWorked">&nbsp;Label worked grid squares</label>
     </div>
 
 
@@ -152,15 +152,15 @@
         <div id="qsoFilterWaitingForLoad"><i class='fa-solid fa-triangle-exclamation'></i> Please load an ADIF file before applying filters</div>
         <table id="qsoFiltersTable"><tr>
             <td><label for="filter-year">Year:</label></td>
-            <td><select id="filter-year" class="configSelect">
+            <td><select id="filter-year" class="control configSelect">
             </select></td>
         </tr><tr>
             <td><label for="filter-mode">Mode:</label></td>
-            <td><select id="filter-mode" class="configSelect">
+            <td><select id="filter-mode" class="control configSelect">
             </select></td>
         </tr><tr>
             <td><label for="filter-band">Band:</label></td>
-            <td><select id="filter-band" class="configSelect">
+            <td><select id="filter-band" class="control configSelect">
             </select></td>
         </tr></table>
     </div>
@@ -169,7 +169,7 @@
     <h4 class="menu-heading">Online Lookup <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
         <label for="queryQRZ" class="configLabel">
-            <input type="checkbox" id="queryQRZ" name="queryQRZ">&nbsp;Look up missing info from QRZ.com</label><br/>
+            <input type="checkbox" id="queryQRZ" class="control" name="queryQRZ">&nbsp;Look up missing info from QRZ.com</label><br/>
         <!--suppress HtmlFormInputWithoutLabel -->
         <input type="text" id="qrzUser" name="qrzUser" placeholder="Username" size="8" style="margin-left: 1.8em;">&nbsp;
         <!--suppress HtmlFormInputWithoutLabel -->

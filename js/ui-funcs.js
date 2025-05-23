@@ -88,71 +88,17 @@ function updatePosFromGridInput() {
     }
 }
 
-// Listen for basemap & opacity changes
-$("#basemap").change(function() {
-    updateModelFromUI();
-});
-$("#basemapOpacity").change(function() {
-    updateModelFromUI();
-});
-
-// Listen for callsign input
-$("#myCall").on("input", function() {
-    updateModelFromUI();
-});
-
-// Listen for QTH grid input
-$("#qthGrid").on("input", function() {
-    updateModelFromUI();
-});
-
-// Listen for markers enabled toggle
-$("#markersEnabled").change(function () {
-    updateModelFromUI();
-});
-
-// Listen for QTH marker toggle
-$("#qthMarker").change(function () {
-    updateModelFromUI();
-});
-
-// Listen for lines enabled toggle
-$("#linesEnabled").change(function () {
-    updateModelFromUI();
-});
-
-// Listen for grid squares worked enabled toggle
-$("#gridSquaresEnabled").change(function () {
-    updateModelFromUI();
-});
-
-// Listen for label grid squares worked enabled toggle
-$("#labelGridSquaresWorked").change(function () {
-    updateModelFromUI();
-});
-
-// Listen for colour lines toggle
-$("#colourLines").change(function () {
-    updateModelFromUI();
-});
-
-// Listen for thick lines toggle
-$("#thickLines").change(function () {
-    updateModelFromUI();
-});
-
-// Listen for band/mode colours toggles. Only one can be turned on at a time.
+// Listen for toggle changes where another should be toggled off when this is toggled on. These are called before the
+// generic binding to .control so that their action happens before updateModelFromUI gets called.
 $("#bandColours").change(function () {
     if ($("#bandColours").is(':checked')) {
         $("#modeColours").prop('checked', false);
     }
-    updateModelFromUI();
 });
 $("#modeColours").change(function () {
     if ($("#modeColours").is(':checked')) {
         $("#bandColours").prop('checked', false);
     }
-    updateModelFromUI();
 });
 
 // Listen for small icons toggle
@@ -160,7 +106,6 @@ $("#smallMarkers").change(function () {
     if ($("#smallMarkers").is(':checked')) {
         $("#hybridMarkerSize").prop('checked', false);
     }
-    updateModelFromUI();
 });
 
 // Listen for outdoor activity symbols toggle
@@ -168,7 +113,6 @@ $("#outdoorSymbols").change(function () {
     if (!$("#outdoorSymbols").is(':checked')) {
         $("#hybridMarkerSize").prop('checked', false);
     }
-    updateModelFromUI();
 });
 
 // Listen for hybrid marker size toggle
@@ -179,48 +123,20 @@ $("#hybridMarkerSize").change(function () {
     if ($("#hybridMarkerSize").is(':checked')) {
         $("#outdoorSymbols").prop('checked', true);
     }
+});
+
+// Listen for control changes. Most controls have this class, and therefore all perform the same updateModelFromUI()
+// function when they are changed. WARNING: The order in which jQuery bindings are done is important, some bindings
+// deliberately happen before this section, and others after.
+$(".control").change(function() {
+    updateModelFromUI();
+});
+$(".textControl").on("input", function() {
     updateModelFromUI();
 });
 
-// Show Maidenhead grid overlay
-$("#showMaidenheadGrid").change(function () {
-    updateModelFromUI();
-});
-
-// Show callsign labels
-$("#showCallsignLabels").change(function () {
-    updateModelFromUI();
-});
-
-// Show gridsquare labels
-$("#showGridSquareLabels").change(function () {
-    updateModelFromUI();
-});
-
-// Show distance labels
-$("#showDistanceLabels").change(function () {
-    updateModelFromUI();
-});
-
-// Show distances in miles
-$("#distancesInMiles").change(function () {
-    updateModelFromUI();
-});
-
-// Listen for filter changes
-$("#filter-year").change(function() {
-    updateModelFromUI();
-});
-$("#filter-band").change(function() {
-    updateModelFromUI();
-});
-$("#filter-mode").change(function() {
-    updateModelFromUI();
-});
-
-// Query missing info from QRZ.com
+// Query missing info from QRZ.com. Should be done after the updateModelFromUI call so we bind this afterwards.
 $("#queryQRZ").change(function () {
-    updateModelFromUI();
     // If QRZ username and password were filled in, but the user hasn't clicked Login yet, but they just turned on this
     // option, simulate a login click.
     if (queryQRZ && !qrzToken && $("#qrzUser").val().length > 0 && $("#qrzPass").val().length > 0) {
