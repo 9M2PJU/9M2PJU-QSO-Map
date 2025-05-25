@@ -221,7 +221,7 @@ function loadFile(text) {
     setTimeout(function () {
         try {
             // Load the content, delegating to a function based on file type.
-            if (text.substring(0, 4) === "ADIF") {
+            if (text.substring(0, 4) === "ADIF" || text.includes("<EOH>")) {
                 loadADIF(text);
                 lastLoadTypeRecognised = true;
             } else if (text.substring(0, 13) === "START-OF-LOG:") {
