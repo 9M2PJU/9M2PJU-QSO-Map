@@ -19,8 +19,9 @@ const BANDS = [
     {name: "70cm", startFreq: 420.0, stopFreq: 450.0, color: "#999900", contrastColor: "white"},
     {name: "23cm", startFreq: 1240.0, stopFreq: 1325.0, color: "#5AB8C7", contrastColor: "black"},
     {name: "13cm", startFreq: 2300.0, stopFreq: 2450.0, color: "#FF7F50", contrastColor: "black"}];
+const API_LOOKUP_USER_AGENT_STRING = "M0TRT_QSO_Map_v1.0";
 const QRZ_API_BASE_URL = "https://xmldata.qrz.com/xml/current/";
-const QRZ_AGENT = "M0TRT_QSO_Map_v1.0";
+const HAMQTH_API_BASE_URL = "https://www.hamqth.com/xml.php";
 const POTA_PARK_BASE_URL = "https://api.pota.app/park/";
 const SOTA_SUMMIT_BASE_URL = "https://api-db2.sota.org.uk/api/summits/";
 const WWBOTA_BUNKER_BASE_URL = "https://api.wwbota.org/bunkers/";
@@ -75,6 +76,8 @@ let ownPosMarker;
 let maidenheadGrid;
 // Session token for QRZ.com lookups
 let qrzToken;
+// Session token for HamQTH lookups
+let hamQTHToken;
 // Tracker for how many years, bands and modes we have in our data set.
 let years = new Set();
 let bands = new Set();
@@ -113,3 +116,5 @@ let filterMode = "*";
 let filterBand = "*";
 let queryXOTA = true;
 let queryQRZ = false;
+let queryHamQTH = false;
+let rememberPasswords = true;

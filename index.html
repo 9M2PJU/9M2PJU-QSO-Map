@@ -194,7 +194,7 @@
     <div class="menu-content">
         <label for="queryXOTA" class="configLabel">
             <input type="checkbox" id="queryXOTA" class="control" name="queryXOTA" checked="checked">&nbsp;Look up missing info from xOTA APIs</label><br/>
-        <label for="queryQRZ" class="configLabel">
+        <label for="queryQRZ" class="configLabel" style="margin-top:0.3em">
             <input type="checkbox" id="queryQRZ" class="control" name="queryQRZ">&nbsp;Look up missing info from QRZ.com</label><br/>
         <!--suppress HtmlFormInputWithoutLabel -->
         <input type="text" id="qrzUser" name="qrzUser" placeholder="Username" size="8" class="indentControl">&nbsp;
@@ -202,6 +202,16 @@
         <input type="password" id="qrzPass" name="qrzPass" placeholder="Password" size="11">&nbsp;
         <button type="button" id="qrzLogin" name="qrzLogin">Log in</button>
         <div id="qrzApiStatus" class="indentControl"></div>
+        <label for="queryHamQTH" class="configLabel" style="margin-top:0.3em">
+            <input type="checkbox" id="queryHamQTH" class="control" name="queryHamQTH">&nbsp;Look up missing info from HamQTH</label><br/>
+        <!--suppress HtmlFormInputWithoutLabel -->
+        <input type="text" id="hamqthUser" name="hamqthUser" placeholder="Username" size="8" class="indentControl">&nbsp;
+        <!--suppress HtmlFormInputWithoutLabel -->
+        <input type="password" id="hamqthPass" name="hamqthPass" placeholder="Password" size="11">&nbsp;
+        <button type="button" id="hamqthLogin" name="hamqthLogin">Log in</button>
+        <div id="hamqthApiStatus" class="indentControl"></div><br/>
+        <label for="rememberPasswords" class="configLabel" style="margin-top:0.3em">
+            <input type="checkbox" id="rememberPasswords" class="control" name="rememberPasswords" checked="checked">&nbsp;Remember passwords</label>
     </div>
 
     <p style="text-align: right"><a class="closeButton" onClick="closeControls();"><i class="fa-solid fa-xmark"></i> Close</a></p>

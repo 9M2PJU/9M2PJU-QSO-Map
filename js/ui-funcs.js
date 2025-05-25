@@ -9,6 +9,11 @@ $("#fileSelect").change(function () {
     if (queryQRZ && !qrzToken && $("#qrzUser").val().length > 0 && $("#qrzPass").val().length > 0) {
         $("#qrzLogin").click();
     }
+    // If HamQTH username and password were filled in, but the user hasn't clicked Login yet, but they have HamQTH
+    // lookup enabled, simulate a login click.
+    if (queryHamQTH && !hamQTHToken && $("#hamqthUser").val().length > 0 && $("#hamqthPass").val().length > 0) {
+        $("#hamqthLogin").click();
+    }
 
     // Get the file and parse it
     let file = $(this).prop('files')[0];
@@ -77,6 +82,10 @@ function updateModelFromUI() {
     localStorage.setItem('queryXOTA', queryXOTA);
     queryQRZ = $("#queryQRZ").is(':checked');
     localStorage.setItem('queryQRZ', queryQRZ);
+    queryHamQTH = $("#queryHamQTH").is(':checked');
+    localStorage.setItem('queryHamQTH', queryHamQTH);
+    rememberPasswords = $("#rememberPasswords").is(':checked');
+    localStorage.setItem('rememberPasswords', rememberPasswords);
     redrawAll();
 }
 
@@ -149,12 +158,19 @@ $(".textControl").on("input", function() {
     updateModelFromUI();
 });
 
-// Query missing info from QRZ.com. Should be done after the updateModelFromUI call so we bind this afterwards.
+// If QRZ username and password were filled in, but the user hasn't clicked Login yet, but they just turned on this
+// option, simulate a login click. Should be done after the updateModelFromUI call so we bind this afterwards.
 $("#queryQRZ").change(function () {
-    // If QRZ username and password were filled in, but the user hasn't clicked Login yet, but they just turned on this
-    // option, simulate a login click.
     if (queryQRZ && !qrzToken && $("#qrzUser").val().length > 0 && $("#qrzPass").val().length > 0) {
         $("#qrzLogin").click();
+    }
+});
+
+// If HamQTH username and password were filled in, but the user hasn't clicked Login yet, but they just turned on this
+// option, simulate a login click. Should be done after the updateModelFromUI call so we bind this afterwards.
+$("#queryHamQTH").change(function () {
+    if (queryHamQTH && !hamQTHToken && $("#hamqthUser").val().length > 0 && $("#hamqthPass").val().length > 0) {
+        $("#hamqthLogin").click();
     }
 });
 
@@ -167,7 +183,7 @@ $("#qrzLogin").click(function() {
     let password = $("#qrzPass").val();
     $.ajax({
         url: QRZ_API_BASE_URL,
-        data: { username: encodeURI(username), password: encodeURI(password), agent: QRZ_AGENT },
+        data: { username: encodeURIComponent(username), password: encodeURIComponent(password), agent: API_LOOKUP_USER_AGENT_STRING },
         dataType: 'xml',
         timeout: 10000,
         success: async function (result) {
@@ -194,7 +210,45 @@ $("#qrzLogin").click(function() {
         }
     });
     localStorage.setItem('qrzUser', JSON.stringify(username));
-    localStorage.setItem('qrzPass', JSON.stringify(password));
+    if (rememberPasswords) {
+        localStorage.setItem('qrzPass', JSON.stringify(password));
+    }
+});
+
+// Log into HamQTH, get a session token if the login was correct. Show a status indicator next to the login button.
+$("#hamqthLogin").click(function() {
+    $("#hamqthApiStatus").show();
+    $("#hamqthApiStatus").html("<i class=\"fa-solid fa-spinner\"></i> Logging into HamQTH...");
+
+    let username = $("#hamqthUser").val();
+    let password = $("#hamqthPass").val();
+    $.ajax({
+        url: HAMQTH_API_BASE_URL,
+        data: { u: encodeURIComponent(username), p: encodeURIComponent(password) },
+        dataType: 'xml',
+        timeout: 10000,
+        success: async function (result) {
+            let key = $(result).find("session_id");
+            if (key && key.text().length > 0) {
+                // Got a token so we are good to go.
+                hamQTHToken = key.text();
+                $("#hamqthApiStatus").html("<i class='fa-solid fa-check'></i> HamQTH authentication successful");
+                // If the user hasn't turned on HamQTH querying yet, they probably want it on so do that for them.
+                $("#queryHamQTH").prop('checked', true);
+
+            } else {
+                // No key, so login failed
+                $("#hamqthApiStatus").html("<i class='fa-solid fa-xmark'></i> Incorrect username or password");
+            }
+        },
+        error: function () {
+            $("#hamqthApiStatus").html("<i class='fa-solid fa-triangle-exclamation'></i> HamQTH API error, please try again later");
+        }
+    });
+    localStorage.setItem('hamQTHUser', JSON.stringify(username));
+    if (rememberPasswords) {
+        localStorage.setItem('hamQTHPass', JSON.stringify(password));
+    }
 });
 
 // Open/close controls

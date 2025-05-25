@@ -72,6 +72,14 @@ function loadLocalStorage() {
     $("#qrzUser").val(tmpQrzUser);
     let tmpQrzPass = localStorageGetOrDefault('qrzPass', '');
     $("#qrzPass").val(tmpQrzPass);
+    let tmpQueryHamQTH = localStorageGetOrDefault('queryHamQTH', queryHamQTH);
+    $("#queryHamQTH").prop('checked', tmpQueryHamQTH);
+    let tmpHamQTHUser = localStorageGetOrDefault('hamQTHUser', '');
+    $("#hamqthUser").val(tmpHamQTHUser);
+    let tmpHamQTHPass = localStorageGetOrDefault('hamQTHPass', '');
+    $("#hamqthPass").val(tmpHamQTHPass);
+    let tmpRememberPasswords = localStorageGetOrDefault('rememberPasswords', rememberPasswords);
+    $("#rememberPasswords").val(tmpRememberPasswords);
 
     // Load lookup data. This had to be converted to an object for storage, now we need it back as a map.
     const lookupDataStr = localStorage.getItem('lookupData');

@@ -55,6 +55,6 @@ up with a checkbox's accompanying label. */
 }
 
 /* Hide certain elements until we have something to put in there */
-div#qrzApiStatus, table#qsoFiltersTable {
+div#qrzApiStatus, div#hamqthApiStatus, table#qsoFiltersTable {
     display: none;
 }

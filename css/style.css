@@ -30,7 +30,7 @@ label.configLabel {
 }
 
 /* Style for small info indicators */
-div#qsoFilterMessage, div#loadingStatus, div#qrzApiStatus {
+div#qsoFilterMessage, div#loadingStatus, div#qrzApiStatus, div#hamqthApiStatus {
     margin-top: 0.1em;
     margin-bottom: 0;
     font-size: 0.8em;
