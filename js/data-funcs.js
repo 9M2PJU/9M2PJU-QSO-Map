@@ -12,8 +12,17 @@ function putQSOIntoDataMap(qso) {
     // is a dupe, and we just add the new qso to the existing qsos list.
     let key = qso.call + "-" + qso.grid;
     if (data.has(key)) {
-        data.get(key).qsos.push(qso);
+        // There were existing QSOs here, so first of all we check for duplicates and only add the new one if it's
+        // not a dupe. We already know callsign and grid match an existing QSO, but now we check if the time also
+        // matches, and if so we don't push the new QSO to the map.
+        if (data.get(key).qsos.every((q) => q.time.unix() !== qso.time.unix())) {
+            data.get(key).qsos.push(qso);
+
+            // Now sort by time so the output on the display is always consistent.
+            data.get(key).qsos.sort((a, b) => (a.time && b.time) ? a.time.diff(b.time) : 0);
+        }
     } else {
+        // This is the first time a QSO has been seen for this call & grid, so create a new item to store it.
         data.set(key, {qsos: [qso], call: qso.call, grid: qso.grid});
     }
 
