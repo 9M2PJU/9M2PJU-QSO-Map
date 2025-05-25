@@ -236,7 +236,7 @@ function loadFile(text) {
 
             if (lastLoadTypeRecognised) {
                 // Update the map
-                updateMapObjects();
+                redrawAll();
                 // Zoom the map to fit the markers
                 zoomToFit();
 

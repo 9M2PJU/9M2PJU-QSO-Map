@@ -164,7 +164,7 @@ function processQSOFromQueue() {
         // If we got a grid from any of the above methods, we can put the QSO into the data map and render it.
         if (qso.grid) {
             putQSOIntoDataMap(qso);
-            updateMapObjects();
+            redraw(qso.call + "-" + qso.grid);
         } else {
             // We tried and failed to look up this QSO with any available methods.
             failedLookupCount++;

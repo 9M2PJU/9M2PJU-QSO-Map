@@ -54,14 +54,15 @@ let myCall;
 // Position of the grey home marker
 let qthGrid;
 let qthPos;
-// Marker, geodesic line and grid square graphic references. The graphics themselves are added to the map but we also
-// keep them in these arrays so we can easily e.g. find them to remove them when we need to. Gridsquares is a map rather
-// than a list because we index by 4-digit square. Several QSOs can share the same square, so we use this to prevent
-// drawing multiple overlapping squares.
-let markers = [];
-let lines = [];
+// Marker, geodesic line and grid square graphic references. The graphics themselves are added to the Leaflet map but we also
+// keep them in these data maps so we can easily e.g. find them to remove them when we need to. markers & lines are indexed
+// by "CALLSIGN-GRID", the same as the main "data" map, because each CALLSIGN-GRID combo gets a single marker and/or line.
+// gridsquares and gridsquarelabels are indexed by 4-digit square. Several QSOs can share the same square, so we use this to
+// prevent drawing multiple overlapping squares.
+let markers = new Map();
+let lines = new Map();
 let gridSquares = new Map();
-let gridSquareLabels = [];
+let gridSquareLabels = new Map();
 // Map and layers
 let map;
 let basemapLayer;

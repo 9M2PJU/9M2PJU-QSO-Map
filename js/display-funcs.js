@@ -1,85 +1,110 @@
 /////////////////////////////
-//   UI UPDATE FUNCTIONS   //
+//  QSO DISPLAY FUNCTIONS //
 /////////////////////////////
 
-// Update the objects that are rendered on the map. Clear old markers and draw new ones. This is
-// called when the data model changes due to a server query.
-function updateMapObjects() {
+// Redraw all the objects that are rendered on the map. Clear old markers and draw new ones. This is
+// called when a bulk change needs to happen, for example the first load occurs, a clear occurs,
+// or a UI change occurs e.g. changing how colours are done for all markers.
+function redrawAll() {
     // Clear existing markers and lines
     markers.forEach(marker => markersLayer.removeLayer(marker));
-    markers = [];
+    markers = new Map();
     lines.forEach(line => linesLayer.removeLayer(line));
-    lines = [];
+    lines = new Map();
     gridSquares.forEach(square => gridSquaresWorkedLayer.removeLayer(square));
     gridSquares = new Map();
     gridSquareLabels.forEach(label => gridSquaresWorkedLabelsLayer.removeLayer(label));
-    gridSquareLabels = [];
+    gridSquareLabels = new Map();
 
     // Add own position marker
     createOwnPosMarker(qthPos);
 
     // Iterate through qsos, creating markers
-    data.forEach(function (d) {
-        const pos = getIconPosition(d);
-        if (anyQSOMatchesFilter(d) && pos != null) {
-            // Add marker
-            if (markersEnabled) {
-                let m = L.marker(pos, {icon: getIcon(d)});
+    data.forEach((value, key) => redraw(key));
+}
 
-                // Create popup
-                m.bindPopup(getPopupText(d));
+// Redraw a specific QSO (which can include creating the marker for the first time if it doesn't
+// already exist, but cannot include deleting it). This is called when processing updates from the
+// queue, because at this point we know we only need to update a single marker, and we don't need
+// to redraw everything. (This is also delegated to from the redrawAll method to avoid duplication
+// of code.) The key parameter is the CALLSIGN-GRID key from the "data" map.
+function redraw(key) {
+    let d = data.get(key);
+    const pos = getIconPosition(d);
+    if (anyQSOMatchesFilter(d) && pos != null) {
+        // Add or update marker
+        if (markersEnabled) {
+            // Get an existing marker if we have one, else create a new one.
+            let m = (markers.has(key)) ? markers.get(key) : L.marker(pos);
 
-                // Create label under the marker
-                let tooltipText = getTooltipText(d);
-                if (tooltipText) {
-                    m.bindTooltip(tooltipText, {permanent: true, direction: 'bottom', offset: L.point(0, -10)});
-                }
+            // Set the icon for the marker
+            m.setIcon(getIcon(d));
 
-                // Add to the map
+            // Set popup text for the marker
+            m.bindPopup(getPopupText(d));
+
+            // Create label under the marker
+            let tooltipText = getTooltipText(d);
+            if (tooltipText) {
+                m.bindTooltip(tooltipText, {permanent: true, direction: 'bottom', offset: L.point(0, -10)});
+            }
+
+            // If this marker was newly created, add it to the layer
+            if (!markers.has(key)) {
                 markersLayer.addLayer(m);
-                markers.push(m);
-
-                // Use small icons if requested. This is if "small icons" is enabled, of if "hybrid marker size"
-                // is selected and the marker has no icon.
-                if (smallMarkers || (hybridMarkerSize && getIconName(d) === "fa-none")) {
-                    $(m._icon).addClass("smallmarker");
-                }
             }
 
-            // Add geodesic line
-            if (linesEnabled && qthPos != null) {
-                let line = L.geodesic([qthPos, pos], {
-                    color: colourLines ? qsoToColour(d) : "black",
-                    wrap: false,
-                    steps: 5,
-                    weight: thickLines ? 3 : 1
+            // Use small icons if requested. This is if "small icons" is enabled, of if "hybrid marker size"
+            // is selected and the marker has no icon.
+            if (smallMarkers || (hybridMarkerSize && getIconName(d) === "fa-none")) {
+                $(m._icon).addClass("smallmarker");
+            }
+
+            // Store the marker for next time
+            markers.set(key, m);
+        }
+
+        // Add or replace geodesic line
+        if (linesEnabled && qthPos != null) {
+            // Leaflet.Geodesic doesn't support changing the style of a line after creation, so we need
+            // to remove the existing line if it exists, and replace it.
+            if (lines.has(key)) {
+                linesLayer.removeLayer(lines.get(key));
+            }
+
+            let line = L.geodesic([qthPos, pos], {
+                color: colourLines ? qsoToColour(d) : "black",
+                wrap: false,
+                steps: 5,
+                weight: thickLines ? 3 : 1
+            });
+            linesLayer.addLayer(line);
+
+            // Store the line so we can clear it next time
+            lines.set(key, line);
+        }
+
+        // Add worked square. Must not be a dupe of one we have already added.
+        let fourDigitGrid = d.grid.substring(0, 4);
+        if (gridSquaresEnabled && !gridSquares.has(fourDigitGrid)) {
+            let swCorner = latLonForGridSWCorner(fourDigitGrid);
+            let neCorner = latLonForGridNECorner(fourDigitGrid);
+            let square = L.rectangle([swCorner, neCorner], {color: 'blue'});
+            gridSquaresWorkedLayer.addLayer(square);
+            gridSquares.set(fourDigitGrid, square);
+
+            if (labelGridSquaresWorked) {
+                let centre = latLonForGridCentre(fourDigitGrid);
+                let label = new L.marker(centre, {
+                    icon: new L.DivIcon({
+                        html: "<div class='gridSquareLabel'>" + fourDigitGrid + "</div>",
+                    })
                 });
-                linesLayer.addLayer(line);
-                lines.push(line);
-            }
-
-            // Add worked square. Must not be a dupe of one we have already added.
-            let fourDigitGrid = d.grid.substring(0, 4);
-            if (gridSquaresEnabled && !gridSquares.has(fourDigitGrid)) {
-                let swCorner = latLonForGridSWCorner(fourDigitGrid);
-                let neCorner = latLonForGridNECorner(fourDigitGrid);
-                let square = L.rectangle([swCorner, neCorner], {color: 'blue'});
-                gridSquaresWorkedLayer.addLayer(square);
-                gridSquares.set(fourDigitGrid, square);
-
-                if (labelGridSquaresWorked) {
-                    let centre = latLonForGridCentre(fourDigitGrid);
-                    let label = new L.marker(centre, {
-                        icon: new L.DivIcon({
-                            html: "<div class='gridSquareLabel'>" + fourDigitGrid + "</div>",
-                        })
-                    });
-                    gridSquaresWorkedLabelsLayer.addLayer(label);
-                    gridSquareLabels.push(label);
-                }
+                gridSquaresWorkedLabelsLayer.addLayer(label);
+                gridSquareLabels.set(fourDigitGrid, label);
             }
         }
-    });
+    }
 }
 
 // Zoom the display to fit all markers, so long as we have at least three so the zoom isn't janky
@@ -103,12 +128,6 @@ function enableMaidenheadGrid(show) {
     }
     localStorage.setItem('showMaidenheadGrid', showMaidenheadGrid);
 }
-
-
-
-/////////////////////////////
-//  QSO DISPLAY FUNCTIONS //
-/////////////////////////////
 
 // Get text for the normal click-to-appear popups. Takes a data item that may contain multiple QSOs.
 function getPopupText(d) {

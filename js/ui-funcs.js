@@ -77,7 +77,7 @@ function updateModelFromUI() {
     localStorage.setItem('queryXOTA', queryXOTA);
     queryQRZ = $("#queryQRZ").is(':checked');
     localStorage.setItem('queryQRZ', queryQRZ);
-    updateMapObjects();
+    redrawAll();
 }
 
 function updatePosFromGridInput() {
@@ -99,7 +99,7 @@ $(".loadBehaviourControl").change(function () {
 // Handle clearing existing QSOs
 $("#clearQSOs").click(function () {
     clearData();
-    updateMapObjects();
+    redrawAll();
 });
 
 // Listen for toggle changes where another should be toggled off when this is toggled on. These are called before the
