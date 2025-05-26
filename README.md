@@ -2,7 +2,7 @@
 
 A utility for amateur radio operators, to show the contents of their log visually on a map. This is what I use to generate maps for my blog posts about portable radio operations.
 
-This was originally intended to be a replacement of sorts for the GMA QSO Map tool, sadly now offline. I have since added more features; it also does all the processing client-side rather than using a database and processing on the back end.
+This was originally intended to be a replacement of sorts for the GMA/Adventure Radio QSO Map tool, sadly now offline. I have since added more features; it also does all the processing client-side rather than using a database and processing on the back end.
 
 ![Screenshot](/img/screenshot.png)
 
@@ -42,8 +42,8 @@ This project would not have been possible without these libraries, so many thank
 
 If this software doesn't quite scratch the itch for you, you could consider:
 
-* The popular [Grid tracker](https://gridtracker.org/) application offers similar features plus integration with logbooks and digimode software.
+* The popular [GridTracker](https://gridtracker.org/) application offers similar features plus integration with logbooks and digimode software.
 * The online [ADIF Processor](https://www.adif.uk/) by M0NOM which can generate KML files for viewing in Google Earth etc. This provides its own location lookup, has some nice features such as estimating HF "hops", and using Google Earth likely provides better performance once you get into hundreds of QSOs.
 * For SOTA activations, the Sotadata website itself will produce some basic maps for you; there's also [sotamaps.org](https://www.sotamaps.org/) which gives a better view and also provides various statistics about your activations.
 * The [ON6ZQ Log2Map tool](https://on6zq.be/w/index.php/Log2Map/HomePage)
-* The original [GMA QSO Map](http://qsomap.adventureradio.de/) is planned to return at some point.
+* The original [GMA/Adventure Radio QSO Map](http://qsomap.adventureradio.de/) is planned to return at some point.
