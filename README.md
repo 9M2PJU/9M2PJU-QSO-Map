@@ -26,6 +26,8 @@ For upcoming features, see the [issues backlog](https://github.com/ianrenton/qso
 
 All the code for the QSO map runs locally in your browser, so your log file "uploads" don't leave your computer. If you enter your QRZ.com or HamQTH username and password to use the lookup service, the credentials are sent to those sites via HTTPS, which encrypts them in transit. The callsigns of your QSO partners are also sent. The POTA, SOTA etc. APIs may also be queried for the grid square of any references in your logs; this does not include your QSO partners' callsigns.
 
+The "Remember Passwords" option stores your QRZ.com and/or HamQTH passwords locally in your browser, to avoid you having to enter them each time. You should ensure this option is unchecked if using a shared computer.
+
 The website itself does not use cookies, is not monetised, does not contain advertising, and does not receive or store any user data. It is open source and the code is released into the Public Domain.
 
 ### Third Party Libraries
