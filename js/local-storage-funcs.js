@@ -28,6 +28,12 @@ function loadLocalStorage() {
     $("#qthGrid").val(tmpQthGrid);
     let tmpShowMaidenheadGrid = localStorageGetOrDefault('showMaidenheadGrid', showMaidenheadGrid);
     $("#showMaidenheadGrid").prop('checked', tmpShowMaidenheadGrid);
+    let tmpShowCQZones = localStorageGetOrDefault('showCQZones', showCQZones);
+    $("#showCQZones").prop('checked', tmpShowCQZones);
+    let tmpShowITUZones = localStorageGetOrDefault('showITUZones', showITUZones);
+    $("#showITUZones").prop('checked', tmpShowITUZones);
+    let tmpShowWABGrid = localStorageGetOrDefault('showWABGrid', showWABGrid);
+    $("#showWABGrid").prop('checked', tmpShowWABGrid);
     let tmpMarkersEnabled = localStorageGetOrDefault('markersEnabled', markersEnabled);
     $("#markersEnabled").prop('checked', tmpMarkersEnabled);
     let tmpQTHMarker = localStorageGetOrDefault('qthMarker', qthMarker);

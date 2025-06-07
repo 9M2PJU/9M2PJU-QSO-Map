@@ -15,6 +15,7 @@ Use it at [https://qsomap.m0trt.radio](https://qsomap.m0trt.radio).
 * Configurable base maps
 * Configurable icons, including POTA/SOTA/etc. symbols
 * Maidenhead grid map with worked grid highlighting
+* Worked All Britain grid, CQ and ITU zones
 * Lots more options for drawing lines, labelling markers etc
 * Popup balloons showing your QSO history
 * Filter by date, band and mode
@@ -37,6 +38,8 @@ The project contains a self-hosted copy of Font Awesome's free library, in the `
 Other third party libraries, such as Leaflet and jQuery, plus many plugins for them, are included from a CDN in the head of `index.html`.
 
 This project would not have been possible without these libraries, so many thanks to their developers.
+
+Particular thanks are due to HA8TKS for the Maidenhead, CQ and ITU zone layers, which were also the basis for my own WAB grid layer.
 
 ### Alternatives
 

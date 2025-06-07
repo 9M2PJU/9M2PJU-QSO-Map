@@ -26,6 +26,14 @@ const POTA_PARK_BASE_URL = "https://api.pota.app/park/";
 const SOTA_SUMMIT_BASE_URL = "https://api-db2.sota.org.uk/api/summits/";
 const WWBOTA_BUNKER_BASE_URL = "https://api.wwbota.org/bunkers/";
 const GMA_REF_BASE_URL = "https://www.cqgma.org/api/ref/?";
+const MAIDENHEAD_GRID_COLOR_LIGHT = 'rgba(200, 140, 140, 1.0)';
+const CQ_ZONES_COLOR_LIGHT = 'rgba(140, 200, 140, 1.0)';
+const ITU_ZONES_COLOR_LIGHT = 'rgba(200, 200, 140, 1.0)';
+const WAB_GRID_COLOR_LIGHT = 'rgba(140, 140, 200, 1.0)';
+const MAIDENHEAD_GRID_COLOR_DARK = 'rgba(120, 60, 60, 1.0)';
+const CQ_ZONES_COLOR_DARK = 'rgba(60, 120, 60, 1.0)';
+const ITU_ZONES_COLOR_DARK = 'rgba(120, 120, 60, 1.0)';
+const WAB_GRID_COLOR_DARK = 'rgba(60, 60, 120, 1.0)';
 
 /////////////////////////////
 //      DATA STORAGE       //
@@ -74,6 +82,9 @@ let gridSquaresWorkedLabelsLayer;
 let ownPosLayer;
 let ownPosMarker;
 let maidenheadGrid;
+let wabGrid;
+let cqZones;
+let ituZones;
 // Session token for QRZ.com lookups
 let qrzToken;
 // Session token for HamQTH lookups
@@ -105,6 +116,9 @@ let smallMarkers = false;
 let outdoorSymbols = false;
 let hybridMarkerSize = false;
 let showMaidenheadGrid = false;
+let showCQZones = false;
+let showITUZones = false;
+let showWABGrid = false;
 let showCallsignLabels = false;
 let showGridSquareLabels = false;
 let showDistanceLabels = false;

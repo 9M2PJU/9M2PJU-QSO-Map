@@ -35,6 +35,9 @@ function updateModelFromUI() {
     setBasemapOpacity($("#basemapOpacity").val());
     updatePosFromGridInput();
     enableMaidenheadGrid($("#showMaidenheadGrid").is(':checked'));
+    enableCQZones($("#showCQZones").is(':checked'));
+    enableITUZones($("#showITUZones").is(':checked'));
+    enableWABGrid($("#showWABGrid").is(':checked'));
     markersEnabled = $("#markersEnabled").is(':checked');
     localStorage.setItem('markersEnabled', markersEnabled);
     myCall = $("#myCall").val();

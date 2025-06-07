@@ -129,6 +129,48 @@ function enableMaidenheadGrid(show) {
     localStorage.setItem('showMaidenheadGrid', showMaidenheadGrid);
 }
 
+// Shows/hides the CQ zone overlay
+function enableCQZones(show) {
+    showCQZones = show;
+    if (cqZones) {
+        if (show) {
+            cqZones.addTo(map);
+            basemapLayer.bringToBack();
+        } else {
+            map.removeLayer(cqZones);
+        }
+    }
+    localStorage.setItem('showCQZones', show);
+}
+
+// Shows/hides the ITU zone overlay
+function enableITUZones(show) {
+    showITUZones = show;
+    if (ituZones) {
+        if (show) {
+            ituZones.addTo(map);
+            basemapLayer.bringToBack();
+        } else {
+            map.removeLayer(ituZones);
+        }
+    }
+    localStorage.setItem('showITUZones', show);
+}
+
+// Shows/hides the WAB grid overlay
+function enableWABGrid(show) {
+    showWABGrid = show;
+    if (wabGrid) {
+        if (show) {
+            wabGrid.addTo(map);
+            basemapLayer.bringToBack();
+        } else {
+            map.removeLayer(wabGrid);
+        }
+    }
+    localStorage.setItem('showWABGrid', show);
+}
+
 // Get text for the normal click-to-appear popups. Takes a data item that may contain multiple QSOs.
 function getPopupText(d) {
     let text = "<span style='display:inline-block; white-space: nowrap;'><i class='fa-solid fa-user markerPopupIcon'></i>&nbsp;<span class='popupBlock'><a href='https://www.qrz.com/db/" + d.call + "' target='_blank'><b>" + d.call + "</b></a>";
@@ -272,6 +314,39 @@ function setBasemap(basemapname) {
         // and change the background colour appropriately
         basemapIsDark = basemapname === "CartoDB.DarkMatter" || basemapname === "Esri.WorldImagery";
         $("#map").css('background-color', basemapIsDark ? "black" : "white");
+
+        // Change the colour of the grid and zone overlays to match
+        if (basemapIsDark) {
+            maidenheadGrid.options.color = MAIDENHEAD_GRID_COLOR_DARK;
+            cqZones.options.color = CQ_ZONES_COLOR_DARK;
+            ituZones.options.color = ITU_ZONES_COLOR_DARK;
+            wabGrid.options.color = WAB_GRID_COLOR_DARK;
+        } else {
+            maidenheadGrid.options.color = MAIDENHEAD_GRID_COLOR_LIGHT;
+            cqZones.options.color = CQ_ZONES_COLOR_LIGHT;
+            ituZones.options.color = ITU_ZONES_COLOR_LIGHT;
+            wabGrid.options.color = WAB_GRID_COLOR_LIGHT;
+        }
+        if (showMaidenheadGrid) {
+            map.removeLayer(maidenheadGrid);
+            maidenheadGrid.addTo(map);
+            basemapLayer.bringToBack();
+        }
+        if (showCQZones) {
+            map.removeLayer(cqZones);
+            cqZones.addTo(map);
+            basemapLayer.bringToBack();
+        }
+        if (showITUZones) {
+            map.removeLayer(ituZones);
+            ituZones.addTo(map);
+            basemapLayer.bringToBack();
+        }
+        if (showWABGrid) {
+            map.removeLayer(wabGrid);
+            wabGrid.addTo(map);
+            basemapLayer.bringToBack();
+        }
     }
     localStorage.setItem('basemap', JSON.stringify(basemap));
 }

@@ -44,7 +44,12 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet-geometryutil@0.10.2/src/leaflet.geometryutil.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.2.2/src/assets/js/leaflet.extra-markers.min.js" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet.geodesic"></script>
+    <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/text-image/dist/text-image.js"></script>
     <script src="https://ha8tks.github.io/Leaflet.Maidenhead/src/L.Maidenhead.js"></script>
+    <script src="https://ha8tks.github.io/Leaflet.ITUzones/src/L.ITUzones.js"></script>
+    <script src="https://ha8tks.github.io/Leaflet.CQzones/src/L.CQzones.js"></script>
+    <script src="https://ianrenton.github.io/Leaflet.WorkedAllBritain/L.WorkedAllBritain.js"></script>
 
     <link rel="icon" type="image/png" href="img/favicon.png">
     <link rel="alternate icon" type="image/png" href="img/favicon-32.png">
@@ -151,14 +156,20 @@
     </div>
 
 
-    <h4 class="menu-heading">Maidenhead Grid <span class="arrow">&#9654;</span></h4>
+    <h4 class="menu-heading">Grid & Zone Overlays <span class="arrow">&#9654;</span></h4>
     <div class="menu-content">
         <label for="showMaidenheadGrid" class="configLabel">
             <input type="checkbox" id="showMaidenheadGrid" class="control" name="showMaidenheadGrid">&nbsp;Maidenhead grid layer</label><br/>
         <label for="gridSquaresEnabled" class="configLabel">
-            <input type="checkbox" id="gridSquaresEnabled" class="control" name="gridSquaresEnabled">&nbsp;Draw worked grid squares</label><br/>
+            <input type="checkbox" id="gridSquaresEnabled" class="control" name="gridSquaresEnabled">&nbsp;Draw worked Maidenhead grids</label><br/>
         <label for="labelGridSquaresWorked" class="configLabel">
-            <input type="checkbox" id="labelGridSquaresWorked" class="control" name="labelGridSquaresWorked">&nbsp;Label worked grid squares</label>
+            <input type="checkbox" id="labelGridSquaresWorked" class="control" name="labelGridSquaresWorked">&nbsp;Label worked Maidenhead grids</label><br/>
+        <label for="showCQZones" class="configLabel">
+            <input type="checkbox" id="showCQZones" class="control" name="showCQZones">&nbsp;CQ zone layer</label><br/>
+        <label for="showITUZones" class="configLabel">
+            <input type="checkbox" id="showITUZones" class="control" name="showITUZones">&nbsp;ITU zone layer</label><br/>
+        <label for="showWABGrid" class="configLabel">
+            <input type="checkbox" id="showWABGrid" class="control" name="showWABGrid">&nbsp;Worked All Britain grid layer</label>
     </div>
 
 

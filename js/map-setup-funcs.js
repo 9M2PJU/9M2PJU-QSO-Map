@@ -21,7 +21,22 @@ function setUpMap() {
 
     // Add Maidenhead grid (toggleable)
     maidenheadGrid = L.maidenhead({
-        color : 'rgba(0, 0, 0, 0.4)'
+        color : MAIDENHEAD_GRID_COLOR_LIGHT
+    });
+
+    // Add CQ zone layer (toggleable)
+    cqZones = L.cqzones({
+        color : CQ_ZONES_COLOR_LIGHT
+    });
+
+    // Add ITU zone layer (toggleable)
+    ituZones = L.ituzones({
+        color : ITU_ZONES_COLOR_LIGHT
+    });
+
+    // Add WAB square layer (toggleable)
+    wabGrid = L.workedAllBritain({
+        color : WAB_GRID_COLOR_LIGHT
     });
 
     // Add marker layer
