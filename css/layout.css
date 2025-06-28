@@ -54,6 +54,13 @@ up with a checkbox's accompanying label. */
     margin-left: 1.8em;
 }
 
+/* Popup layout */
+table.popupQSOTable {
+    line-height: 1em;
+    position: relative;
+    left: -3px;
+}
+
 /* Hide certain elements until we have something to put in there */
 div#qrzApiStatus, div#hamqthApiStatus, table#qsoFiltersTable {
     display: none;

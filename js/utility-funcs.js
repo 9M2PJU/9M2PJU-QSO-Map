@@ -370,8 +370,40 @@ function anyQSOMatchesFilter(d) {
     return getQSOsMatchingFilter(d).length > 0;
 }
 
-// Given a QSO, list any SIG/xOTA references that the QSO partner was logged at, as a string in alphabetical order. If
-// there are none, a blank string will be returned.
-function listSIGRefs(q) {
-    return "" + q.sigRefs.map(p => p.ref).sort().join(", ");
+// Given a QSO, list any SIG/xOTA references that the QSO partner was logged at, as a string in a deterministic order,
+// including HTML links to each reference. If there are none, a blank string will be returned.
+function listSIGRefsWithLinks(q) {
+    return "" + q.sigRefs.map(p => sigRefToHTMLLink(p)).sort().join(", ");
+}
+
+// For a given SIG/xOTA reference, produce an HTML link to it in the relevant programme.
+function sigRefToHTMLLink(p) {
+    let url = getURLforReference(p.program, p.ref);
+    if (url) {
+        return "<a href='" + url + "' target='_blank'>" + p.ref + "</a>";
+    } else {
+        return p.ref;
+    }
+}
+
+// Take a SIG/xOTA program and reference, and produce a URL to go to the relevant part/summit/etc. page on
+// the program's website.
+function getURLforReference(program, reference) {
+    if (program === "POTA") {
+        return "https://pota.app/#/park/" + reference;
+    } else if (program === "SOTA") {
+        return "https://www.sotadata.org.uk/en/summit/" + reference;
+    } else if (program === "WWFF") {
+        return "https://wwff.co/directory/?showRef=" + reference;
+    } else if (program === "Bunkers") {
+        if (reference.substring(0,3) === "B/G") {
+            return "https://bunkerwiki.org/?s=" + reference;
+        } else {
+            return null;
+        }
+    } else if (program === "GMA" || program === "IOTA" || program === "Castles" || program === "Lighthouses" || program === "Mills") {
+        return "https://www.cqgma.org/zinfo.php?ref=" + reference;
+    } else {
+        return null;
+    }
 }

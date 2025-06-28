@@ -183,7 +183,7 @@ function getPopupText(d) {
     // we don't have any QSOs with SIG/xOTA references, we use the qth text which will be from QRZ or HamQTH. If we have
     // more than one QSO with *different* references, we only display the grid here, and instead list the references
     // separately under each QSO.
-    let sigRefsPerQSO = d.qsos.map(q => listSIGRefs(q));
+    let sigRefsPerQSO = d.qsos.map(q => listSIGRefsWithLinks(q));
     let sigRefsExist = sigRefsPerQSO.every(v => v.length > 0);
     let sigRefsEqual = sigRefsPerQSO.every((val, i, arr) => val === arr[0]);
 
@@ -202,39 +202,42 @@ function getPopupText(d) {
             text += "&nbsp;(" + getDistanceString(d) + ")";
         }
     }
-    text += "</span></span>"
+    text += "</span></span><table class='popupQSOTable'>"
 
     getQSOsMatchingFilter(d).forEach(qso => {
         if (qso.freq || qso.time || (qso.comment && showComments)) {
-            text += "<br/><span style='display:inline-block; white-space: nowrap;'><i class='fa-solid fa-comment markerPopupIcon'></i>&nbsp;<span class='popupBlock'>";
-        }
-        if (qso.freq) {
-            text += qso.freq.toFixed(3);
-            if (qso.mode) {
-                text += "&nbsp;MHz&nbsp;&nbsp;" + qso.mode;
+            text += "<tr><td><i class='fa-solid fa-comment markerPopupIcon'></i></td><td>";
+            if (qso.freq) {
+                text += qso.freq.toFixed(3);
+                if (qso.mode) {
+                    text += "&nbsp;MHz&nbsp;" + qso.mode + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                }
             }
-        }
-        if (qso.time) {
-            text += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + qso.time.format("HH:mm[&nbsp;UTC,&nbsp;]DD[&nbsp;]MMM[&nbsp;]YYYY");
-        }
-        // As above, if our SIG/xOTA references were different for each QSO, we now need to list them. Again if one set
-        // is empty we use the QTH field if it exists. This could be the case if you have e.g. two QSOs with a hunter,
-        // one of which was a P2P and the other they were at home, both in the same grid.
-        if (sigRefsExist && !sigRefsEqual) {
-            let sigRefs = listSIGRefs(qso);
-            if (sigRefs.length > 0) {
-                text += "<br/>&nbsp;&nbsp;&nbsp;" + sigRefs;
-            } else if (d.qth) {
-                text += "<br/>&nbsp;&nbsp;&nbsp;" + d.qth;
+            text += "</td><td style='text-align: right'>";
+            if (qso.time) {
+                text += qso.time.format("HH:mm[,&nbsp;]DD[&nbsp;]MMM[&nbsp;]YYYY");
             }
-        }
-        if (qso.comment && showComments) {
-            text += "<br/>&nbsp;&nbsp;&nbsp;" + qso.comment;
-        }
-        if (qso.freq || qso.time || (qso.comment && showComments)) {
-            text += "</span></span>";
+            text += "</td></tr>";
+
+            // As above, if our SIG/xOTA references were different for each QSO, we now need to list them. Again if one set
+            // is empty we use the QTH field if it exists. This could be the case if you have e.g. two QSOs with a hunter,
+            // one of which was a P2P and the other they were at home, both in the same grid.
+            if (sigRefsExist && !sigRefsEqual) {
+                let sigRefs = listSIGRefsWithLinks(qso);
+                if (sigRefs.length > 0) {
+                    text += "<tr><td></td><td colspan='2'>" + sigRefs + "</td></tr>";
+                } else if (d.qth) {
+                    text += "<tr><td></td><td colspan='2'>" + d.qth + "</td></tr>";
+                }
+            }
+            if (qso.comment && showComments) {
+                text += "<tr><td></td><td colspan='2'>" + qso.comment + "</td></tr>";
+            }
+
+            text += "</tr>";
         }
     });
+    text += "</table>";
     return text;
 }
 
