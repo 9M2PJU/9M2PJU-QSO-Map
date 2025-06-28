@@ -237,31 +237,34 @@ function getIconName(d) {
         // Outdoor activity symbols in use, so figure out what they are for each QSO.
         let qsoIcons = [];
         getQSOsMatchingFilter(d).forEach((qso) => {
-            // First, see if the QSO has a "program" set.
-            if (qso.program && qso.program.length > 0) {
-                let program = qso.program;
-                if (program === "POTA") {
-                    qsoIcons.push("fa-tree");
-                } else if (program === "SOTA") {
-                    qsoIcons.push("fa-mountain-sun");
-                } else if (program === "WWFF") {
-                    qsoIcons.push("fa-seedling");
-                } else if (program === "GMA") {
-                    qsoIcons.push("fa-person-hiking");
-                } else if (program === "WWBOTA" || program === "UKBOTA") {
-                    qsoIcons.push("fa-radiation");
-                } else if (program === "IOTA") {
-                    qsoIcons.push("fa-umbrella-beach");
-                } else if (program === "WCA") {
-                    qsoIcons.push("fa-chess-rook");
-                } else if (program === "ALHRS") {
-                    qsoIcons.push("fa-tower-observation");
-                } else if (program === "MOTA") {
-                    qsoIcons.push("fa-fan");
-                } else {
-                    // A program was set but not one we recognise, so show a question mark
-                    qsoIcons.push("fa-question");
-                }
+            // First, see if the QSO has any "programs" set.
+            if (qso.programs.length > 0) {
+                qso.programs.forEach(p => {
+                    let program = p.program;
+                    console.log(program);
+                    if (program === "POTA") {
+                        qsoIcons.push("fa-tree");
+                    } else if (program === "SOTA") {
+                        qsoIcons.push("fa-mountain-sun");
+                    } else if (program === "WWFF") {
+                        qsoIcons.push("fa-seedling");
+                    } else if (program === "GMA") {
+                        qsoIcons.push("fa-person-hiking");
+                    } else if (program === "WWBOTA" || program === "UKBOTA") {
+                        qsoIcons.push("fa-radiation");
+                    } else if (program === "IOTA") {
+                        qsoIcons.push("fa-umbrella-beach");
+                    } else if (program === "WCA") {
+                        qsoIcons.push("fa-chess-rook");
+                    } else if (program === "ALHRS") {
+                        qsoIcons.push("fa-tower-observation");
+                    } else if (program === "MOTA") {
+                        qsoIcons.push("fa-fan");
+                    } else {
+                        // A program was set but not one we recognise, so show a question mark
+                        qsoIcons.push("fa-question");
+                    }
+                });
 
             } else if (inferOutdoorActivitiesFromComments && qso.comment && qso.comment.length > 0) {
                 // Now if we are allowed to infer outdoor activities from comments, parse the comments for anything useful

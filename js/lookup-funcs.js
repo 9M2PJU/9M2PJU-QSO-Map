@@ -117,7 +117,7 @@ function performHamQTHLookup(qso) {
 
 // Use a QSO's POTA reference to look up a grid.
 function performPOTALookup(qso) {
-    let url = POTA_PARK_BASE_URL + qso.ref;
+    let url = POTA_PARK_BASE_URL + qso.programs.find(p => p.program === "POTA").ref;
     $.ajax({
         url: url,
         dataType: 'json',
@@ -132,7 +132,7 @@ function performPOTALookup(qso) {
 
 // Use a QSO's SOTA reference to look up a grid.
 function performSOTALookup(qso) {
-    let url = SOTA_SUMMIT_BASE_URL + qso.ref;
+    let url = SOTA_SUMMIT_BASE_URL + qso.programs.find(p => p.program === "SOTA").ref;
     $.ajax({
         url: url,
         dataType: 'json',
@@ -147,7 +147,7 @@ function performSOTALookup(qso) {
 
 // Use a QSO's WWBOTA reference to look up a grid.
 function performWWBOTALookup(qso) {
-    let url = WWBOTA_BUNKER_BASE_URL + qso.ref;
+    let url = WWBOTA_BUNKER_BASE_URL + qso.programs.find(p => p.program === "WWBOTA" || p.program === "UKBOTA").ref;
     $.ajax({
         url: url,
         dataType: 'json',
@@ -162,7 +162,8 @@ function performWWBOTALookup(qso) {
 
 // Use a QSO's GMA reference to look up a grid.
 function performGMALookup(qso) {
-    let url = GMA_REF_BASE_URL + qso.ref;
+    let url = GMA_REF_BASE_URL + qso.programs.find(p => p.program === "GMA" || p.program === "WWFF"
+        || p.program === "WCA" || p.program === "ARLHS" || p.program === "MOTA").ref;
     $.ajax({
         url: url,
         dataType: 'json',
@@ -185,15 +186,15 @@ function processQSOFromQueue() {
         let qso = queue.pop();
         // We have something in the queue. First see if it has a POTA/SOTA/WWBOTA reference; we can then query the
         // appropriate API for the details.
-        if (queryXOTA && qso.program && qso.ref && qso.ref.length > 0) {
-            if (qso.program === "POTA") {
+        if (queryXOTA && qso.programs.length > 0) {
+            if (qso.programs.some(p => p.program === "POTA")) {
                 performPOTALookup(qso);
-            } else if (qso.program === "SOTA") {
+            } else if (qso.programs.some(p => p.program === "SOTA")) {
                 performSOTALookup(qso);
-            } else if (qso.program === "WWBOTA" || qso.program === "UKBOTA") {
+            } else if (qso.programs.some(p => p.program === "WWBOTA" || p.program === "UKBOTA")) {
                 performWWBOTALookup(qso);
-            } else if (qso.program === "WWFF" || qso.program === "GMA" || qso.program === "WCA"
-                || qso.program === "ARLHS" || qso.program === "MOTA") {
+            } else if (qso.programs.some(p => p.program === "WWFF" || p.program === "GMA" || p.program === "WCA"
+                || p.program === "ARLHS" || p.program === "MOTA")) {
                 performGMALookup(qso);
             }
         }
