@@ -237,28 +237,26 @@ function getIconName(d) {
         // Outdoor activity symbols in use, so figure out what they are for each QSO.
         let qsoIcons = [];
         getQSOsMatchingFilter(d).forEach((qso) => {
-            // First, see if the QSO has any "programs" set.
-            if (qso.programs.length > 0) {
-                qso.programs.forEach(p => {
-                    let program = p.program;
-                    console.log(program);
-                    if (program === "POTA") {
+            // First, see if the QSO has any Special Interest Group (e.g. xOTA) references set.
+            if (qso.sigRefs.length > 0) {
+                qso.sigRefs.forEach(p => {
+                    if (p.program === "POTA") {
                         qsoIcons.push("fa-tree");
-                    } else if (program === "SOTA") {
+                    } else if (p.program === "SOTA") {
                         qsoIcons.push("fa-mountain-sun");
-                    } else if (program === "WWFF") {
+                    } else if (p.program === "WWFF") {
                         qsoIcons.push("fa-seedling");
-                    } else if (program === "GMA") {
+                    } else if (p.program === "GMA") {
                         qsoIcons.push("fa-person-hiking");
-                    } else if (program === "WWBOTA" || program === "UKBOTA") {
+                    } else if (p.program === "WWBOTA" || p.program === "UKBOTA") {
                         qsoIcons.push("fa-radiation");
-                    } else if (program === "IOTA") {
+                    } else if (p.program === "IOTA") {
                         qsoIcons.push("fa-umbrella-beach");
-                    } else if (program === "WCA") {
+                    } else if (p.program === "WCA") {
                         qsoIcons.push("fa-chess-rook");
-                    } else if (program === "ALHRS") {
+                    } else if (p.program === "ALHRS") {
                         qsoIcons.push("fa-tower-observation");
-                    } else if (program === "MOTA") {
+                    } else if (p.program === "MOTA") {
                         qsoIcons.push("fa-fan");
                     } else {
                         // A program was set but not one we recognise, so show a question mark
@@ -370,4 +368,10 @@ function getQSOsMatchingFilter(d) {
 // Return true if any QSO in this data object matches the current filter, false otherwise.
 function anyQSOMatchesFilter(d) {
     return getQSOsMatchingFilter(d).length > 0;
+}
+
+// Given a QSO, list any SIG/xOTA references that the QSO partner was logged at, as a string in alphabetical order. If
+// there are none, a blank string will be returned.
+function listSIGRefs(q) {
+    return "" + q.sigRefs.map(p => p.ref).sort().join(", ");
 }

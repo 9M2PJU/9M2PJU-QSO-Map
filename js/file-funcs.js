@@ -54,7 +54,7 @@ function loadADIF(text) {
 
         // All the fields have been extracted into qsoData. Now turn them into a QSO object for storage.
         if (qsoData.has("CALL")) {
-            let qso = {call: qsoData.get("CALL"), programs: []};
+            let qso = {call: qsoData.get("CALL"), sigRefs: []};
             if (qsoData.has("NAME")) {
                 qso.name = qsoData.get("NAME");
             }
@@ -83,12 +83,7 @@ function loadADIF(text) {
 
             // Find "special interest group" info e.g. POTA, SOTA
             if (qsoData.has("SIG") && qsoData.has("SIG_INFO")) {
-                qso.programs.push({program: qsoData.get("SIG"), ref: qsoData.get("SIG_INFO")});
-
-                // If we have no other QTH info recorded for the contact, but we do have SIG_INFO (e.g. POTA ref), use that as QTH
-                if (!qso.qth) {
-                    qso.qth = qsoData.get("SIG") + " " + qsoData.get("SIG_INFO");
-                }
+                qso.sigRefs.push({program: qsoData.get("SIG"), ref: qsoData.get("SIG_INFO")});
             }
 
             // Some ADIFs feature POTA_REF, SOTA_REF and WWFF_REF separately to SIG/SIG_INFO. But don't duplicate these
@@ -97,19 +92,19 @@ function loadADIF(text) {
                 // POTA allows more than one reference at a time
                 let potaRefs = qsoData.get("POTA_REF").split(",");
                 potaRefs.forEach(ref => {
-                    if (!qso.programs.some(p => p.program === "POTA" && p.ref === ref)) {
-                        qso.programs.push({program: "POTA", ref: ref});
+                    if (!qso.sigRefs.some(p => p.program === "POTA" && p.ref === ref)) {
+                        qso.sigRefs.push({program: "POTA", ref: ref});
                     }
                 });
             }
             if (qsoData.has("SOTA_REF")) {
-                if (!qso.programs.some(p => p.program === "SOTA" && p.ref === qsoData.get("SOTA_REF"))) {
-                    qso.programs.push({program: "SOTA", ref: qsoData.get("SOTA_REF")});
+                if (!qso.sigRefs.some(p => p.program === "SOTA" && p.ref === qsoData.get("SOTA_REF"))) {
+                    qso.sigRefs.push({program: "SOTA", ref: qsoData.get("SOTA_REF")});
                 }
             }
             if (qsoData.has("WWFF_REF")) {
-                if (!qso.programs.some(p => p.program === "WWFF" && p.ref === qsoData.get("WWFF_REF"))) {
-                    qso.programs.push({program: "WWFF", ref: qsoData.get("WWFF_REF")});
+                if (!qso.sigRefs.some(p => p.program === "WWFF" && p.ref === qsoData.get("WWFF_REF"))) {
+                    qso.sigRefs.push({program: "WWFF", ref: qsoData.get("WWFF_REF")});
                 }
             }
 
@@ -193,7 +188,7 @@ function loadSOTACSV(text) {
             setStationCallsign = true;
         }
 
-        let qso = {call: row[7], programs: []};
+        let qso = {call: row[7], sigRefs: []};
 
         if (row[5].length > 3) {
             qso.freq = parseFloat(row[5].substring(-3));
@@ -207,10 +202,9 @@ function loadSOTACSV(text) {
         }
 
         if (row.length > 8 && row[8].length > 0) {
-            if (!qso.programs.some(p => p.program === "SOTA" && p.ref === row[8])) {
-                qso.programs.push({program: "SOTA", ref: row[8]});
+            if (!qso.sigRefs.some(p => p.program === "SOTA" && p.ref === row[8])) {
+                qso.sigRefs.push({program: "SOTA", ref: row[8]});
             }
-            qso.qth = row[8];
         }
 
         if (row.length > 9 && row[9].length > 0) {

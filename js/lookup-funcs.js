@@ -117,7 +117,7 @@ function performHamQTHLookup(qso) {
 
 // Use a QSO's POTA reference to look up a grid.
 function performPOTALookup(qso) {
-    let url = POTA_PARK_BASE_URL + qso.programs.find(p => p.program === "POTA").ref;
+    let url = POTA_PARK_BASE_URL + qso.sigRefs.find(p => p.program === "POTA").ref;
     $.ajax({
         url: url,
         dataType: 'json',
@@ -132,7 +132,7 @@ function performPOTALookup(qso) {
 
 // Use a QSO's SOTA reference to look up a grid.
 function performSOTALookup(qso) {
-    let url = SOTA_SUMMIT_BASE_URL + qso.programs.find(p => p.program === "SOTA").ref;
+    let url = SOTA_SUMMIT_BASE_URL + qso.sigRefs.find(p => p.program === "SOTA").ref;
     $.ajax({
         url: url,
         dataType: 'json',
@@ -140,14 +140,13 @@ function performSOTALookup(qso) {
         timeout: 10000,
         success: async function (result) {
             qso.grid = result.locator;
-            qso.qth = result.summitCode + " " + result.name;
         }
     });
 }
 
 // Use a QSO's WWBOTA reference to look up a grid.
 function performWWBOTALookup(qso) {
-    let url = WWBOTA_BUNKER_BASE_URL + qso.programs.find(p => p.program === "WWBOTA" || p.program === "UKBOTA").ref;
+    let url = WWBOTA_BUNKER_BASE_URL + qso.sigRefs.find(p => p.program === "WWBOTA" || p.program === "UKBOTA").ref;
     $.ajax({
         url: url,
         dataType: 'json',
@@ -155,14 +154,13 @@ function performWWBOTALookup(qso) {
         timeout: 10000,
         success: async function (result) {
             qso.grid = result.locator;
-            qso.qth = result.reference + " " + result.name;
         }
     });
 }
 
 // Use a QSO's GMA reference to look up a grid.
 function performGMALookup(qso) {
-    let url = GMA_REF_BASE_URL + qso.programs.find(p => p.program === "GMA" || p.program === "WWFF"
+    let url = GMA_REF_BASE_URL + qso.sigRefs.find(p => p.program === "GMA" || p.program === "WWFF"
         || p.program === "WCA" || p.program === "ARLHS" || p.program === "MOTA").ref;
     $.ajax({
         url: url,
@@ -171,7 +169,6 @@ function performGMALookup(qso) {
         timeout: 10000,
         success: async function (result) {
             qso.grid = result.locator;
-            qso.qth = result.ref + " " + result.name;
         }
     });
 }
@@ -185,15 +182,15 @@ function processQSOFromQueue() {
         // Pop the next QSO out of the queue
         let qso = queue.pop();
         // We have something in the queue. First see if it has a POTA/SOTA/WWBOTA reference; we can then query the
-        // appropriate API for the details.
-        if (queryXOTA && qso.programs.length > 0) {
-            if (qso.programs.some(p => p.program === "POTA")) {
+        // appropriate API for the grid locator.
+        if (queryXOTA && qso.sigRefs.length > 0) {
+            if (qso.sigRefs.some(p => p.program === "POTA")) {
                 performPOTALookup(qso);
-            } else if (qso.programs.some(p => p.program === "SOTA")) {
+            } else if (qso.sigRefs.some(p => p.program === "SOTA")) {
                 performSOTALookup(qso);
-            } else if (qso.programs.some(p => p.program === "WWBOTA" || p.program === "UKBOTA")) {
+            } else if (qso.sigRefs.some(p => p.program === "WWBOTA" || p.program === "UKBOTA")) {
                 performWWBOTALookup(qso);
-            } else if (qso.programs.some(p => p.program === "WWFF" || p.program === "GMA" || p.program === "WCA"
+            } else if (qso.sigRefs.some(p => p.program === "WWFF" || p.program === "GMA" || p.program === "WCA"
                 || p.program === "ARLHS" || p.program === "MOTA")) {
                 performGMALookup(qso);
             }
