@@ -254,7 +254,7 @@ function getIconName(d) {
                         qsoIcons.push("fa-umbrella-beach");
                     } else if (p.program === "WCA") {
                         qsoIcons.push("fa-chess-rook");
-                    } else if (p.program === "ALHRS") {
+                    } else if (p.program === "ARLHS") {
                         qsoIcons.push("fa-tower-observation");
                     } else if (p.program === "MOTA") {
                         qsoIcons.push("fa-fan");
@@ -395,13 +395,13 @@ function getURLforReference(program, reference) {
         return "https://www.sotadata.org.uk/en/summit/" + reference;
     } else if (program === "WWFF") {
         return "https://wwff.co/directory/?showRef=" + reference;
-    } else if (program === "Bunkers") {
+    } else if (program === "WWBOTA" || program === "UKBOTA") {
         if (reference.substring(0,3) === "B/G") {
             return "https://bunkerwiki.org/?s=" + reference;
         } else {
             return null;
         }
-    } else if (program === "GMA" || program === "IOTA" || program === "Castles" || program === "Lighthouses" || program === "Mills") {
+    } else if (program === "GMA" || program === "IOTA" || program === "WCA" || program === "ARLHS" || program === "MOTA") {
         return "https://www.cqgma.org/zinfo.php?ref=" + reference;
     } else {
         return null;
