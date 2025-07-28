@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>QSO Map Tool</title>
+    <title>9M2PJU QSO Map</title>
 
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -10,19 +10,13 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="white-translucent">
+    <meta name="keywords" content="amateur radio, ham radio, QSO map, ADIF, Cabrillo, SOTA, log visualizer, QSL map, 9M2PJU, Malaysia ham radio, radio amatur, peta QSO, upload ADIF, world QSO, map QSO, upload, DXCC, map, grid locator, grid maidenhead" />
 
-    <meta property="og:title" content="MØTRT QSO Map Tool"/>
-    <meta property="twitter:title" content="MØTRT QSO Map Tool"/>
-    <meta name="description" content="A tool to plot the contents of amateur radio log files on a map"/>
-    <meta property="og:description" content="A tool to plot the contents of amateur radio log files on a map"/>
-    <link rel="canonical" href="https://qsomap.m0trt.radio/"/>
-    <meta property="og:url" content="https://qsomap.m0trt.radio/"/>
-    <meta property="og:image" content="https://qsomap.m0trt.radio/img/screenshot.png"/>
-    <meta property="twitter:image" content="https://qsomap.m0trt.radio/img/screenshot.png"/>
-    <meta name="twitter:card" content="summary_large_image"/>
-    <meta name="author" content="Ian Renton"/>
-    <meta property="og:locale" content="en_GB"/>
-    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="9M2PJU QSO Map"/>
+    <meta property="twitter:title" content="9M2PJU QSO Map"/>
+    <meta name="description" content="An interactive tool to visualize and map the geographic locations recorded in amateur radio log files, helping operators gain insight into their contacts and signal reach around the world"/>
+    <link rel="canonical" href="https://qsomap.hamradio.my"/>
+    <meta property="og:url" content="https://qsomap.hamradio.my"/>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.2.2/dist/css/leaflet.extra-markers.min.css">
@@ -59,11 +53,10 @@
 </head>
 <body>
 <div id="controls">
-    <h1 id="title">QSO Map Tool</h1>
-    <p id="subtitle">By <a href="https://ianrenton.com" target="_blank">Ian Renton MØTRT</a> | <a href="https://github.com/ianrenton/qsomap/blob/main/README.md" target="_blank">About</a> | <a href="https://github.com/ianrenton/qsomap" target="_blank">Source Code</a></p>
+    <h1 id="title">9M2PJU QSO Map</h1>
     <div><label for="fileSelect" class="configLabel">Log file:&nbsp;<input type="file" id="fileSelect"
            accept=".adi,.adif,.csv,.cbr,.log,.txt" /></label></div>
-    <div id="loadingStatus">ADIF, Cabrillo and SOTA CSV files are supported.</div>
+    <div id="loadingStatus">Supports ADIF, Cabrillo and SOTA CSV.</div>
 
 
     <h4 class="menu-heading" style="margin-top: 1em">File Loading Behaviour <span class="arrow">&#9654;</span></h4>
