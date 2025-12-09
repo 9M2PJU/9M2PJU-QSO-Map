@@ -4,17 +4,6 @@
 
 // Listen for file select
 $("#fileSelect").change(function () {
-    // If QRZ username and password were filled in, but the user hasn't clicked Login yet, but they have QRZ lookup
-    // enabled, simulate a login click.
-    if (queryQRZ && !qrzToken && $("#qrzUser").val().length > 0 && $("#qrzPass").val().length > 0) {
-        $("#qrzLogin").click();
-    }
-    // If HamQTH username and password were filled in, but the user hasn't clicked Login yet, but they have HamQTH
-    // lookup enabled, simulate a login click.
-    if (queryHamQTH && !hamQTHToken && $("#hamqthUser").val().length > 0 && $("#hamqthPass").val().length > 0) {
-        $("#hamqthLogin").click();
-    }
-
     // Get the file and parse it
     let file = $(this).prop('files')[0];
     const reader = new FileReader();
@@ -37,10 +26,18 @@ function updateModelFromUI() {
     enableMaidenheadGrid($("#showMaidenheadGrid").is(':checked'));
     enableCQZones($("#showCQZones").is(':checked'));
     enableITUZones($("#showITUZones").is(':checked'));
-    enableWABGrid($("#showWABGrid").is(':checked'));
+    enableWABWAIGrid($("#showWABWAIGrid").is(':checked'));
+    enableHeatmap($("#heatmapEnabled").is(':checked'));
+    enablePerBandHeatmap($("#perBandHeatmapEnabled").is(':checked'));
+    setFineZoomControl($("#fineZoomControl").is(':checked'));
     markersEnabled = $("#markersEnabled").is(':checked');
     localStorage.setItem('markersEnabled', markersEnabled);
+    userLookupEnabled = $("#userLookupEnabled").is(':checked');
+    localStorage.setItem('userLookupEnabled', userLookupEnabled);
+    refLookupEnabled = $("#refLookupEnabled").is(':checked');
+    localStorage.setItem('refLookupEnabled', refLookupEnabled);
     myCall = $("#myCall").val();
+    $("#stats-callsign").text(myCall);
     localStorage.setItem('myCall', JSON.stringify(myCall));
     qthMarker = $("#qthMarker").is(':checked');
     localStorage.setItem('qthMarker', qthMarker);
@@ -58,10 +55,19 @@ function updateModelFromUI() {
     localStorage.setItem('bandColours', bandColours);
     modeColours = $("#modeColours").is(':checked');
     localStorage.setItem('modeColours', modeColours);
-    smallMarkers = $("#smallMarkers").is(':checked');
-    localStorage.setItem('smallMarkers', smallMarkers);
+    fixedMarkerColour = $("#fixedMarkerColour").val();
+    localStorage.setItem('fixedMarkerColour', JSON.stringify(fixedMarkerColour));
+    markerSize = $("#markerSize").val();
+    localStorage.setItem('markerSize', markerSize);
+    outlineMarkers = $("#outlineMarkers").is(':checked');
+    localStorage.setItem('outlineMarkers', outlineMarkers);
+    circleMarkers = $("#circleMarkers").is(':checked');
+    localStorage.setItem('circleMarkers', circleMarkers);
     hybridMarkerSize = $("#hybridMarkerSize").is(':checked');
     localStorage.setItem('hybridMarkerSize', hybridMarkerSize);
+    showMarkerShadows = $("#showMarkerShadows").is(':checked');
+    showMarkerShadows ? $(".leaflet-shadow-pane").show() : $(".leaflet-shadow-pane").hide();
+    localStorage.setItem('showMarkerShadows', showMarkerShadows);
     outdoorSymbols = $("#outdoorSymbols").is(':checked');
     localStorage.setItem('outdoorSymbols', outdoorSymbols);
     showCallsignLabels = $("#showCallsignLabels").is(':checked');
@@ -70,8 +76,12 @@ function updateModelFromUI() {
     localStorage.setItem('showGridSquareLabels', showGridSquareLabels);
     showDistanceLabels = $("#showDistanceLabels").is(':checked');
     localStorage.setItem('showDistanceLabels', showDistanceLabels);
-    distancesInMiles = $("#distancesInMiles").is(':checked');
-    localStorage.setItem('distancesInMiles', distancesInMiles);
+    distanceUnit = $("#distanceUnit").val();
+    localStorage.setItem('distanceUnit', JSON.stringify(distanceUnit));
+    showComments = $("#showComments").is(':checked');
+    localStorage.setItem('showComments', showComments);
+    inferOutdoorActivitiesFromComments = $("#inferOutdoorActivitiesFromComments").is(':checked');
+    localStorage.setItem('inferOutdoorActivitiesFromComments', inferOutdoorActivitiesFromComments);
     if ($("#filter-year").val()) {
         filterYear = $("#filter-year").val();
     }
@@ -81,19 +91,12 @@ function updateModelFromUI() {
     if ($("#filter-band").val()) {
         filterBand = $("#filter-band").val();
     }
-    queryXOTA = $("#queryXOTA").is(':checked');
-    localStorage.setItem('queryXOTA', queryXOTA);
-    queryQRZ = $("#queryQRZ").is(':checked');
-    localStorage.setItem('queryQRZ', queryQRZ);
-    queryHamQTH = $("#queryHamQTH").is(':checked');
-    localStorage.setItem('queryHamQTH', queryHamQTH);
-    rememberPasswords = $("#rememberPasswords").is(':checked');
-    localStorage.setItem('rememberPasswords', rememberPasswords);
     redrawAll();
 }
 
 function updatePosFromGridInput() {
     qthGrid = $("#qthGrid").val().toUpperCase();
+    $("#stats-qth").text(qthGrid);
     localStorage.setItem('qthGrid', JSON.stringify(qthGrid));
 
     let pos = latLonForGridCentre(qthGrid);
@@ -112,6 +115,7 @@ $(".loadBehaviourControl").change(function () {
 $("#clearQSOs").click(function () {
     clearData();
     redrawAll();
+    recalculateStats();
 });
 
 // Listen for toggle changes where another should be toggled off when this is toggled on. These are called before the
@@ -127,27 +131,12 @@ $("#modeColours").change(function () {
     }
 });
 
-// Listen for small icons toggle
-$("#smallMarkers").change(function () {
-    if ($("#smallMarkers").is(':checked')) {
+// Listen for circle marker type toggle
+$("#circleMarkers").change(function () {
+    if ($("#circleMarkers").is(':checked')) {
+        $("#outdoorSymbols").prop('checked', false);
         $("#hybridMarkerSize").prop('checked', false);
-    }
-});
-
-// Listen for outdoor activity symbols toggle
-$("#outdoorSymbols").change(function () {
-    if (!$("#outdoorSymbols").is(':checked')) {
-        $("#hybridMarkerSize").prop('checked', false);
-    }
-});
-
-// Listen for hybrid marker size toggle
-$("#hybridMarkerSize").change(function () {
-    if ($("#hybridMarkerSize").is(':checked')) {
-        $("#smallMarkers").prop('checked', false);
-    }
-    if ($("#hybridMarkerSize").is(':checked')) {
-        $("#outdoorSymbols").prop('checked', true);
+        $("#showMarkerShadows").prop('checked', false);
     }
 });
 
@@ -161,107 +150,42 @@ $(".textControl").on("input", function() {
     updateModelFromUI();
 });
 
-// If QRZ username and password were filled in, but the user hasn't clicked Login yet, but they just turned on this
-// option, simulate a login click. Should be done after the updateModelFromUI call so we bind this afterwards.
-$("#queryQRZ").change(function () {
-    if (queryQRZ && !qrzToken && $("#qrzUser").val().length > 0 && $("#qrzPass").val().length > 0) {
-        $("#qrzLogin").click();
-    }
-});
-
-// If HamQTH username and password were filled in, but the user hasn't clicked Login yet, but they just turned on this
-// option, simulate a login click. Should be done after the updateModelFromUI call so we bind this afterwards.
-$("#queryHamQTH").change(function () {
-    if (queryHamQTH && !hamQTHToken && $("#hamqthUser").val().length > 0 && $("#hamqthPass").val().length > 0) {
-        $("#hamqthLogin").click();
-    }
-});
-
-// Log into QRZ.com, get a session token if the login was correct. Show a status indicator next to the login button.
-$("#qrzLogin").click(function() {
-    $("#qrzApiStatus").show();
-    $("#qrzApiStatus").html("<i class=\"fa-solid fa-spinner\"></i> Logging into QRZ.com...");
-
-    let username = $("#qrzUser").val();
-    let password = $("#qrzPass").val();
-    $.ajax({
-        url: QRZ_API_BASE_URL,
-        data: { username: encodeURIComponent(username), password: encodeURIComponent(password), agent: API_LOOKUP_USER_AGENT_STRING },
-        dataType: 'xml',
-        timeout: 10000,
-        success: async function (result) {
-            let key = $(result).find("Key");
-            if (key && key.text().length > 0) {
-                if ($(result).find("SubExp") === "non-subscriber") {
-                    // Non-subscriber, warn the user
-                    $("#qrzApiStatus").html("<i class='fa-solid fa-triangle-exclamation'></i> User has no QRZ.com XML API subscription");
-                } else {
-                    // Got a token and a proper "subscription expiry" string so we are good to go.
-                    qrzToken = key.text();
-                    $("#qrzApiStatus").html("<i class='fa-solid fa-check'></i> QRZ.com authentication successful");
-                    // If the user hasn't turned on QRZ querying yet, they probably want it on so do that for them.
-                    $("#queryQRZ").prop('checked', true);
-                }
-
-            } else {
-                // No key, so login failed
-                $("#qrzApiStatus").html("<i class='fa-solid fa-xmark'></i> Incorrect username or password");
-            }
-        },
-        error: function () {
-            $("#qrzApiStatus").html("<i class='fa-solid fa-triangle-exclamation'></i> QRZ.com API error, please try again later");
-        }
-    });
-    localStorage.setItem('qrzUser', JSON.stringify(username));
-    if (rememberPasswords) {
-        localStorage.setItem('qrzPass', JSON.stringify(password));
-    }
-});
-
-// Log into HamQTH, get a session token if the login was correct. Show a status indicator next to the login button.
-$("#hamqthLogin").click(function() {
-    $("#hamqthApiStatus").show();
-    $("#hamqthApiStatus").html("<i class=\"fa-solid fa-spinner\"></i> Logging into HamQTH...");
-
-    let username = $("#hamqthUser").val();
-    let password = $("#hamqthPass").val();
-    $.ajax({
-        url: HAMQTH_API_BASE_URL,
-        data: { u: encodeURIComponent(username), p: encodeURIComponent(password) },
-        dataType: 'xml',
-        timeout: 10000,
-        success: async function (result) {
-            let key = $(result).find("session_id");
-            if (key && key.text().length > 0) {
-                // Got a token so we are good to go.
-                hamQTHToken = key.text();
-                $("#hamqthApiStatus").html("<i class='fa-solid fa-check'></i> HamQTH authentication successful");
-                // If the user hasn't turned on HamQTH querying yet, they probably want it on so do that for them.
-                $("#queryHamQTH").prop('checked', true);
-
-            } else {
-                // No key, so login failed
-                $("#hamqthApiStatus").html("<i class='fa-solid fa-xmark'></i> Incorrect username or password");
-            }
-        },
-        error: function () {
-            $("#hamqthApiStatus").html("<i class='fa-solid fa-triangle-exclamation'></i> HamQTH API error, please try again later");
-        }
-    });
-    localStorage.setItem('hamQTHUser', JSON.stringify(username));
-    if (rememberPasswords) {
-        localStorage.setItem('hamQTHPass', JSON.stringify(password));
-    }
-});
-
-// Open/close controls
-function openControls() {
-    $("#menuButton").hide();
-    $("#controls").show(100);
+// Open/close panels
+function toggleData() {
+    hidePanel("displayPanel", "displayMenuButton");
+    hidePanel("aboutPanel", "aboutMenuButton");
+    hidePanel("statsPanel", "statsMenuButton");
+    togglePanel("dataPanel", "dataMenuButton");
 }
-function closeControls() {
-    $("#controls").hide(100);
-    $("#menuButton").show();
+function toggleDisplay() {
+    hidePanel("dataPanel", "dataMenuButton");
+    hidePanel("aboutPanel", "aboutMenuButton");
+    hidePanel("statsPanel", "statsMenuButton");
+    togglePanel("displayPanel", "displayMenuButton");
+}
+function toggleStats() {
+    hidePanel("displayPanel", "displayMenuButton");
+    hidePanel("aboutPanel", "aboutMenuButton");
+    hidePanel("dataPanel", "dataMenuButton");
+    togglePanel("statsPanel", "statsMenuButton");
+}
+function toggleAbout() {
+    hidePanel("displayPanel", "displayMenuButton");
+    hidePanel("dataPanel", "dataMenuButton");
+    hidePanel("statsPanel", "statsMenuButton");
+    togglePanel("aboutPanel", "aboutMenuButton");
+}
+function hidePanel(panelID, buttonID) {
+    $("#" + panelID).hide(0);
+    $("#" + buttonID).removeClass("menuButtonActive");
+}
+function togglePanel(panelID, buttonID) {
+    if ($("#" + panelID).is(":visible")) {
+        $("#" + buttonID).removeClass("menuButtonActive");
+    } else {
+        $("#" + buttonID).addClass("menuButtonActive");
+    }
+    $("#" + panelID).toggle(0);
 }
 
 // Open/close menu sections
@@ -275,6 +199,14 @@ $(".menu-heading").click(function () {
         $(this).find(".arrow").html("&#9660;");
     }
 });
+
+// Open dialogs
+function openDialog(id) {
+    $("#" + id).show();
+}
+function closeDialog(id) {
+    $("#" + id).hide();
+}
 
 // Populate the filter controls based on the years, bands and modes in the data we have loaded
 function populateFilterControls(years, bands, modes) {
@@ -301,15 +233,10 @@ function populateFilterControls(years, bands, modes) {
     });
 }
 
-// Clear the lookup queue, cancelling any pending requests.
-function clearQueue() {
-    failedLookupCount += queue.length;
-    queue = [];
-}
-
 // Set my callsign and save to local storage.
 function setMyCall(call) {
     myCall = call;
     $("#myCall").val(myCall);
+    $("#stats-callsign").text(myCall);
     localStorage.setItem('myCall', JSON.stringify(myCall));
 }

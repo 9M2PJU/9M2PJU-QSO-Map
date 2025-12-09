@@ -4,7 +4,7 @@
     "name": "QSO Map Tool",
     "short_name": "QSO Map Tool",
     "scope": "/",
-    "display": "standalone",
+    "display": "fullscreen",
     "start_url": "https://qsomap.m0trt.radio/",
     "background_color": "white",
     "theme_color": "white",
@@ -12,6 +12,11 @@
     "related_applications": [],
     "prefer_related_applications": false,
     "icons": [
+    {
+      "src": "/img/favicon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
     {
       "src": "/img/favicon-192.png",
       "type": "image/png",

@@ -17,17 +17,21 @@ function createOwnPosMarker(newPos) {
     }
 
     if (qthMarker && newPos != null) {
-        ownPosMarker = L.marker(newPos, {
-            icon: L.ExtraMarkers.icon({
-                icon: 'fa-tower-cell',
-                iconColor: 'white',
-                markerColor: 'grey',
-                shape: 'circle',
-                prefix: 'fa',
-                svg: true
-            }),
-            autoPan: true
-        });
+        if (circleMarkers) {
+            ownPosMarker = L.circleMarker(newPos, { radius: 5 * markerSize, fillOpacity: 1.0, opacity: 1.0, weight: 1, fill: true, color: "black", fillColor: "grey", stroke: outlineMarkers });
+        } else {
+            ownPosMarker = L.marker(newPos, {
+                icon: L.ExtraMarkers.icon({
+                    icon: (markerSize >= 0.75) ? 'fa-tower-cell' : 'fa-none',
+                    iconColor: 'white',
+                    markerColor: 'grey',
+                    shape: 'circle',
+                    prefix: 'fa',
+                    svg: true
+                }),
+                autoPan: true
+            });
+        }
 
         let tooltipText = getOwnQTHTooltipText();
         if (tooltipText) {
@@ -35,6 +39,31 @@ function createOwnPosMarker(newPos) {
         }
 
         ownPosLayer.addLayer(ownPosMarker);
+
+        // Adjust marker size (if we're using real markers not circles, circles already have their radius set at
+        // creation, whereas markers need CSS applied here)
+        if (!circleMarkers) {
+            $(ownPosMarker._icon).find("svg").css("width", (32 * markerSize) + "px");
+            $(ownPosMarker._icon).find("svg").css("height", (44 * markerSize) + "px");
+            $(ownPosMarker._icon).find("svg").css("margin-top", ((1 - markerSize) * 40) + "px");
+            $(ownPosMarker._icon).find("svg").css("margin-left", ((1 - markerSize) * 8) + "px");
+            $(ownPosMarker._icon).find("i").css("font-size", (14 + (markerSize - 1) * 10) + "px");
+            $(ownPosMarker._icon).find("i").css("margin-top", (10 + (1 - markerSize) * 28) + "px");
+            $(ownPosMarker._icon).find("i").css("position", "absolute");
+            $(ownPosMarker._icon).find("i").css("top", "0px");
+            let ml = 0;
+            if (markerSize > 1.4) {
+                ml = 3;
+            } else if (markerSize < 0.9 || (markerSize > 1.1 && markerSize < 1.4)) {
+                ml = 1;
+            }
+            $(ownPosMarker._icon).find("i").css("margin-left", ml + "px");
+        }
+
+        // Use outlined icons if requested (standard markers version, needs doing after adding to layer)
+        if (!circleMarkers && outlineMarkers) {
+            $(ownPosMarker._icon).addClass("outlinedmarker");
+        }
     }
 }
 
@@ -165,7 +194,7 @@ function qsoToColour(d) {
 
         } else if (modeColours) {
             if (qso.mode) {
-                if (qso.mode === "SSB" || qso.mode === "USB" || qso.mode === "LSB") {
+                if (getModeFamily(qso.mode) === "Phone") {
                     qsoColours.push("green");
                 } else if (qso.mode === "CW") {
                     qsoColours.push("red");
@@ -177,7 +206,7 @@ function qsoToColour(d) {
             }
 
         } else {
-            qsoColours.push("dodgerblue");
+            qsoColours.push(fixedMarkerColour);
         }
     });
     let allEqual = qsoColours.every( (val, i, arr) => val === arr[0] );
@@ -220,9 +249,10 @@ function qsoToContrastColor(d) {
 }
 
 // Get an icon for a data item, based on its band, using PSK Reporter colours, its program etc.
-function getIcon(d) {
+function getIcon(d, thisMarkerSize) {
     return L.ExtraMarkers.icon({
-        icon: getIconName(d),
+        // If marker scale is less than 75%, there's no room for an icon
+        icon: (thisMarkerSize >= 0.75) ? getIconName(d) : "fa-none",
         iconColor: qsoToContrastColor(d),
         markerColor: qsoToColour(d),
         shape: 'circle',
@@ -233,12 +263,13 @@ function getIcon(d) {
 
 // Get Font Awesome icon name for the data item. If multiple icons would be used, a star is used instead.
 function getIconName(d) {
+    let chosenIcon;
     if (outdoorSymbols) {
         // Outdoor activity symbols in use, so figure out what they are for each QSO.
         let qsoIcons = [];
         getQSOsMatchingFilter(d).forEach((qso) => {
             // First, see if the QSO has any Special Interest Group (e.g. xOTA) references set.
-            if (qso.sigRefs.length > 0) {
+            if (qso.sigRefs && qso.sigRefs.length > 0) {
                 qso.sigRefs.forEach(p => {
                     if (p.program === "POTA") {
                         qsoIcons.push("fa-tree");
@@ -288,10 +319,6 @@ function getIconName(d) {
                 } else {
                     qsoIcons.push("fa-crosshairs");
                 }
-            } else if (hybridMarkerSize) {
-                // No outdoor activity program could be inferred. Since "show activity symbols" is on, we assume we were portable, so
-                // this is a QSO with a hunter, and we have hybrid size turned on, so this will be a small marker, and we want no icon.
-                qsoIcons.push("fa-none");
             } else {
                 // No outdoor activity program could be inferred. Since "show activity symbols" is on, we assume we were portable, so
                 // this is a QSO with a hunter, and we don't have hybrid size on, so use crosshairs symbol.
@@ -301,18 +328,17 @@ function getIconName(d) {
         let allEqual = qsoIcons.every( (val, i, arr) => val === arr[0] );
         if (allEqual) {
             // All QSOs with this callsign + grid have the same icon, so use it
-            return qsoIcons[0];
+            chosenIcon = qsoIcons[0];
         } else {
             // Multiple different icons are specified by this QSO set, so show a star
-            return "fa-star";
+            chosenIcon = "fa-star";
         }
-    } else if (smallMarkers) {
-        // Outdoor activity icons not in use, and small icons set, so use no symbol.
-        return "fa-none";
     } else {
-        // Outdoor activity icons not in use, and small icons not set, so use a circle symbol like a "standard" map marker.
-        return "fa-circle"
+        // Outdoor activity icons not in use, and normal or larger size icons in use, so use a circle symbol like a
+        // "standard" map marker.
+        chosenIcon = "fa-circle"
     }
+    return chosenIcon;
 }
 
 // Utility function to get the distance to a QSO's grid from your grid, in a format for displaying on screen.
@@ -322,7 +348,7 @@ function getDistanceString(d) {
     if (d.grid && qthPos) {
         let iconPos = getIconPosition(d);
         let distanceMetres = L.GeometryUtil.length([new L.LatLng(qthPos[0], qthPos[1]), new L.LatLng(iconPos[0], iconPos[1])]);
-        if (distancesInMiles) {
+        if (distanceUnit === "mi") {
             ret = (distanceMetres / 1609.0).toFixed(0) + "&nbsp;mi";
         } else {
             ret = (distanceMetres / 1000.0).toFixed(0) + "&nbsp;km";
@@ -373,7 +399,11 @@ function anyQSOMatchesFilter(d) {
 // Given a QSO, list any SIG/xOTA references that the QSO partner was logged at, as a string in a deterministic order,
 // including HTML links to each reference. If there are none, a blank string will be returned.
 function listSIGRefsWithLinks(q) {
-    return "" + q.sigRefs.map(p => sigRefToHTMLLink(p)).sort().join(", ");
+    if (q.sigRefs != null) {
+        return "" + q.sigRefs.map(p => sigRefToHTMLLink(p)).sort().join(", ");
+    } else {
+        return "";
+    }
 }
 
 // For a given SIG/xOTA reference, produce an HTML link to it in the relevant programme.
@@ -405,5 +435,33 @@ function getURLforReference(program, reference) {
         return "https://www.cqgma.org/zinfo.php?ref=" + reference;
     } else {
         return null;
+    }
+}
+
+// Format a duration for the stats panel
+function formatDurationText(duration) {
+    let durationMins = duration.as('minutes');
+    let durationHours = Math.floor(durationMins / 60.0);
+    durationMins = durationMins - (durationHours * 60.0);
+    if (durationHours === 0) {
+        return durationMins + " minute" + (durationMins === 1 ? "" : "s");
+    } else if (durationHours === 1) {
+        return durationHours + " hour " + durationMins + " min" + (durationMins === 1 ? "" : "s");
+    } else if (durationHours < 72) {
+        return durationHours + " hours " + durationMins + " min" + (durationMins === 1 ? "" : "s");
+    } else {
+        let durationDays = Math.ceil(durationHours / 24.0);
+        return durationDays + " days ";
+    }
+}
+
+// For a mode, return the "mode family".
+function getModeFamily(mode) {
+    if (mode.toUpperCase() === "CW") {
+        return "CW";
+    } else if (["PHONE", "PH", "SSB", "USB", "LSB", "AM", "FM", "DV", "DMR", "DSTAR", "C4FM", "M17"].includes(mode.toUpperCase())) {
+        return "Phone";
+    } else {
+        return "Data";
     }
 }

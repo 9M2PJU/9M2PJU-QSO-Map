@@ -17,7 +17,8 @@ const CACHE_URLS = [
   'js/startup.js',
   'img/favicon.png',
   'img/favicon-32.png',
-  'img/favicon-192.png'
+  'img/favicon-192.png',
+  'img/favicon-512.png'
 ];
 
 self.addEventListener('fetch', (event) => {

@@ -19,21 +19,17 @@ const BANDS = [
     {name: "70cm", startFreq: 420.0, stopFreq: 450.0, color: "#999900", contrastColor: "white"},
     {name: "23cm", startFreq: 1240.0, stopFreq: 1325.0, color: "#5AB8C7", contrastColor: "black"},
     {name: "13cm", startFreq: 2300.0, stopFreq: 2450.0, color: "#FF7F50", contrastColor: "black"}];
-const API_LOOKUP_USER_AGENT_STRING = "M0TRT_QSO_Map_v1.0";
-const QRZ_API_BASE_URL = "https://xmldata.qrz.com/xml/current/";
-const HAMQTH_API_BASE_URL = "https://www.hamqth.com/xml.php";
-const POTA_PARK_BASE_URL = "https://api.pota.app/park/";
-const SOTA_SUMMIT_BASE_URL = "https://api-db2.sota.org.uk/api/summits/";
-const WWBOTA_BUNKER_BASE_URL = "https://api.wwbota.org/bunkers/";
-const GMA_REF_BASE_URL = "https://www.cqgma.org/api/ref/?";
+// Heatmap band render order. From "longest" range to "shortest". This is an ugly hack.
+HEATMAP_BAND_RENDER_ORDER = ["10m", "12m", "15m", "17m", "20m", "30m", "40m", "60m", "80m", "160m", "6m", "4m", "2m", "70cm", "23cm", "13cm"];
+const SPOTHOLE_BASE_URL = "https://spothole.app/api/v1";
 const MAIDENHEAD_GRID_COLOR_LIGHT = 'rgba(200, 140, 140, 1.0)';
 const CQ_ZONES_COLOR_LIGHT = 'rgba(140, 200, 140, 1.0)';
 const ITU_ZONES_COLOR_LIGHT = 'rgba(200, 200, 140, 1.0)';
-const WAB_GRID_COLOR_LIGHT = 'rgba(140, 140, 200, 1.0)';
+const WAB_WAI_GRID_COLOR_LIGHT = 'rgba(140, 140, 200, 1.0)';
 const MAIDENHEAD_GRID_COLOR_DARK = 'rgba(120, 60, 60, 1.0)';
 const CQ_ZONES_COLOR_DARK = 'rgba(60, 120, 60, 1.0)';
 const ITU_ZONES_COLOR_DARK = 'rgba(120, 120, 60, 1.0)';
-const WAB_GRID_COLOR_DARK = 'rgba(60, 60, 120, 1.0)';
+const WAB_WAI_GRID_COLOR_DARK = 'rgba(60, 60, 120, 1.0)';
 
 /////////////////////////////
 //      DATA STORAGE       //
@@ -47,17 +43,14 @@ let data = new Map();
 // A list of QSOs received without grid information, which have been held for lookup. Once they have
 // grid information, they are removed from here and added to data.
 let queue = [];
-// A map of callsign to data we looked up from QRZ.com. Used so that we don't re-query QRZ again for a call we have
+// A map of callsign to data we looked up from Spothole. Used so that we don't re-query Spothole again for a call we have
 // already seen.
 let lookupData = new Map();
 // Count of all QSOs loaded from file(s)
 let qsoCount = 0;
-// Count of all QSOs we tried but failed to look up. Used for status reporting.
-let failedLookupCount = 0;
 // Track whether we have tried to load something, and whether we are still loading. Used to control the status indicator.
 let loadedAtLeastOnce = false
 let loading = false;
-let lastLoadTypeRecognised = false;
 // My callsign
 let myCall;
 // Position of the grey home marker
@@ -81,14 +74,15 @@ let gridSquaresWorkedLayer;
 let gridSquaresWorkedLabelsLayer;
 let ownPosLayer;
 let ownPosMarker;
+let heatmapData = [];
+let perBandHeatmapsData = new Map();
+let heatmapLayer;
+let perBandHeatmapsGroup;
+let perBandHeatmaps = new Map();
 let maidenheadGrid;
-let wabGrid;
+let wabwaiGrid;
 let cqZones;
 let ituZones;
-// Session token for QRZ.com lookups
-let qrzToken;
-// Session token for HamQTH lookups
-let hamQTHToken;
 // Tracker for how many years, bands and modes we have in our data set.
 let years = new Set();
 let bands = new Set();
@@ -100,6 +94,8 @@ let modes = new Set();
 /////////////////////////////
 
 let appendOnLoad = false;
+let userLookupEnabled = true;
+let refLookupEnabled = true;
 let basemap = "Esri.NatGeoWorldMap";
 let basemapOpacity = 0.5;
 let basemapIsDark = false;
@@ -110,25 +106,28 @@ let gridSquaresEnabled = false;
 let labelGridSquaresWorked = false;
 let colourLines = true;
 let thickLines = true;
+let heatmapEnabled = false;
+let perBandHeatmapEnabled = false;
 let bandColours = true;
-let modeColours = true;
-let smallMarkers = false;
+let modeColours = false;
+let fixedMarkerColour = "#1e90ff";
+let markerSize = 1;
+let outlineMarkers = true;
+let circleMarkers = false;
 let outdoorSymbols = false;
 let hybridMarkerSize = false;
+let showMarkerShadows = true;
 let showMaidenheadGrid = false;
 let showCQZones = false;
 let showITUZones = false;
-let showWABGrid = false;
+let showWABWAIGrid = false;
 let showCallsignLabels = false;
 let showGridSquareLabels = false;
 let showDistanceLabels = false;
-let distancesInMiles = false;
+let distanceUnit = "km";
 let showComments = true;
 let inferOutdoorActivitiesFromComments = false;
 let filterYear = "*";
 let filterMode = "*";
 let filterBand = "*";
-let queryXOTA = true;
-let queryQRZ = false;
-let queryHamQTH = false;
-let rememberPasswords = true;
+let fineZoomControl = false;

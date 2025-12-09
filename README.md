@@ -19,27 +19,27 @@ Use it at [https://qsomap.m0trt.radio](https://qsomap.m0trt.radio).
 * Lots more options for drawing lines, labelling markers etc
 * Popup balloons showing your QSO history
 * Filter by date, band and mode
-* Grid/location lookups from POTA, SOTA, WWBOTA, WWFF, GMA, QRZ.com & HamQTH
+* Grid/location lookups using the Spothole API
 
-For upcoming features, see the [issues backlog](https://github.com/ianrenton/qsomap/issues). If you'd like an extra feature, please let me know!
+For upcoming features, see the [issues backlog](https://git.ianrenton.com/ian/qsomap/issues). If you'd like an extra feature, please let me know!
 
 ### Privacy
 
-All the code for the QSO map runs locally in your browser, so your log file "uploads" don't leave your computer. If you enter your QRZ.com or HamQTH username and password to use the lookup service, the credentials are sent to those sites via HTTPS, which encrypts them in transit. The callsigns of your QSO partners are also sent. The POTA, SOTA etc. APIs may also be queried for the grid square of any references in your logs; this does not include your QSO partners' callsigns.
-
-The "Remember Passwords" option stores your QRZ.com and/or HamQTH passwords locally in your browser, to avoid you having to enter them each time. You should ensure this option is unchecked if using a shared computer.
+All the code for the QSO map runs locally in your browser, so your log file "uploads" don't leave your computer. Where QSOs are found with missing data, the [Spothole](https://spothole.app) API is queried to fetch the data. No personally identifying information such as your own callsign is transmitted.
 
 The website itself does not use cookies, is not monetised, does not contain advertising, and does not receive or store any user data. It is open source and the code is released into the Public Domain.
 
 ### Third Party Libraries
 
-The project contains a self-hosted copy of Font Awesome's free library, in the `/fa/` directory. This is subject to Font Awesome's licence and is not covered by the overall licence declared in the `LICENSE` file. This approach was taken in preference to using their hosted kits due to the popularity of this project exceeding the page view limit for their free hosted offering.
+This project contains a self-hosted variant of `dxcc.json` from [this project](https://github.com/k0swe/dxcc-json/) by Chris K0SWE, in the `/data/` directory. This is subject to the Apache licence and is not covered by the overall licence declared in the `LICENSE` file, and used with many thanks.
+
+It also contains a self-hosted copy of Font Awesome's free library, in the `/fa/` directory. This is subject to Font Awesome's licence. This approach was taken in preference to using their hosted kits due to the popularity of this project exceeding the page view limit for their free hosted offering.
 
 Other third party libraries, such as Leaflet and jQuery, plus many plugins for them, are included from a CDN in the head of `index.html`.
 
 This project would not have been possible without these libraries, so many thanks to their developers.
 
-Particular thanks are due to HA8TKS for the Maidenhead, CQ and ITU zone layers, which were also the basis for my own WAB grid layer.
+Particular thanks are due to HA8TKS for the Maidenhead, CQ and ITU zone layers, which were also the basis for my own WAB/WAI grid layer.
 
 ### Alternatives
 

@@ -1,7 +1,6 @@
 :root {
     --background: white;
-    --popup-background: white;
-    --box-background: #eeeeee;
+    --faded: #cccccc;
     --text: black;
     --link-color: dodgerblue;
 }

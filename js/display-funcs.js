@@ -6,7 +6,7 @@
 // called when a bulk change needs to happen, for example the first load occurs, a clear occurs,
 // or a UI change occurs e.g. changing how colours are done for all markers.
 function redrawAll() {
-    // Clear existing markers and lines
+    // Clear existing markers, lines and heatmaps
     markers.forEach(marker => markersLayer.removeLayer(marker));
     markers = new Map();
     lines.forEach(line => linesLayer.removeLayer(line));
@@ -15,12 +15,55 @@ function redrawAll() {
     gridSquares = new Map();
     gridSquareLabels.forEach(label => gridSquaresWorkedLabelsLayer.removeLayer(label));
     gridSquareLabels = new Map();
+    try {
+        heatmapLayer.setLatLngs([]);
+    } catch (e) {}
+    perBandHeatmapsGroup.eachLayer(function (l) {
+        try {
+            l.setLatLngs([]);
+        } catch (e) {}
+    });
 
     // Add own position marker
     createOwnPosMarker(qthPos);
 
-    // Iterate through qsos, creating markers
+    // Iterate through qsos, creating markers, lines, worked squares etc. This covers everything displayed per-QSO apart
+    // from the heatmaps, which are covered further down.
     data.forEach((value, key) => redraw(key));
+
+    // Calculate data sets for the heatmaps. We have to do this in two stages because the "intensity" value we use when
+    // drawing the heatmap is based on how many total qsos there are, or how qsos per band there are. So first, we build
+    // data sets. Each item is simply a [lat,lon].
+    heatmapData = [];
+    perBandHeatmapsData = new Map();
+    BANDS.forEach(band => perBandHeatmapsData.set(band.name, []));
+    data.forEach((d) => {
+        let pos = getIconPosition(d);
+        if (pos != null) {
+            d.qsos.forEach((qso) => {
+                heatmapData.push([pos[0], pos[1], 1]);
+                if (qso.band && perBandHeatmapsData.has(qso.band)) {
+                    perBandHeatmapsData.get(qso.band).push([pos[0], pos[1], 1]);
+                }
+            });
+        }
+    });
+
+    // Now for every point, calculate an intensity based on the total number of points, and store it.
+    heatmapData.forEach(d => d[2] = (heatmapData.size > 0) ? (1000 / Math.max(Math.min(heatmapData.size / 100, 5), 1)) : 1000);
+    perBandHeatmapsData.forEach(pbd => {
+        pbd.forEach(d => d[2] = (heatmapData.size > 0) ? (5000 / Math.max(Math.min(pbd.size / 100, 5), 1)) : 1000);
+    });
+
+    // Load the data into the heatmaps
+    try {
+    heatmapLayer.setLatLngs(heatmapData);
+    } catch (e) {}
+    perBandHeatmaps.forEach((value, key) => {
+        try {
+        value.setLatLngs(perBandHeatmapsData.get(key));
+        } catch (e) {}
+    });
 }
 
 // Redraw a specific QSO (which can include creating the marker for the first time if it doesn't
@@ -35,10 +78,23 @@ function redraw(key) {
         // Add or update marker
         if (markersEnabled) {
             // Get an existing marker if we have one, else create a new one.
-            let m = (markers.has(key)) ? markers.get(key) : L.marker(pos);
+            let m;
+            if (markers.has(key)) {
+                m = markers.get(key)
+            } else if (circleMarkers) {
+                m = L.circleMarker(pos, { radius: 5 * markerSize, fillOpacity: 1.0, opacity: 1.0, weight: 1, fill: true, color: "black" });
+            } else {
+                m = L.marker(pos);
+            }
 
             // Set the icon for the marker
-            m.setIcon(getIcon(d));
+            if (circleMarkers) {
+                // Set the colour
+                m.options.fillColor = qsoToColour(d);
+            } else {
+                // Set the icon
+                m.setIcon(getIcon(d, markerSize));
+            }
 
             // Set popup text for the marker
             m.bindPopup(getPopupText(d));
@@ -49,15 +105,49 @@ function redraw(key) {
                 m.bindTooltip(tooltipText, {permanent: true, direction: 'bottom', offset: L.point(0, -10)});
             }
 
+            // Use outlined icons if requested (circle markers version, needs doing before adding to layer)
+            if (circleMarkers) {
+                m.options.stroke = outlineMarkers;
+            }
+
             // If this marker was newly created, add it to the layer
             if (!markers.has(key)) {
                 markersLayer.addLayer(m);
             }
 
-            // Use small icons if requested. This is if "small icons" is enabled, of if "hybrid marker size"
-            // is selected and the marker has no icon.
-            if (smallMarkers || (hybridMarkerSize && getIconName(d) === "fa-none")) {
-                $(m._icon).addClass("smallmarker");
+            // If we are using hybrid marker size and this is a non-xOTA marker, reduce its size
+            let thisMarkerSize = markerSize;
+            if (hybridMarkerSize && (getIconName(d) === "fa-crosshairs" || getIconName(d) === "fa-none")) {
+                thisMarkerSize = thisMarkerSize - 0.5;
+                if (thisMarkerSize < 0.125) {
+                    thisMarkerSize = 0.125;
+                }
+                m.setIcon(getIcon(d, thisMarkerSize));
+            }
+
+            // Adjust marker size (if we're using real markers not circles, circles already have their radius set at
+            // creation, whereas markers need CSS applied here)
+            if (!circleMarkers) {
+                $(m._icon).find("svg").css("width", (32 * thisMarkerSize) + "px");
+                $(m._icon).find("svg").css("height", (44 * thisMarkerSize) + "px");
+                $(m._icon).find("svg").css("margin-top", ((1 - thisMarkerSize) * 40) + "px");
+                $(m._icon).find("svg").css("margin-left", ((1 - thisMarkerSize) * 8) + "px");
+                $(m._icon).find("i").css("font-size", (14 + (thisMarkerSize - 1) * 10 - ((getIconName(d) === "fa-circle") ? 2 : 0)) + "px");
+                $(m._icon).find("i").css("margin-top", (10 + (1 - thisMarkerSize) * 28 + ((getIconName(d) === "fa-circle") ? 2 : 0)) + "px");
+                $(m._icon).find("i").css("position", "absolute");
+                $(m._icon).find("i").css("top", "0px");
+                let ml = 0;
+                if (thisMarkerSize > 1.4) {
+                    ml = 3;
+                } else if (thisMarkerSize < 0.9 || (thisMarkerSize > 1.1 && thisMarkerSize < 1.4)) {
+                    ml = 1;
+                }
+                $(m._icon).find("i").css("margin-left", ml + "px");
+            }
+
+            // Use outlined icons if requested (standard markers version, needs doing after adding to layer)
+            if (!circleMarkers && outlineMarkers) {
+                $(m._icon).addClass("outlinedmarker");
             }
 
             // Store the marker for next time
@@ -157,18 +247,71 @@ function enableITUZones(show) {
     localStorage.setItem('showITUZones', show);
 }
 
-// Shows/hides the WAB grid overlay
-function enableWABGrid(show) {
-    showWABGrid = show;
-    if (wabGrid) {
+// Shows/hides the WAB/WAI grid overlay
+function enableWABWAIGrid(show) {
+    showWABWAIGrid = show;
+    if (wabwaiGrid) {
         if (show) {
-            wabGrid.addTo(map);
+            wabwaiGrid.addTo(map);
             basemapLayer.bringToBack();
         } else {
-            map.removeLayer(wabGrid);
+            map.removeLayer(wabwaiGrid);
         }
     }
-    localStorage.setItem('showWABGrid', show);
+    localStorage.setItem('showWABWAIGrid', show);
+}
+
+// Shows/hides the Heatmap layer
+function enableHeatmap(show) {
+    heatmapEnabled = show;
+    if (heatmapLayer) {
+        if (show) {
+            // Repopulate the display
+            try {
+                heatmapLayer.setLatLngs(heatmapData);
+            } catch (e) {}
+            heatmapLayer.addTo(map);
+            basemapLayer.bringToBack();
+        } else {
+            map.removeLayer(heatmapLayer);
+        }
+    }
+    localStorage.setItem('heatmapEnabled', show);
+}
+
+// Shows/hides the Per-Band Heatmap layer
+function enablePerBandHeatmap(show) {
+    perBandHeatmapEnabled = show;
+    if (perBandHeatmapsGroup) {
+        if (show) {
+            // Repopulate the display
+            perBandHeatmaps.forEach((value, key) => {
+                try {
+                    value.setLatLngs(perBandHeatmapsData.get(key));
+                } catch (e) {}
+            });
+            perBandHeatmapsGroup.addTo(map);
+            basemapLayer.bringToBack();
+        } else {
+            map.removeLayer(perBandHeatmapsGroup);
+        }
+    }
+    localStorage.setItem('perBandHeatmapEnabled', show);
+}
+
+// Enable/disable fine control of the map zoom level
+function setFineZoomControl(enable) {
+    if (enable) {
+        map.options.zoomDelta = 0.25;
+        map.options.zoomSnap = 0;
+        map.options.wheelPxPerZoomLevel = 200;
+    } else {
+        map.options.zoomDelta = 1.0;
+        map.options.zoomSnap = 1.0;
+        map.options.wheelPxPerZoomLevel = 60;
+    }
+    fineZoomControl = enable;
+    localStorage.setItem('fineZoomControl', fineZoomControl);
 }
 
 // Get text for the normal click-to-appear popups. Takes a data item that may contain multiple QSOs.
@@ -265,7 +408,7 @@ function getTooltipText(d) {
     }
 
     if (labelText) {
-        return "<div style='color: " + (basemapIsDark ? "white" : "black") + "; text-align: center;'>" + labelText + "</div>";
+        return "<div style='padding-top: 5px; color: " + (basemapIsDark ? "white" : "black") + "; text-align: center;'>" + labelText + "</div>";
     } else {
         return "";
     }
@@ -288,7 +431,7 @@ function getOwnQTHTooltipText() {
     }
 
     if (labelText) {
-        return "<div style='color: " + (basemapIsDark ? "white" : "black") + "; text-align: center;'>" + labelText + "</div>";
+        return "<div style='padding-top: 5px; color: " + (basemapIsDark ? "white" : "black") + "; text-align: center;'>" + labelText + "</div>";
     } else {
         return "";
     }
@@ -307,7 +450,7 @@ function getIconPosition(d) {
         if (lat != null && lon != null && !isNaN(lat) && !isNaN(lon) && (lat !== 0.0 || lon !== 0.0)) {
             let wrapEitherSideOfLon = 0;
             if (qthPos != null) {
-                wrapEitherSideOfLon = qthPos.lng;
+                wrapEitherSideOfLon = qthPos[1];
             }
             let tmpLon = lon;
             while (tmpLon < wrapEitherSideOfLon - 180) {
@@ -347,12 +490,12 @@ function setBasemap(basemapname) {
             maidenheadGrid.options.color = MAIDENHEAD_GRID_COLOR_DARK;
             cqZones.options.color = CQ_ZONES_COLOR_DARK;
             ituZones.options.color = ITU_ZONES_COLOR_DARK;
-            wabGrid.options.color = WAB_GRID_COLOR_DARK;
+            wabwaiGrid.options.color = WAB_WAI_GRID_COLOR_DARK;
         } else {
             maidenheadGrid.options.color = MAIDENHEAD_GRID_COLOR_LIGHT;
             cqZones.options.color = CQ_ZONES_COLOR_LIGHT;
             ituZones.options.color = ITU_ZONES_COLOR_LIGHT;
-            wabGrid.options.color = WAB_GRID_COLOR_LIGHT;
+            wabwaiGrid.options.color = WAB_WAI_GRID_COLOR_LIGHT;
         }
         if (showMaidenheadGrid) {
             map.removeLayer(maidenheadGrid);
@@ -369,9 +512,9 @@ function setBasemap(basemapname) {
             ituZones.addTo(map);
             basemapLayer.bringToBack();
         }
-        if (showWABGrid) {
-            map.removeLayer(wabGrid);
-            wabGrid.addTo(map);
+        if (showWABWAIGrid) {
+            map.removeLayer(wabwaiGrid);
+            wabwaiGrid.addTo(map);
             basemapLayer.bringToBack();
         }
     }
@@ -389,48 +532,138 @@ function setBasemapOpacity(opacity) {
 
 
 // Update the status indicator. Called regularly, and uses internal software state to choose what to display.
-function updateStatus() {
+async function updateStatus() {
     if (loadedAtLeastOnce) {
-        let statusText = "";
-
-        // Icon. Spinner if we are doing something, check if all done and every QSO has a grid, exclamation mark if
-        // we have qsos without grids.
-        if (loading || (queue.length > 0 && qrzToken)) {
-            statusText = "<i class=\"fa-solid fa-spinner\"></i> ";
-        } else if (queue.length > 0 || failedLookupCount > 0 || qsoCount === 0 || !lastLoadTypeRecognised) {
-            statusText += "<i class=\"fa-solid fa-triangle-exclamation\"></i> ";
-        } else {
-            statusText += "<i class=\"fa-solid fa-check\"></i> ";
+        let qsosDone = qsoCount - queue.length;
+        let status = `<progress id="file" value="${qsosDone}" max="${qsoCount}"></progress>&nbsp;${qsosDone}/${qsoCount}`;
+        if (qsosDone === qsoCount && qsoCount !== 0) {
+            status = status + " <b>Done!</b>";
         }
 
-        // Status text
-        if (loading) {
-            statusText += "Loading...";
-        } else if (!lastLoadTypeRecognised) {
-            statusText += "Could not parse this file as a supported format (ADIF, Cabrillo or SOTA CSV)"
-        } else if (qsoCount > 0) {
-            if (queue.length === 0 && failedLookupCount === 0) {
-                statusText += "Loaded and displayed " + qsoCount + " QSOs.";
-            } else if (queue.length === 0) {
-                statusText += "Loaded " + qsoCount + " QSOs, failed to find grids for " + failedLookupCount + ".";
-            } else if (failedLookupCount === 0) {
-                if (qrzToken) {
-                    statusText += "Loaded " + qsoCount + " QSOs, " + queue.length + " in lookup queue.";
-                } else {
-                    statusText += "Loaded " + qsoCount + " QSOs, " + queue.length + " had no grid.";
-                }
-            } else {
-                statusText += "Loaded " + qsoCount + " QSOs, " + queue.length + " in queue, failed to find grids for " + failedLookupCount + ".";
-            }
-        } else {
-            statusText += "Failed to parse QSOs in this file";
-        }
-
-        // Abort option
-        if (queue.length > 0 && qrzToken) {
-            statusText += "&nbsp;&nbsp;<a href='#' onClick='clearQueue();'>Cancel</a>";
-        }
-
-        $("#loadingStatus").html(statusText);
+        $("#loadingStatus").html(status);
+        $("#loadingStatus").show();
     }
+}
+
+// Update the stats
+function recalculateStats() {
+    // Prepare a list of all QSOs, not structured underneath callsigns, to extract data that's easier to deal with this way.
+    let allQSOs = [];
+    data.forEach((d) => {
+        d.qsos.forEach((qso) => {
+            allQSOs.push(qso);
+        });
+    });
+
+    // QSO and callsign count
+    $("#stats-qso-count").text(allQSOs.length);
+    $("#stats-call-count").text(data.size);
+
+    // Sort QSOs by time, find start and end
+    allQSOs.sort((a, b) => a.time < b.time ? -1 : 1);
+    let totalDuration;
+    if (allQSOs.length > 0) {
+        $("#stats-start-time").text(allQSOs[0].time.format('DD MMM YYYY HH:mm'));
+        if (allQSOs.length > 1) {
+            totalDuration = moment.duration(allQSOs[allQSOs.length - 1].time.diff(allQSOs[0].time));
+            $("#stats-end-time").text(allQSOs[allQSOs.length - 1].time.format('DD MMM YYYY HH:mm'));
+            $("#stats-duration").text(formatDurationText(totalDuration));
+        } else {
+            $("#stats-end-time").text("-");
+            $("#stats-duration").text("-");
+        }
+    } else {
+        $("#stats-start-time").text("-");
+        $("#stats-end-time").text("-");
+        $("#stats-duration").text("-");
+    }
+
+    // Find any "off times". The rows for these are normally hidden, but if we have a gap of >1 hour anywhere in the
+    // log, we consider this an "off time" for contesting purposes and show how much on/off time there was.
+    if (allQSOs.length > 1) {
+        let totalOffTime = moment.duration(0);
+        for (let i = 1; i < allQSOs.length; i++) {
+            let gap = moment.duration(allQSOs[i].time.diff(allQSOs[i - 1].time));
+            if (gap.as('minutes') >= 60) {
+                totalOffTime.add(gap);
+            }
+        }
+        if (totalOffTime.as('minutes') > 0) {
+            $("#stats-time-off").text(formatDurationText(totalOffTime));
+            $("#stats-time-on").text(formatDurationText(totalDuration.subtract(totalOffTime)));
+            $(".statsTimeOnOffRow").show();
+        } else {
+            $(".statsTimeOnOffRow").hide();
+        }
+    } else {
+        $(".statsTimeOnOffRow").hide();
+    }
+
+    // Find all unique grids
+    let allGridSquares = [...new Set(allQSOs.filter(q => q.grid != null && q.grid.length >= 4).map(q => q.grid.substring(0, 4)))].sort();
+    $("#stats-gridsquare-count").text(allGridSquares.length);
+    $("#stats-gridsquare-list").text(allGridSquares.join(", "));
+    let allGridFields = [...new Set(allQSOs.filter(q => q.grid != null && q.grid.length >= 2).map(q => q.grid.substring(0, 2)))].sort();
+    $("#stats-gridfield-count").text(allGridFields.length);
+    $("#stats-gridfield-list").text(allGridFields.join(", "));
+
+    // Find all unique DXCCs, sort them by their name
+    let allDXCCs = [...new Set(allQSOs.filter(q => q.dxcc != null && q.dxcc !== "").map(q => q.dxcc))].sort((a, b) => DXCC_DATA[a].name < DXCC_DATA[b].name ? -1 : 1);
+    $("#stats-dxcc-count").text(allDXCCs.length);
+    // For DXCCs, the list is a bit more complex as we want counts per DXCC and names/flags. We also want the display to
+    // be a table to improve the layout. So now we map DXCCs to QSOs and extract details, and build the table.
+    let dxccTable = $("#stats-dxcc-table");
+    dxccTable.html("");
+    dxccTable.append("<thead><tr><th>DXCC</th><th>QSOs</th><th>DXCC</th><th>QSOs</th><th>DXCC</th><th>QSOs</th></tr></thead>");
+    dxccTable.append("<tbody>");
+    // Faff making the table because we need three sets of columns to use the space neatly
+    let rowCount = Math.ceil(allDXCCs.length / 3.0) * 3;
+    for (let row = 0; row < rowCount; row++) {
+        let tr2 = $(`<tr></tr>`);
+        for (let col = 0; col < 3; col++) {
+            if (allDXCCs.length > (row * 3) + col) {
+                // Create cells for DXCC flag/name and QSO count
+                let dxcc = allDXCCs[(row * 3) + col];
+                let qsosInDXCC = [...new Set(allQSOs.filter(q => q.dxcc === dxcc))];
+                tr2.append(`<td><img src="img/flags/${dxcc}.png" class="flag" width="24" alt="${DXCC_DATA[dxcc].name} flag"/>&nbsp;${DXCC_DATA[dxcc].name}</td>`);
+                tr2.append(`<td>${qsosInDXCC.length}</td>`);
+            }
+        }
+        dxccTable.find('tbody').append(tr2);
+    }
+
+    // Find all unique CQ zones
+    let allCQZs = [...new Set(allQSOs.filter(q => q.cqz != null && q.cqz !== "").map(q => q.cqz))].sort((a, b) => parseInt(a) < parseInt(b) ? -1 : 1);
+    $("#stats-cqz-count").text(allCQZs.length);
+    $("#stats-cqz-list").text(allCQZs.join(", "));
+
+    // Find all unique ITU zones
+    let allITUZs = [...new Set(allQSOs.filter(q => q.ituz != null && q.ituz !== "").map(q => q.ituz))].sort((a, b) => parseInt(a) < parseInt(b) ? -1 : 1);
+    $("#stats-ituz-count").text(allITUZs.length);
+    $("#stats-ituz-list").text(allITUZs.join(", "));
+
+    // Find all combinations of band and mode, and for each mode note down how many uses there were.
+    let bandsUsed = [...new Set(allQSOs.map(q => q.band))];
+    let modeFamilies = ["CW", "Phone", "Data"];
+
+    // Create band/mode table
+    let bandModeTable = $("#stats-band-mode-table");
+    bandModeTable.html("");
+    bandModeTable.append("<thead><tr><th>Band</th><th>QSOs</th></tr></thead>");
+    bandModeTable.append("<tbody>");
+    modeFamilies.forEach(m => {
+        bandModeTable.find('thead tr').append(`<th>${m}</th>`);
+    });
+    BANDS.forEach(band => {
+       if (bandsUsed.includes(band.name)) {
+           let tr = $(`<tr></tr>`);
+           tr.append(`<th>${band.name}</th>`);
+           tr.append(`<td>${allQSOs.filter(q => q.band === band.name).length}</td>`);
+           modeFamilies.forEach(m => {
+               tr.append(`<td>${allQSOs.filter(q => q.band === band.name && getModeFamily(q.mode) === m).length}</td>`);
+           });
+           bandModeTable.find('tbody').append(tr);
+       }
+    });
+
 }

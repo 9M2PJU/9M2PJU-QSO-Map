@@ -64,6 +64,15 @@ function loadADIF(text) {
             if (qsoData.has("QTH")) {
                 qso.qth = qsoData.get("QTH");
             }
+            if (qsoData.has("DXCC")) {
+                qso.dxcc = qsoData.get("DXCC");
+            }
+            if (qsoData.has("CQZ")) {
+                qso.cqz = qsoData.get("CQZ");
+            }
+            if (qsoData.has("ITUZ")) {
+                qso.ituz = qsoData.get("ITUZ");
+            }
             if (qsoData.has("FREQ")) {
                 qso.freq = parseFloat(qsoData.get("FREQ"));
                 qso.band = freqToBandName(qso.freq);
@@ -82,13 +91,13 @@ function loadADIF(text) {
             }
 
             // Find "special interest group" info e.g. POTA, SOTA
-            if (qsoData.has("SIG") && qsoData.has("SIG_INFO")) {
+            if (qsoData.has("SIG") && qsoData.get("SIG").length > 0 && qsoData.has("SIG_INFO") && qsoData.get("SIG_INFO").length > 0) {
                 qso.sigRefs.push({program: qsoData.get("SIG"), ref: qsoData.get("SIG_INFO")});
             }
 
             // Some ADIFs feature POTA_REF, SOTA_REF and WWFF_REF separately to SIG/SIG_INFO. But don't duplicate these
             // if they would be duplicates of what we already got from SIG/SIG_INFO.
-            if (qsoData.has("POTA_REF")) {
+            if (qsoData.has("POTA_REF") && qsoData.get("POTA_REF").length > 0) {
                 // POTA allows more than one reference at a time
                 let potaRefs = qsoData.get("POTA_REF").split(",");
                 potaRefs.forEach(ref => {
@@ -97,12 +106,12 @@ function loadADIF(text) {
                     }
                 });
             }
-            if (qsoData.has("SOTA_REF")) {
+            if (qsoData.has("SOTA_REF") && qsoData.get("SOTA_REF").length > 0) {
                 if (!qso.sigRefs.some(p => p.program === "SOTA" && p.ref === qsoData.get("SOTA_REF"))) {
                     qso.sigRefs.push({program: "SOTA", ref: qsoData.get("SOTA_REF")});
                 }
             }
-            if (qsoData.has("WWFF_REF")) {
+            if (qsoData.has("WWFF_REF") && qsoData.get("WWFF_REF").length > 0) {
                 if (!qso.sigRefs.some(p => p.program === "WWFF" && p.ref === qsoData.get("WWFF_REF"))) {
                     qso.sigRefs.push({program: "WWFF", ref: qsoData.get("WWFF_REF")});
                 }
@@ -112,9 +121,9 @@ function loadADIF(text) {
                 qso.comment = qsoData.get("COMMENT");
             }
 
-            if (qso.grid) {
-                // If the QSO has a grid, we can put it straight into the data map and it will be displayed immediately
-                // once we have finished parsing the file.
+            if (qso.grid && qso.dxcc && qso.cqz && qso.ituz) {
+                // If the QSO has all the necessary data for display and statistics, we can put it straight into the
+                // data map and it will be displayed immediately once we have finished parsing the file.
                 putQSOIntoDataMap(qso);
             } else {
                 // The QSO has no grid, so we need to look it up. We place it in a queue, it will be dealt with
@@ -151,13 +160,14 @@ function loadCabrillo(text) {
     var lines = text.split(/\r?\n|\r|\n/g);
     lines.forEach(line => {
         if (line.startsWith("CALLSIGN:")) {
-            setMyCall(line.substring(10));
+            setMyCall(line.substring(9));
         }
 
         if (line.startsWith("QSO:")) {
             let parts = line.split(/\s+/);
+            let contestHasExchange = parts.length > 12;
             let qso = {
-                call: parts[8],
+                call: parts[contestHasExchange ? 9 : 8],
                 freq: parseFloat(parts[1]) / 1000.0,
                 mode: parts[2],
                 time: moment.utc(parts[3] + " " + parts[4], "YYYY-MM-DD HHmm"),
@@ -239,24 +249,25 @@ function loadFile(text) {
     setTimeout(function () {
         try {
             // Load the content, delegating to a function based on file type.
-            if (text.substring(0, 4) === "ADIF" || text.includes("<EOH>")) {
+            let good = true;
+            if (text.substring(0, 4) === "ADIF" || text.includes("<EOH>") || text.includes("<eoh>")) {
                 loadADIF(text);
-                lastLoadTypeRecognised = true;
             } else if (text.substring(0, 13) === "START-OF-LOG:") {
                 loadCabrillo(text);
-                lastLoadTypeRecognised = true;
             } else if (text.substring(0, 3) === "V2,") {
                 loadSOTACSV(text);
-                lastLoadTypeRecognised = true;
             } else {
-                lastLoadTypeRecognised = false;
+                alert("Could not parse this file as a supported format (ADIF, Cabrillo or SOTA CSV).");
+                good = false;
             }
 
-            if (lastLoadTypeRecognised) {
+            if (good) {
                 // Update the map
                 redrawAll();
                 // Zoom the map to fit the markers
                 zoomToFit();
+                // Update the stats
+                recalculateStats();
 
                 // Populate the filter controls
                 populateFilterControls(years, bands, modes);
