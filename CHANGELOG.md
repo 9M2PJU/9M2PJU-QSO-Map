@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [2.0.1] - 2026-01-21
 
 ### Changed
+- **Map Opacity**: Default opacity reset to 100% to ensure map visibility against the light background.
 - **Theme**: Switched to a "Light Tech" theme based on user feedback to improve readability and reduce darkness.
 - **Palette**: Updated color variables to use a bright background (`#f0f4f8`) with dark text and "Tech Blue" accents.
 - **UI Styling**: Softened corners and shadows for a cleaner, modern look.

@@ -19,7 +19,8 @@
         margin: 0;
         overflow: hidden;
         font-family: 'Rajdhani', sans-serif;
-        background-color: var(--background);
+        background-color: #dbe4eb;
+        /* Slightly darker than main BG for contrast behind map */
         color: var(--text);
         font-size: 16px;
         cursor: default;
