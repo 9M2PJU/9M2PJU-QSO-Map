@@ -59,7 +59,10 @@ div.menu-content {
 }
 
 input#fileSelect {
-    width: 17em;
+    input#fileSelect {
+        width: 100%;
+        max-width: 17em;
+    }
 }
 
 div#loadingStatus {
