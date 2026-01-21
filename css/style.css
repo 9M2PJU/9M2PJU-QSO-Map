@@ -1,12 +1,19 @@
 h1.panelTitle {
     margin: 0 0 1em 0;
-    font-size: 1.3em;
+    font-size: 1.5em;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    color: var(--neon-blue);
+    text-shadow: 0 0 5px var(--neon-blue);
 }
 
 h1#stats-callsign {
     margin: 0;
-    font-size: 1.3em;
+    font-size: 1.5em;
+    font-family: 'Orbitron', sans-serif;
     text-align: center;
+    color: var(--neon-pink);
+    text-shadow: 0 0 5px var(--neon-pink);
 }
 
 p.stats-qth {
@@ -16,22 +23,59 @@ p.stats-qth {
 }
 
 div.panel {
-    background-color: var(--background);
-    border: 1px solid var(--text);
-    border-radius: 5px;
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid var(--glass-border);
+    border-radius: 4px;
+    /* Sharper corners */
     color: var(--text);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+/* Scrollbar styling for panels */
+div.panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+div.panel::-webkit-scrollbar-track {
+    background: #000;
+}
+
+div.panel::-webkit-scrollbar-thumb {
+    background: var(--neon-blue);
+    border-radius: 3px;
 }
 
 div.menuButton {
-    background-color: var(--background);
-    border: 1px solid var(--text);
-    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--neon-blue);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85em;
+    letter-spacing: 1px;
+    color: var(--neon-blue);
+    text-transform: uppercase;
+    box-shadow: 0 0 5px rgba(0, 243, 255, 0.2);
 }
+
 div.menuButton a {
     color: var(--text);
 }
+
 div.menuButtonActive {
-    box-shadow: 0px -3px 0px 0px var(--link-color) inset;
+    background-color: rgba(0, 243, 255, 0.2);
+    box-shadow: 0 0 10px var(--neon-blue) inset;
+    text-shadow: 0 0 5px var(--neon-blue);
+    color: white;
+}
+
+div.menuButton:hover {
+    background-color: rgba(0, 243, 255, 0.1);
+    box-shadow: 0 0 8px var(--neon-blue);
 }
 
 label.configLabel {
@@ -52,6 +96,7 @@ input#fixedMarkerColour {
 div#loadingStatus {
     margin-bottom: 2em;
 }
+
 div#qsoFilterMessage {
     margin-top: 0.1em;
     margin-bottom: 0;
@@ -68,9 +113,11 @@ table.statsTable th {
 }
 
 div.dialog {
-    background-color: var(--background);
-    border: 1px solid var(--text);
-    border-radius: 5px;
+    background-color: rgba(10, 10, 10, 0.95);
+    border: 1px solid var(--neon-pink);
+    border-radius: 4px;
+    box-shadow: 0 0 20px rgba(188, 19, 254, 0.3);
+    color: var(--text);
 }
 
 .leaflet-popup {
@@ -90,6 +137,7 @@ div.dialog {
     font-weight: bold;
     box-shadow: none;
 }
+
 .leaflet-tooltip-bottom::before {
     display: none;
 }
@@ -98,6 +146,7 @@ div.dialog {
     background-color: transparent;
     border: none;
 }
+
 .gridSquareLabel {
     position: relative;
     top: -50%;
@@ -121,7 +170,8 @@ span.popupBlock {
 }
 
 /* Text/link styles */
-a, .leaflet-container a {
+a,
+.leaflet-container a {
     color: var(--link-color);
     text-decoration: none;
 }

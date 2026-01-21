@@ -1,33 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>QSO Map Tool</title>
 
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="color-scheme" content="light">
-    <meta name="theme-color" content="white"/>
+    <meta name="theme-color" content="white" />
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="white-translucent">
 
-    <meta property="og:title" content="9M2PJU QSO Map Tool"/>
-    <meta property="twitter:title" content="9M2PJU QSO Map Tool"/>
-    <meta name="description" content="A tool to plot the contents of amateur radio log files on a map"/>
-    <meta property="og:description" content="A tool to plot the contents of amateur radio log files on a map"/>
-    <link rel="canonical" href="https://qsomap.hamradio.my/"/>
-    <meta property="og:url" content="https://qsomap.hamradio.my/"/>
-    <meta property="og:image" content="https://qsomap.hamradio.my/img/screenshot.png"/>
-    <meta property="twitter:image" content="https://qsomap.hamradio.my/img/screenshot.png"/>
-    <meta name="twitter:card" content="summary_large_image"/>
-    <meta name="author" content="Ian Renton"/>
-    <meta property="og:locale" content="en_GB"/>
-    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="9M2PJU QSO Map Tool" />
+    <meta property="twitter:title" content="9M2PJU QSO Map Tool" />
+    <meta name="description" content="A tool to plot the contents of amateur radio log files on a map" />
+    <meta property="og:description" content="A tool to plot the contents of amateur radio log files on a map" />
+    <link rel="canonical" href="https://qsomap.hamradio.my/" />
+    <meta property="og:url" content="https://qsomap.hamradio.my/" />
+    <meta property="og:image" content="https://qsomap.hamradio.my/img/screenshot.png" />
+    <meta property="twitter:image" content="https://qsomap.hamradio.my/img/screenshot.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="author" content="Ian Renton" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:type" content="website" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.2.2/dist/css/leaflet.extra-markers.min.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.2.2/dist/css/leaflet.extra-markers.min.css">
     <link href="fa/css/fontawesome.min.css" rel="stylesheet" />
     <link href="fa/css/solid.min.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;400;600&display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="css/base.css" type="text/css">
     <link rel="stylesheet" href="css/layout.css" type="text/css">
@@ -41,7 +48,8 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet-providers@2.0.0/leaflet-providers.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-edgebuffer@1.0.6/src/leaflet.edgebuffer.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-geometryutil@0.10.2/src/leaflet.geometryutil.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.2.2/src/assets/js/leaflet.extra-markers.min.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.2.2/src/assets/js/leaflet.extra-markers.min.js"
+        type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet.geodesic"></script>
     <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.js"></script>
     <script src="https://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js"></script>
@@ -59,359 +67,422 @@
     <link rel="apple-touch-icon" type="image/png" href="img/favicon-512.png">
     <link rel="manifest" href="manifest.webmanifest">
 </head>
+
 <body>
-<div id="menuButtonRow">
-    <div id="dataMenuButton" class="menuButton menuButtonActive" onClick="toggleData();"><i class="fa-solid fa-database"></i>&nbsp;Data</div>
-    <div id="displayMenuButton" class="menuButton" onClick="toggleDisplay();"><i class="fa-solid fa-palette"></i>&nbsp;Display</div>
-    <div id="statsMenuButton" class="menuButton" onClick="toggleStats();"><i class="fa-solid fa-chart-pie"></i>&nbsp;Stats</div>
-    <div id="aboutMenuButton" class="menuButton" onClick="toggleAbout();"><i class="fa-solid fa-circle-info"></i>&nbsp;About</div>
-</div>
-<div id="dataPanel" class="panel">
-    <p style="margin-top: 0;">To begin, click the <b>Browse</b> button and select a log file. ADIF, Cabrillo and SOTA CSV files are supported.</p>
-    <div><label for="fileSelect" class="configLabel"><input type="file" id="fileSelect"
-           accept=".adi,.adif,.csv,.cbr,.log,.txt" /></label></div>
-
-    <div id="loadingStatus"></div>
-
-    <h4 class="menu-heading" style="margin-top: 1em">File Loading Behaviour <span class="arrow">&#9654;</span></h4>
-    <div class="menu-content">
-        <label for="replaceOnLoad" class="configLabel">
-            <input type="radio" id="replaceOnLoad" class="loadBehaviourControl" name="loadBehaviour" checked="checked">&nbsp;Replace existing QSOs</label><br/>
-        <label for="appendOnLoad" class="configLabel">
-            <input type="radio" id="appendOnLoad" class="loadBehaviourControl" name="loadBehaviour">&nbsp;Add to existing QSOs</label><br/>
-        <button type="button" id="clearQSOs" name="clearQSOs" class="indentControl" style="margin-top: 0.2em;">Clear existing QSOs</button>
+    <div id="dataMenuButton" class="menuButton menuButtonActive" onClick="toggleData();"><i
+            class="fa-solid fa-database"></i>&nbsp;Data</div>
+    <div id="displayMenuButton" class="menuButton" onClick="toggleDisplay();"><i
+            class="fa-solid fa-palette"></i>&nbsp;Display</div>
+    <div id="statsMenuButton" class="menuButton" onClick="toggleStats();"><i
+            class="fa-solid fa-chart-pie"></i>&nbsp;Stats</div>
     </div>
+    <div id="dataPanel" class="panel">
+        <p style="margin-top: 0;">To begin, click the <b>Browse</b> button and select a log file. ADIF, Cabrillo and
+            SOTA CSV files are supported.</p>
+        <div><label for="fileSelect" class="configLabel"><input type="file" id="fileSelect"
+                    accept=".adi,.adif,.csv,.cbr,.log,.txt" /></label></div>
 
-    <h4 class="menu-heading">Online Lookup <span class="arrow">&#9654;</span></h4>
-    <div class="menu-content">
-        <label for="userLookupEnabled" class="configLabel">
-            <input type="checkbox" id="userLookupEnabled" class="control" name="userLookupEnabled" checked="checked">&nbsp;Enable user lookup</label><br/>
-        <label for="refLookupEnabled" class="configLabel">
-            <input type="checkbox" id="refLookupEnabled" class="control" name="refLookupEnabled" checked="checked">&nbsp;Enable xOTA ref lookup</label>
-    </div>
+        <div id="loadingStatus"></div>
+
+        <h4 class="menu-heading" style="margin-top: 1em">File Loading Behaviour <span class="arrow">&#9654;</span></h4>
+        <div class="menu-content">
+            <label for="replaceOnLoad" class="configLabel">
+                <input type="radio" id="replaceOnLoad" class="loadBehaviourControl" name="loadBehaviour"
+                    checked="checked">&nbsp;Replace existing QSOs</label><br />
+            <label for="appendOnLoad" class="configLabel">
+                <input type="radio" id="appendOnLoad" class="loadBehaviourControl" name="loadBehaviour">&nbsp;Add to
+                existing QSOs</label><br />
+            <button type="button" id="clearQSOs" name="clearQSOs" class="indentControl" style="margin-top: 0.2em;">Clear
+                existing QSOs</button>
+        </div>
+
+        <h4 class="menu-heading">Online Lookup <span class="arrow">&#9654;</span></h4>
+        <div class="menu-content">
+            <label for="userLookupEnabled" class="configLabel">
+                <input type="checkbox" id="userLookupEnabled" class="control" name="userLookupEnabled"
+                    checked="checked">&nbsp;Enable user lookup</label><br />
+            <label for="refLookupEnabled" class="configLabel">
+                <input type="checkbox" id="refLookupEnabled" class="control" name="refLookupEnabled"
+                    checked="checked">&nbsp;Enable xOTA ref lookup</label>
+        </div>
 
 
-    <h4 class="menu-heading">My Callsign & QTH <span class="arrow">&#9660;</span></h4>
-    <div class="menu-content" style="display:block;">
-        <table><tr>
-            <td><label for="myCall" class="configLabel">My callsign:</label></td>
-            <td><input type="text" id="myCall" class="textControl textBox" name="myCall" placeholder="N0CALL" size="8"></td>
-        </tr><tr>
-            <td><label for="qthGrid" class="configLabel" >My QTH grid:</label></td>
-            <td><input type="text" id="qthGrid" class="textControl textBox" name="qthGrid" placeholder="AA00aa" size="8"></td>
-        </tr></table>
-    </div>
+        <h4 class="menu-heading">My Callsign & QTH <span class="arrow">&#9660;</span></h4>
+        <div class="menu-content" style="display:block;">
+            <table>
+                <tr>
+                    <td><label for="myCall" class="configLabel">My callsign:</label></td>
+                    <td><input type="text" id="myCall" class="textControl textBox" name="myCall" placeholder="N0CALL"
+                            size="8"></td>
+                </tr>
+                <tr>
+                    <td><label for="qthGrid" class="configLabel">My QTH grid:</label></td>
+                    <td><input type="text" id="qthGrid" class="textControl textBox" name="qthGrid" placeholder="AA00aa"
+                            size="8"></td>
+                </tr>
+            </table>
+        </div>
 
-    <p style="text-align: right"><a class="closeButton" href="#" onClick="toggleData();"><i class="fa-solid fa-xmark"></i> Close</a></p>
-</div>
-
-
-<div id="displayPanel" class="panel">
-    <h4 class="menu-heading">Basemaps <span class="arrow">&#9654;</span></h4>
-    <div class="menu-content">
-        <table><tr>
-            <td><label for="basemap">Basemap:</label></td>
-            <td><select id="basemap" class="control configSelect">
-                <option value="Esri.NatGeoWorldMap" selected="selected">ESRI NatGeo World Map</option>
-                <option value="Esri.WorldTopoMap">ESRI World Topo Map</option>
-                <option value="Esri.WorldShadedRelief">ESRI World Shaded Relief</option>
-                <option value="Esri.WorldImagery">ESRI World Imagery</option>
-                <option value="OpenStreetMap.Mapnik">OpenStreetMap Mapnik</option>
-                <option value="CartoDB.Voyager">CartoDB Voyager</option>
-                <option value="CartoDB.DarkMatter">CartoDB DarkMatter</option>
-            </select></td>
-        </tr><tr>
-            <td><label for="basemapOpacity">Opacity:</label></td>
-            <td><select id="basemapOpacity" class="control configSelect">
-                <option value="1">100%</option>
-                <option value="0.75">75%</option>
-                <option value="0.5" selected="selected">50%</option>
-                <option value="0.25">25%</option>
-            </select></td>
-        </tr></table>
+        <p style="text-align: right"><a class="closeButton" href="#" onClick="toggleData();"><i
+                    class="fa-solid fa-xmark"></i> Close</a></p>
     </div>
 
 
-    <h4 class="menu-heading">Markers <span class="arrow">&#9654;</span></h4>
-    <div class="menu-content">
-        <label for="markersEnabled" class="configLabel">
-            <input type="checkbox" id="markersEnabled" class="control" name="markersEnabled" checked="checked">&nbsp;Draw QSO markers</label><br/>
-        <label for="qthMarker" class="configLabel" style="margin-bottom: 0.5em;">
-            <input type="checkbox" id="qthMarker" class="control" name="qthMarker" checked="checked">&nbsp;Draw QTH marker</label><br/>
-        <label for="markerSize" style="margin-top: 1em; margin-left: 1.5em; position: relative; top: -1px;">Marker Size</label>
-            <input type="range" id="markerSize" name="markerSize" class="control" min="0.125" max="1.5" value="1.0" step="0.125" style="margin: 0 0 0 1em; position: relative; top: 4px; width: 10em;"/><br/>
-        <label for="fixedColour" class="configLabel">
-            <input type="radio" id="fixedColour" class="control" name="markerColours" style="margin-top: 1em;">&nbsp;Fixed colour:</label> <input type="color" id="fixedMarkerColour" class="control" name="fixedMarkerColour" value="#1e90ff" /><br/>
-        <label for="bandColours" class="configLabel">
-            <input type="radio" id="bandColours" class="control" name="markerColours" checked="checked">&nbsp;Colour according to band</label><span class="dialog-open-link"><a href="#" onClick="openDialog('band-colors-key-dialog');">Key</a></span><br/>
-        <label for="modeColours" class="configLabel">
-            <input type="radio" id="modeColours" class="control" name="markerColours">&nbsp;Colour according to mode</label><span class="dialog-open-link"><a href="#" onClick="openDialog('mode-colors-key-dialog');">Key</a></span><br/>
-        <label for="circleMarkers" class="configLabel">
-            <input type="checkbox" id="circleMarkers" class="control" name="circleMarkers" style="margin-top: 1em;">&nbsp;Simple dot markers</label><br/>
-        <label for="outdoorSymbols" class="configLabel">
-            <input type="checkbox" id="outdoorSymbols" class="control" name="outdoorSymbols">&nbsp;xOTA activity symbols</label><span class="dialog-open-link"><a href="#" onClick="openDialog('xota-icons-key-dialog');">Key</a></span><br/>
-        <label for="hybridMarkerSize" class="configLabel">
-            <input type="checkbox" id="hybridMarkerSize" class="control" name="hybridMarkerSize">&nbsp;Smaller hunter markers</label><br/>
-        <label for="outlineMarkers" class="configLabel">
-            <input type="checkbox" id="outlineMarkers" class="control" name="outlineMarkers" checked="checked">&nbsp;Draw outlines</label><br/>
-        <label for="showMarkerShadows" class="configLabel">
-            <input type="checkbox" id="showMarkerShadows" class="control" name="showMarkerShadows" checked="checked">&nbsp;Draw shadows</label>
-    </div>
+    <div id="displayPanel" class="panel">
+        <h4 class="menu-heading">Basemaps <span class="arrow">&#9654;</span></h4>
+        <div class="menu-content">
+            <table>
+                <tr>
+                    <td><label for="basemap">Basemap:</label></td>
+                    <td><select id="basemap" class="control configSelect">
+                            <option value="Esri.NatGeoWorldMap" selected="selected">ESRI NatGeo World Map</option>
+                            <option value="Esri.WorldTopoMap">ESRI World Topo Map</option>
+                            <option value="Esri.WorldShadedRelief">ESRI World Shaded Relief</option>
+                            <option value="Esri.WorldImagery">ESRI World Imagery</option>
+                            <option value="OpenStreetMap.Mapnik">OpenStreetMap Mapnik</option>
+                            <option value="CartoDB.Voyager">CartoDB Voyager</option>
+                            <option value="CartoDB.DarkMatter">CartoDB DarkMatter</option>
+                        </select></td>
+                </tr>
+                <tr>
+                    <td><label for="basemapOpacity">Opacity:</label></td>
+                    <td><select id="basemapOpacity" class="control configSelect">
+                            <option value="1">100%</option>
+                            <option value="0.75">75%</option>
+                            <option value="0.5" selected="selected">50%</option>
+                            <option value="0.25">25%</option>
+                        </select></td>
+                </tr>
+            </table>
+        </div>
 
 
-    <h4 class="menu-heading">Marker Labels <span class="arrow">&#9654;</span></h4>
-    <div class="menu-content">
-        <label for="showCallsignLabels" class="configLabel">
-            <input type="checkbox" id="showCallsignLabels" class="control" name="showCallsignLabels">&nbsp;Callsign labels</label><br/>
-        <label for="showGridSquareLabels" class="configLabel">
-            <input type="checkbox" id="showGridSquareLabels" class="control" name="showGridSquareLabels">&nbsp;Grid square labels</label><br/>
-        <label for="showDistanceLabels" class="configLabel">
-            <input type="checkbox" id="showDistanceLabels" class="control" name="showDistanceLabels">&nbsp;Distance labels in </label>
+        <h4 class="menu-heading">Markers <span class="arrow">&#9654;</span></h4>
+        <div class="menu-content">
+            <label for="markersEnabled" class="configLabel">
+                <input type="checkbox" id="markersEnabled" class="control" name="markersEnabled"
+                    checked="checked">&nbsp;Draw QSO markers</label><br />
+            <label for="qthMarker" class="configLabel" style="margin-bottom: 0.5em;">
+                <input type="checkbox" id="qthMarker" class="control" name="qthMarker" checked="checked">&nbsp;Draw QTH
+                marker</label><br />
+            <label for="markerSize" style="margin-top: 1em; margin-left: 1.5em; position: relative; top: -1px;">Marker
+                Size</label>
+            <input type="range" id="markerSize" name="markerSize" class="control" min="0.125" max="1.5" value="1.0"
+                step="0.125" style="margin: 0 0 0 1em; position: relative; top: 4px; width: 10em;" /><br />
+            <label for="fixedColour" class="configLabel">
+                <input type="radio" id="fixedColour" class="control" name="markerColours"
+                    style="margin-top: 1em;">&nbsp;Fixed colour:</label> <input type="color" id="fixedMarkerColour"
+                class="control" name="fixedMarkerColour" value="#1e90ff" /><br />
+            <label for="bandColours" class="configLabel">
+                <input type="radio" id="bandColours" class="control" name="markerColours" checked="checked">&nbsp;Colour
+                according to band</label><span class="dialog-open-link"><a href="#"
+                    onClick="openDialog('band-colors-key-dialog');">Key</a></span><br />
+            <label for="modeColours" class="configLabel">
+                <input type="radio" id="modeColours" class="control" name="markerColours">&nbsp;Colour according to
+                mode</label><span class="dialog-open-link"><a href="#"
+                    onClick="openDialog('mode-colors-key-dialog');">Key</a></span><br />
+            <label for="circleMarkers" class="configLabel">
+                <input type="checkbox" id="circleMarkers" class="control" name="circleMarkers"
+                    style="margin-top: 1em;">&nbsp;Simple dot markers</label><br />
+            <label for="outdoorSymbols" class="configLabel">
+                <input type="checkbox" id="outdoorSymbols" class="control" name="outdoorSymbols">&nbsp;xOTA activity
+                symbols</label><span class="dialog-open-link"><a href="#"
+                    onClick="openDialog('xota-icons-key-dialog');">Key</a></span><br />
+            <label for="hybridMarkerSize" class="configLabel">
+                <input type="checkbox" id="hybridMarkerSize" class="control" name="hybridMarkerSize">&nbsp;Smaller
+                hunter markers</label><br />
+            <label for="outlineMarkers" class="configLabel">
+                <input type="checkbox" id="outlineMarkers" class="control" name="outlineMarkers"
+                    checked="checked">&nbsp;Draw outlines</label><br />
+            <label for="showMarkerShadows" class="configLabel">
+                <input type="checkbox" id="showMarkerShadows" class="control" name="showMarkerShadows"
+                    checked="checked">&nbsp;Draw shadows</label>
+        </div>
+
+
+        <h4 class="menu-heading">Marker Labels <span class="arrow">&#9654;</span></h4>
+        <div class="menu-content">
+            <label for="showCallsignLabels" class="configLabel">
+                <input type="checkbox" id="showCallsignLabels" class="control" name="showCallsignLabels">&nbsp;Callsign
+                labels</label><br />
+            <label for="showGridSquareLabels" class="configLabel">
+                <input type="checkbox" id="showGridSquareLabels" class="control" name="showGridSquareLabels">&nbsp;Grid
+                square labels</label><br />
+            <label for="showDistanceLabels" class="configLabel">
+                <input type="checkbox" id="showDistanceLabels" class="control" name="showDistanceLabels">&nbsp;Distance
+                labels in </label>
             <select id="distanceUnit" class="control configSelect">
                 <option value="km" selected="selected">kilometers</option>
                 <option value="mi">miles</option>
             </select>
-        <br/>
+            <br />
+        </div>
+
+
+        <h4 class="menu-heading">Lines <span class="arrow">&#9654;</span></h4>
+        <div class="menu-content">
+            <label for="linesEnabled" class="configLabel">
+                <input type="checkbox" id="linesEnabled" class="control" name="linesEnabled"
+                    checked="checked">&nbsp;Draw geodesic lines</label><br />
+            <label for="colourLines" class="configLabel">
+                <input type="checkbox" id="colourLines" class="control" name="colourLines"
+                    checked="checked">&nbsp;Coloured lines</label><br />
+            <label for="thickLines" class="configLabel">
+                <input type="checkbox" id="thickLines" class="control" name="thickLines" checked="checked">&nbsp;Thick
+                lines</label>
+        </div>
+
+
+        <h4 class="menu-heading">Heatmaps <span class="arrow">&#9654;</span></h4>
+        <div class="menu-content">
+            <label for="heatmapEnabled" class="configLabel">
+                <input type="checkbox" id="heatmapEnabled" class="control" name="heatmapEnabled">&nbsp;Draw
+                heatmap</label><br />
+            <label for="perBandHeatmapEnabled" class="configLabel">
+                <input type="checkbox" id="perBandHeatmapEnabled" class="control"
+                    name="perBandHeatmapEnabled">&nbsp;Draw per-band heatmap</label><span class="dialog-open-link"><a
+                    href="#" onClick="openDialog('band-colors-key-dialog');">Key</a></span><br />
+        </div>
+
+
+        <h4 class="menu-heading">Grid & Zone Overlays <span class="arrow">&#9654;</span></h4>
+        <div class="menu-content">
+            <label for="showMaidenheadGrid" class="configLabel">
+                <input type="checkbox" id="showMaidenheadGrid" class="control"
+                    name="showMaidenheadGrid">&nbsp;Maidenhead grid layer</label><br />
+            <label for="gridSquaresEnabled" class="configLabel">
+                <input type="checkbox" id="gridSquaresEnabled" class="control" name="gridSquaresEnabled">&nbsp;Draw
+                worked Maidenhead grids</label><br />
+            <label for="labelGridSquaresWorked" class="configLabel">
+                <input type="checkbox" id="labelGridSquaresWorked" class="control"
+                    name="labelGridSquaresWorked">&nbsp;Label worked Maidenhead grids</label><br />
+            <label for="showCQZones" class="configLabel">
+                <input type="checkbox" id="showCQZones" class="control" name="showCQZones">&nbsp;CQ zone
+                layer</label><br />
+            <label for="showITUZones" class="configLabel">
+                <input type="checkbox" id="showITUZones" class="control" name="showITUZones">&nbsp;ITU zone
+                layer</label><br />
+            <label for="showWABWAIGrid" class="configLabel">
+                <input type="checkbox" id="showWABWAIGrid" class="control" name="showWABWAIGrid">&nbsp;Worked All
+                Britain/Ireland grid</label>
+        </div>
+
+
+        <h4 class="menu-heading">Comments <span class="arrow">&#9654;</span></h4>
+        <div class="menu-content">
+            <label for="showComments" class="configLabel">
+                <input type="checkbox" id="showComments" class="control" name="showComments">&nbsp;Show comments in
+                popups</label><br />
+            <label for="inferOutdoorActivitiesFromComments" class="configLabel">
+                <input type="checkbox" id="inferOutdoorActivitiesFromComments" class="control"
+                    name="inferOutdoorActivitiesFromComments">&nbsp;Infer outdoor activity from comment</label>
+        </div>
+
+
+        <h4 class="menu-heading">QSO Filters <span class="arrow">&#9654;</span></h4>
+        <div class="menu-content">
+            <div id="qsoFilterMessage"><i class='fa-solid fa-triangle-exclamation'></i> Please load a file before
+                applying filters.</div>
+            <table id="qsoFiltersTable">
+                <tr>
+                    <td><label for="filter-year">Year:</label></td>
+                    <td><select id="filter-year" class="control configSelect">
+                        </select></td>
+                </tr>
+                <tr>
+                    <td><label for="filter-mode">Mode:</label></td>
+                    <td><select id="filter-mode" class="control configSelect">
+                        </select></td>
+                </tr>
+                <tr>
+                    <td><label for="filter-band">Band:</label></td>
+                    <td><select id="filter-band" class="control configSelect">
+                        </select></td>
+                </tr>
+            </table>
+        </div>
+
+
+        <h4 class="menu-heading">User Interface <span class="arrow">&#9654;</span></h4>
+        <div class="menu-content">
+            <label for="fineZoomControl" class="configLabel">
+                <input type="checkbox" id="fineZoomControl" class="control" name="fineZoomControl">&nbsp;Fine zoom
+                control</label>
+        </div>
+
+        <p style="text-align: right"><a class="closeButton" href="#" onClick="toggleDisplay();"><i
+                    class="fa-solid fa-xmark"></i> Close</a></p>
+    </div>
+
+    <div id="statsPanel" class="panel">
+        <h1 id="stats-callsign">(Callsign not set)</h1>
+        <p class="stats-qth">QTH: <span id="stats-qth">(Not Set)</span></p>
+
+        <table class="statsTable">
+            <tr>
+                <th style="width: 7em;">Log start</th>
+                <td><span id="stats-start-time">-</span></td>
+            </tr>
+            <tr>
+                <th>Log end</th>
+                <td><span id="stats-end-time">-</span></td>
+            </tr>
+            <tr>
+                <th>Duration</th>
+                <td><span id="stats-duration">-</span></td>
+            </tr>
+            <tr class="statsTimeOnOffRow">
+                <th>Time On</th>
+                <td><span id="stats-time-on">-</span></td>
+            </tr>
+            <tr class="statsTimeOnOffRow">
+                <th>Time Off</th>
+                <td><span id="stats-time-off">-</span></td>
+            </tr>
+            <tr>
+                <th>QSOs</th>
+                <td><span id="stats-qso-count">0</span></td>
+            </tr>
+            <tr>
+                <th>Unique calls</th>
+                <td><span id="stats-call-count">0</span></td>
+            </tr>
+            <tr>
+                <th>Grid squares</th>
+                <td><span id="stats-gridsquare-count">0</span><span class="dialog-open-link"><a href="#"
+                            onClick="openDialog('stats-gridsquare-detail-dialog');">Details</a></span></td>
+            </tr>
+            <tr>
+                <th>Grid fields</th>
+                <td><span id="stats-gridfield-count">0</span><span class="dialog-open-link"><a href="#"
+                            onClick="openDialog('stats-gridfield-detail-dialog');">Details</a></span></td>
+            </tr>
+            <tr>
+                <th>DXCCs</th>
+                <td><span id="stats-dxcc-count">0</span><span class="dialog-open-link"><a href="#"
+                            onClick="openDialog('stats-dxcc-detail-dialog');">Details</a></span></td>
+            </tr>
+            <tr>
+                <th>CQ zones</th>
+                <td><span id="stats-cqz-count">0</span><span class="dialog-open-link"><a href="#"
+                            onClick="openDialog('stats-cqz-detail-dialog');">Details</a></span></td>
+            </tr>
+            <tr>
+                <th>ITU zones</th>
+                <td><span id="stats-ituz-count">0</span><span class="dialog-open-link"><a href="#"
+                            onClick="openDialog('stats-ituz-detail-dialog');">Details</a></span></td>
+            </tr>
+        </table>
+
+        <table id="stats-band-mode-table" class="statsTable"></table>
+
+        <p style="text-align: right"><a class="closeButton" href="#" onClick="toggleStats();"><i
+                    class="fa-solid fa-xmark"></i> Close</a></p>
     </div>
 
 
-    <h4 class="menu-heading">Lines <span class="arrow">&#9654;</span></h4>
-    <div class="menu-content">
-        <label for="linesEnabled" class="configLabel">
-            <input type="checkbox" id="linesEnabled" class="control" name="linesEnabled" checked="checked">&nbsp;Draw geodesic lines</label><br/>
-        <label for="colourLines" class="configLabel">
-            <input type="checkbox" id="colourLines" class="control" name="colourLines" checked="checked">&nbsp;Coloured lines</label><br/>
-        <label for="thickLines" class="configLabel">
-            <input type="checkbox" id="thickLines" class="control" name="thickLines" checked="checked">&nbsp;Thick lines</label>
+    <div id="stats-gridsquare-detail-dialog" class="dialog">
+        <p><b>Worked grid squares</b><br /><span id="stats-gridsquare-list"></span></p>
+        <p style="text-align: right"><a class="closeButton" href="#"
+                onClick="closeDialog('stats-gridsquare-detail-dialog');"><i class="fa-solid fa-xmark"></i> Close</a></p>
+    </div>
+
+    <div id="stats-gridfield-detail-dialog" class="dialog">
+        <p><b>Worked grid fields</b><br /><span id="stats-gridfield-list"></span></p>
+        <p style="text-align: right"><a class="closeButton" href="#"
+                onClick="closeDialog('stats-gridfield-detail-dialog');"><i class="fa-solid fa-xmark"></i> Close</a></p>
+    </div>
+
+    <div id="stats-dxcc-detail-dialog" class="dialog">
+        <p><b>Worked DXCCs</b></p>
+        <table id="stats-dxcc-table" class="statsTable"></table>
+        <p style="text-align: right"><a class="closeButton" href="#"
+                onClick="closeDialog('stats-dxcc-detail-dialog');"><i class="fa-solid fa-xmark"></i> Close</a></p>
+    </div>
+
+    <div id="stats-cqz-detail-dialog" class="dialog">
+        <p><b>Worked CQ zones</b><br /><span id="stats-cqz-list"></span></p>
+        <p style="text-align: right"><a class="closeButton" href="#"
+                onClick="closeDialog('stats-cqz-detail-dialog');"><i class="fa-solid fa-xmark"></i> Close</a></p>
+    </div>
+
+    <div id="stats-ituz-detail-dialog" class="dialog">
+        <p><b>Worked ITU zones</b><br /><span id="stats-ituz-list"></span></p>
+        <p style="text-align: right"><a class="closeButton" href="#"
+                onClick="closeDialog('stats-ituz-detail-dialog');"><i class="fa-solid fa-xmark"></i> Close</a></p>
+    </div>
+
+    <div id="band-colors-key-dialog" class="dialog">
+        <p><b>Band Colours</b><br />
+            <span style='font-size:2em; color:#7cfc00; line-height: 0.5em;'>&#9724;</span> 160m<br />
+            <span style='font-size:2em; color:#e550e5; line-height: 0.5em;'>&#9724;</span> 80m<br />
+            <span style='font-size:2em; color:#00008b; line-height: 0.5em;'>&#9724;</span> 60m<br />
+            <span style='font-size:2em; color:#5959ff; line-height: 0.5em;'>&#9724;</span> 40m<br />
+            <span style='font-size:2em; color:#62d962; line-height: 0.5em;'>&#9724;</span> 30m<br />
+            <span style='font-size:2em; color:#f2c40c; line-height: 0.5em;'>&#9724;</span> 20m<br />
+            <span style='font-size:2em; color:#f2f261; line-height: 0.5em;'>&#9724;</span> 17m<br />
+            <span style='font-size:2em; color:#cca166; line-height: 0.5em;'>&#9724;</span> 15m<br />
+            <span style='font-size:2em; color:#b22222; line-height: 0.5em;'>&#9724;</span> 12m<br />
+            <span style='font-size:2em; color:#ff69b4; line-height: 0.5em;'>&#9724;</span> 10m<br />
+            <span style='font-size:2em; color:#FF0000; line-height: 0.5em;'>&#9724;</span> 6m<br />
+            <span style='font-size:2em; color:#cc0044; line-height: 0.5em;'>&#9724;</span> 4m<br />
+            <span style='font-size:2em; color:#FF1493; line-height: 0.5em;'>&#9724;</span> 2m<br />
+            <span style='font-size:2em; color:#999900; line-height: 0.5em;'>&#9724;</span> 70cm<br />
+            <span style='font-size:2em; color:#5AB8C7; line-height: 0.5em;'>&#9724;</span> 23cm<br />
+            <span style='font-size:2em; color:#FF7F50; line-height: 0.5em;'>&#9724;</span> 13cm<br />
+            <span style='font-size:2em; color:rebeccapurple; line-height: 0.5em;'>&#9724;</span> Multiple bands<br />
+            <span style='font-size:2em; color:grey; line-height: 0.5em;'>&#9724;</span> Unknown band
+        </p>
+        <p style="text-align: right"><a class="closeButton" href="#" onClick="closeDialog('band-colors-key-dialog');"><i
+                    class="fa-solid fa-xmark"></i> Close</a></p>
+    </div>
+
+    <div id="mode-colors-key-dialog" class="dialog">
+        <p><b>Mode Colours</b><br />
+            <span style='font-size:2em; color:red; line-height: 0.5em;'>&#9724;</span> CW<br />
+            <span style='font-size:2em; color:green; line-height: 0.5em;'>&#9724;</span> Phone<br />
+            <span style='font-size:2em; color:blue; line-height: 0.5em;'>&#9724;</span> Data<br />
+            <span style='font-size:2em; color:rebeccapurple; line-height: 0.5em;'>&#9724;</span> Multiple modes<br />
+            <span style='font-size:2em; color:grey; line-height: 0.5em;'>&#9724;</span> Unknown mode
+        </p>
+        <p style="text-align: right"><a class="closeButton" href="#" onClick="closeDialog('mode-colors-key-dialog');"><i
+                    class="fa-solid fa-xmark"></i> Close</a></p>
+    </div>
+
+    <div id="xota-icons-key-dialog" class="dialog">
+        <p><b>xOTA Icons</b><br />
+            <i class='fa-solid fa-tree markerPopupIcon'></i>&nbsp;Parks on the Air (POTA)<br />
+            <i class='fa-solid fa-mountain-sun markerPopupIcon'></i>&nbsp;Summits on the Air (SOTA)<br />
+            <i class='fa-solid fa-seedling markerPopupIcon'></i>&nbsp;Worldwide Flora & Fauna (WWFF)<br />
+            <i class='fa-solid fa-person-hiking markerPopupIcon'></i>&nbsp;Global Mountain Activity (GMA)<br />
+            <i class='fa-solid fa-radiation markerPopupIcon'></i>&nbsp;Bunkers on the Air (WWBOTA)<br />
+            <i class='fa-solid fa-umbrella-beach markerPopupIcon'></i>&nbsp;Islands on the Air (IOTA)<br />
+            <i class='fa-solid fa-chess-rook markerPopupIcon'></i>&nbsp;World Castles Award (WCA)<br />
+            <i class='fa-solid fa-tower-observation markerPopupIcon'></i>&nbsp;Amateur Radio Lighthouse Society
+            (ARLHS)<br />
+            <i class='fa-solid fa-fan markerPopupIcon'></i>&nbsp;Mills on the Air (MOTA)<br />
+            <i class='fa-solid fa-star markerPopupIcon'></i>&nbsp;(Multiple xOTA programmes)<br />
+            <i class='fa-solid fa-question markerPopupIcon'></i>&nbsp;(Unknown xOTA programme)<br />
+            <i class='fa-solid fa-crosshairs markerPopupIcon'></i>&nbsp;(Hunter)
+        </p>
+        <p style="text-align: right"><a class="closeButton" href="#" onClick="closeDialog('xota-icons-key-dialog');"><i
+                    class="fa-solid fa-xmark"></i> Close</a></p>
     </div>
 
 
-    <h4 class="menu-heading">Heatmaps <span class="arrow">&#9654;</span></h4>
-    <div class="menu-content">
-        <label for="heatmapEnabled" class="configLabel">
-            <input type="checkbox" id="heatmapEnabled" class="control" name="heatmapEnabled">&nbsp;Draw heatmap</label><br/>
-        <label for="perBandHeatmapEnabled" class="configLabel">
-            <input type="checkbox" id="perBandHeatmapEnabled" class="control" name="perBandHeatmapEnabled">&nbsp;Draw per-band heatmap</label><span class="dialog-open-link"><a href="#" onClick="openDialog('band-colors-key-dialog');">Key</a></span><br/>
-    </div>
+    <div id="map"></div>
 
-
-    <h4 class="menu-heading">Grid & Zone Overlays <span class="arrow">&#9654;</span></h4>
-    <div class="menu-content">
-        <label for="showMaidenheadGrid" class="configLabel">
-            <input type="checkbox" id="showMaidenheadGrid" class="control" name="showMaidenheadGrid">&nbsp;Maidenhead grid layer</label><br/>
-        <label for="gridSquaresEnabled" class="configLabel">
-            <input type="checkbox" id="gridSquaresEnabled" class="control" name="gridSquaresEnabled">&nbsp;Draw worked Maidenhead grids</label><br/>
-        <label for="labelGridSquaresWorked" class="configLabel">
-            <input type="checkbox" id="labelGridSquaresWorked" class="control" name="labelGridSquaresWorked">&nbsp;Label worked Maidenhead grids</label><br/>
-        <label for="showCQZones" class="configLabel">
-            <input type="checkbox" id="showCQZones" class="control" name="showCQZones">&nbsp;CQ zone layer</label><br/>
-        <label for="showITUZones" class="configLabel">
-            <input type="checkbox" id="showITUZones" class="control" name="showITUZones">&nbsp;ITU zone layer</label><br/>
-        <label for="showWABWAIGrid" class="configLabel">
-            <input type="checkbox" id="showWABWAIGrid" class="control" name="showWABWAIGrid">&nbsp;Worked All Britain/Ireland grid</label>
-    </div>
-
-
-    <h4 class="menu-heading">Comments <span class="arrow">&#9654;</span></h4>
-    <div class="menu-content">
-        <label for="showComments" class="configLabel">
-            <input type="checkbox" id="showComments" class="control" name="showComments">&nbsp;Show comments in popups</label><br/>
-        <label for="inferOutdoorActivitiesFromComments" class="configLabel">
-            <input type="checkbox" id="inferOutdoorActivitiesFromComments" class="control" name="inferOutdoorActivitiesFromComments">&nbsp;Infer outdoor activity from comment</label>
-    </div>
-
-
-    <h4 class="menu-heading">QSO Filters <span class="arrow">&#9654;</span></h4>
-    <div class="menu-content">
-        <div id="qsoFilterMessage"><i class='fa-solid fa-triangle-exclamation'></i> Please load a file before applying filters.</div>
-        <table id="qsoFiltersTable"><tr>
-            <td><label for="filter-year">Year:</label></td>
-            <td><select id="filter-year" class="control configSelect">
-            </select></td>
-        </tr><tr>
-            <td><label for="filter-mode">Mode:</label></td>
-            <td><select id="filter-mode" class="control configSelect">
-            </select></td>
-        </tr><tr>
-            <td><label for="filter-band">Band:</label></td>
-            <td><select id="filter-band" class="control configSelect">
-            </select></td>
-        </tr></table>
-    </div>
-
-
-    <h4 class="menu-heading">User Interface <span class="arrow">&#9654;</span></h4>
-    <div class="menu-content">
-        <label for="fineZoomControl" class="configLabel">
-            <input type="checkbox" id="fineZoomControl" class="control" name="fineZoomControl">&nbsp;Fine zoom control</label>
-    </div>
-
-    <p style="text-align: right"><a class="closeButton" href="#" onClick="toggleDisplay();"><i class="fa-solid fa-xmark"></i> Close</a></p>
-</div>
-
-<div id="statsPanel" class="panel">
-    <h1 id="stats-callsign">(Callsign not set)</h1>
-    <p class="stats-qth">QTH: <span id="stats-qth">(Not Set)</span></p>
-
-    <table class="statsTable">
-        <tr>
-            <th style="width: 7em;">Log start</th>
-            <td><span id="stats-start-time">-</span></td>
-        </tr>
-        <tr>
-            <th>Log end</th>
-            <td><span id="stats-end-time">-</span></td>
-        </tr>
-        <tr>
-            <th>Duration</th>
-            <td><span id="stats-duration">-</span></td>
-        </tr>
-        <tr class="statsTimeOnOffRow">
-            <th>Time On</th>
-            <td><span id="stats-time-on">-</span></td>
-        </tr>
-        <tr class="statsTimeOnOffRow">
-            <th>Time Off</th>
-            <td><span id="stats-time-off">-</span></td>
-        </tr>
-        <tr>
-            <th>QSOs</th>
-            <td><span id="stats-qso-count">0</span></td>
-        </tr>
-        <tr>
-            <th>Unique calls</th>
-            <td><span id="stats-call-count">0</span></td>
-        </tr>
-        <tr>
-            <th>Grid squares</th>
-            <td><span id="stats-gridsquare-count">0</span><span class="dialog-open-link"><a href="#" onClick="openDialog('stats-gridsquare-detail-dialog');">Details</a></span></td>
-        </tr>
-        <tr>
-            <th>Grid fields</th>
-            <td><span id="stats-gridfield-count">0</span><span class="dialog-open-link"><a href="#" onClick="openDialog('stats-gridfield-detail-dialog');">Details</a></span></td>
-        </tr>
-        <tr>
-            <th>DXCCs</th>
-            <td><span id="stats-dxcc-count">0</span><span class="dialog-open-link"><a href="#" onClick="openDialog('stats-dxcc-detail-dialog');">Details</a></span></td>
-        </tr>
-        <tr>
-            <th>CQ zones</th>
-            <td><span id="stats-cqz-count">0</span><span class="dialog-open-link"><a href="#" onClick="openDialog('stats-cqz-detail-dialog');">Details</a></span></td>
-        </tr>
-        <tr>
-            <th>ITU zones</th>
-            <td><span id="stats-ituz-count">0</span><span class="dialog-open-link"><a href="#" onClick="openDialog('stats-ituz-detail-dialog');">Details</a></span></td>
-        </tr>
-    </table>
-
-    <table id="stats-band-mode-table" class="statsTable"></table>
-
-    <p style="text-align: right"><a class="closeButton" href="#" onClick="toggleStats();"><i class="fa-solid fa-xmark"></i> Close</a></p>
-</div>
-
-<div id="aboutPanel" class="panel">
-    <p style="margin-top: 0;">This is a utility to plot amateur radio contacts ("QSOs") on a map.</p>
-    <p>Start by uploading a data file in ADIF, Cabrillo or SOTA CSV format on the <b style="display: inline-block;"><i class="fa-solid fa-database"></i>&nbsp;Data</b> tab. Information such as your callsign and location ("QTH") will be populated automatically, but you can override them if necessary.</p>
-    <p>Then, progress to the <b style="display: inline-block;"><i class="fa-solid fa-palette"></i>&nbsp;Display</b> tab if you want to customise the appearance of the map, markers, lines, heatmaps, overlays etc. Lots of options are available.</p>
-    <p>Finally, the <b style="display: inline-block;"><i class="fa-solid fa-chart-pie"></i>&nbsp;Stats</b> tab will give you some information on the data you have loaded.</p>
-    <p>This tool was created by <a href="https://ianrenton.com" target="_blank">Ian Renton, MØTRT</a>. The <a href="https://git.ianrenton.com/ian/qsomap" target="_blank">source code</a> is Public Domain licenced, meaning you can do anything you like with it without restriction.</p>
-    <p>The QSO Map Tool is free to use, has no adverts, no cookies, and does not store any data outside of your own computer. Where QSOs are found with missing data, the <a href="https://spothole.app" target="_blank">Spothole</a> API is queried to fetch the data. No personally identifying information such as your own callsign is transmitted.</p>
-
-    <p style="text-align: right"><a class="closeButton" href="#" onClick="toggleAbout();"><i class="fa-solid fa-xmark"></i> Close</a></p>
-</div>
-
-<div id="stats-gridsquare-detail-dialog" class="dialog">
-    <p><b>Worked grid squares</b><br/><span id="stats-gridsquare-list"></span></p>
-    <p style="text-align: right"><a class="closeButton" href="#" onClick="closeDialog('stats-gridsquare-detail-dialog');"><i class="fa-solid fa-xmark"></i> Close</a></p>
-</div>
-
-<div id="stats-gridfield-detail-dialog" class="dialog">
-    <p><b>Worked grid fields</b><br/><span id="stats-gridfield-list"></span></p>
-    <p style="text-align: right"><a class="closeButton" href="#" onClick="closeDialog('stats-gridfield-detail-dialog');"><i class="fa-solid fa-xmark"></i> Close</a></p>
-</div>
-
-<div id="stats-dxcc-detail-dialog" class="dialog">
-    <p><b>Worked DXCCs</b></p>
-    <table id="stats-dxcc-table" class="statsTable"></table>
-    <p style="text-align: right"><a class="closeButton" href="#" onClick="closeDialog('stats-dxcc-detail-dialog');"><i class="fa-solid fa-xmark"></i> Close</a></p>
-</div>
-
-<div id="stats-cqz-detail-dialog" class="dialog">
-    <p><b>Worked CQ zones</b><br/><span id="stats-cqz-list"></span></p>
-    <p style="text-align: right"><a class="closeButton" href="#" onClick="closeDialog('stats-cqz-detail-dialog');"><i class="fa-solid fa-xmark"></i> Close</a></p>
-</div>
-
-<div id="stats-ituz-detail-dialog" class="dialog">
-    <p><b>Worked ITU zones</b><br/><span id="stats-ituz-list"></span></p>
-    <p style="text-align: right"><a class="closeButton" href="#" onClick="closeDialog('stats-ituz-detail-dialog');"><i class="fa-solid fa-xmark"></i> Close</a></p>
-</div>
-
-<div id="band-colors-key-dialog" class="dialog">
-    <p><b>Band Colours</b><br/>
-        <span style='font-size:2em; color:#7cfc00; line-height: 0.5em;'>&#9724;</span> 160m<br/>
-        <span style='font-size:2em; color:#e550e5; line-height: 0.5em;'>&#9724;</span> 80m<br/>
-        <span style='font-size:2em; color:#00008b; line-height: 0.5em;'>&#9724;</span> 60m<br/>
-        <span style='font-size:2em; color:#5959ff; line-height: 0.5em;'>&#9724;</span> 40m<br/>
-        <span style='font-size:2em; color:#62d962; line-height: 0.5em;'>&#9724;</span> 30m<br/>
-        <span style='font-size:2em; color:#f2c40c; line-height: 0.5em;'>&#9724;</span> 20m<br/>
-        <span style='font-size:2em; color:#f2f261; line-height: 0.5em;'>&#9724;</span> 17m<br/>
-        <span style='font-size:2em; color:#cca166; line-height: 0.5em;'>&#9724;</span> 15m<br/>
-        <span style='font-size:2em; color:#b22222; line-height: 0.5em;'>&#9724;</span> 12m<br/>
-        <span style='font-size:2em; color:#ff69b4; line-height: 0.5em;'>&#9724;</span> 10m<br/>
-        <span style='font-size:2em; color:#FF0000; line-height: 0.5em;'>&#9724;</span> 6m<br/>
-        <span style='font-size:2em; color:#cc0044; line-height: 0.5em;'>&#9724;</span> 4m<br/>
-        <span style='font-size:2em; color:#FF1493; line-height: 0.5em;'>&#9724;</span> 2m<br/>
-        <span style='font-size:2em; color:#999900; line-height: 0.5em;'>&#9724;</span> 70cm<br/>
-        <span style='font-size:2em; color:#5AB8C7; line-height: 0.5em;'>&#9724;</span> 23cm<br/>
-        <span style='font-size:2em; color:#FF7F50; line-height: 0.5em;'>&#9724;</span> 13cm<br/>
-        <span style='font-size:2em; color:rebeccapurple; line-height: 0.5em;'>&#9724;</span> Multiple bands<br/>
-        <span style='font-size:2em; color:grey; line-height: 0.5em;'>&#9724;</span> Unknown band
-    </p>
-    <p style="text-align: right"><a class="closeButton" href="#" onClick="closeDialog('band-colors-key-dialog');"><i class="fa-solid fa-xmark"></i> Close</a></p>
-</div>
-
-<div id="mode-colors-key-dialog" class="dialog">
-    <p><b>Mode Colours</b><br/>
-        <span style='font-size:2em; color:red; line-height: 0.5em;'>&#9724;</span> CW<br/>
-        <span style='font-size:2em; color:green; line-height: 0.5em;'>&#9724;</span> Phone<br/>
-        <span style='font-size:2em; color:blue; line-height: 0.5em;'>&#9724;</span> Data<br/>
-        <span style='font-size:2em; color:rebeccapurple; line-height: 0.5em;'>&#9724;</span> Multiple modes<br/>
-        <span style='font-size:2em; color:grey; line-height: 0.5em;'>&#9724;</span> Unknown mode
-    </p>
-    <p style="text-align: right"><a class="closeButton" href="#" onClick="closeDialog('mode-colors-key-dialog');"><i class="fa-solid fa-xmark"></i> Close</a></p>
-</div>
-
-<div id="xota-icons-key-dialog" class="dialog">
-    <p><b>xOTA Icons</b><br/>
-        <i class='fa-solid fa-tree markerPopupIcon'></i>&nbsp;Parks on the Air (POTA)<br/>
-        <i class='fa-solid fa-mountain-sun markerPopupIcon'></i>&nbsp;Summits on the Air (SOTA)<br/>
-        <i class='fa-solid fa-seedling markerPopupIcon'></i>&nbsp;Worldwide Flora & Fauna (WWFF)<br/>
-        <i class='fa-solid fa-person-hiking markerPopupIcon'></i>&nbsp;Global Mountain Activity (GMA)<br/>
-        <i class='fa-solid fa-radiation markerPopupIcon'></i>&nbsp;Bunkers on the Air (WWBOTA)<br/>
-        <i class='fa-solid fa-umbrella-beach markerPopupIcon'></i>&nbsp;Islands on the Air (IOTA)<br/>
-        <i class='fa-solid fa-chess-rook markerPopupIcon'></i>&nbsp;World Castles Award (WCA)<br/>
-        <i class='fa-solid fa-tower-observation markerPopupIcon'></i>&nbsp;Amateur Radio Lighthouse Society (ARLHS)<br/>
-        <i class='fa-solid fa-fan markerPopupIcon'></i>&nbsp;Mills on the Air (MOTA)<br/>
-        <i class='fa-solid fa-star markerPopupIcon'></i>&nbsp;(Multiple xOTA programmes)<br/>
-        <i class='fa-solid fa-question markerPopupIcon'></i>&nbsp;(Unknown xOTA programme)<br/>
-        <i class='fa-solid fa-crosshairs markerPopupIcon'></i>&nbsp;(Hunter)
-    </p>
-    <p style="text-align: right"><a class="closeButton" href="#" onClick="closeDialog('xota-icons-key-dialog');"><i class="fa-solid fa-xmark"></i> Close</a></p>
-</div>
-
-
-<div id="map"></div>
-
-<script src="data/dxcc.js?v=1"></script>
-<script src="js/globals.js?v=1"></script>
-<script src="js/data-funcs.js?v=1"></script>
-<script src="js/file-funcs.js?v=1"></script>
-<script src="js/lookup-funcs.js?v=1"></script>
-<script src="js/display-funcs.js?v=1"></script>
-<script src="js/utility-funcs.js?v=1"></script>
-<script src="js/local-storage-funcs.js?v=1"></script>
-<script src="js/map-setup-funcs.js?v=1"></script>
-<script src="js/ui-funcs.js?v=1"></script>
-<script src="js/startup.js?v=1"></script>
+    <script src="data/dxcc.js?v=1"></script>
+    <script src="js/globals.js?v=1"></script>
+    <script src="js/data-funcs.js?v=1"></script>
+    <script src="js/file-funcs.js?v=1"></script>
+    <script src="js/lookup-funcs.js?v=1"></script>
+    <script src="js/display-funcs.js?v=1"></script>
+    <script src="js/utility-funcs.js?v=1"></script>
+    <script src="js/local-storage-funcs.js?v=1"></script>
+    <script src="js/map-setup-funcs.js?v=1"></script>
+    <script src="js/ui-funcs.js?v=1"></script>
+    <script src="js/startup.js?v=1"></script>
 </body>
+
 </html>

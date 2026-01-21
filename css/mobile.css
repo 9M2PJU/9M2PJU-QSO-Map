@@ -1,5 +1,6 @@
 /* Mobile */
 @media only screen and (max-width: 800px) {
+
     /*noinspection CssUnusedSymbol*/
     .leaflet-container .leaflet-control-attribution {
         display: none;
@@ -7,5 +8,30 @@
 
     div.dialog {
         width: 90%;
+    }
+
+    /* Better mobile panel sizing */
+    div.panel {
+        width: 92% !important;
+        /* Override layout.css */
+        left: 4% !important;
+        right: 4% !important;
+        top: 4em;
+        max-height: 80%;
+    }
+
+    div#menuButtonRow {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        left: 0;
+        padding: 0 0.5em;
+        box-sizing: border-box;
+    }
+
+    div.menuButton {
+        flex-grow: 1;
+        margin: 0 0.2em;
+        font-size: 0.9em;
     }
 }

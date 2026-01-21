@@ -153,27 +153,18 @@ $(".textControl").on("input", function() {
 // Open/close panels
 function toggleData() {
     hidePanel("displayPanel", "displayMenuButton");
-    hidePanel("aboutPanel", "aboutMenuButton");
     hidePanel("statsPanel", "statsMenuButton");
     togglePanel("dataPanel", "dataMenuButton");
 }
 function toggleDisplay() {
     hidePanel("dataPanel", "dataMenuButton");
-    hidePanel("aboutPanel", "aboutMenuButton");
     hidePanel("statsPanel", "statsMenuButton");
     togglePanel("displayPanel", "displayMenuButton");
 }
 function toggleStats() {
     hidePanel("displayPanel", "displayMenuButton");
-    hidePanel("aboutPanel", "aboutMenuButton");
     hidePanel("dataPanel", "dataMenuButton");
     togglePanel("statsPanel", "statsMenuButton");
-}
-function toggleAbout() {
-    hidePanel("displayPanel", "displayMenuButton");
-    hidePanel("dataPanel", "dataMenuButton");
-    hidePanel("statsPanel", "statsMenuButton");
-    togglePanel("aboutPanel", "aboutMenuButton");
 }
 function hidePanel(panelID, buttonID) {
     $("#" + panelID).hide(0);

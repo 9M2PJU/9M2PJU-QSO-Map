@@ -1,23 +1,26 @@
 :root {
-    --background: white;
-    --faded: #cccccc;
-    --text: black;
-    --link-color: dodgerblue;
+    --background: #050505;
+    --faded: rgba(0, 243, 255, 0.1);
+    --text: #e0e0e0;
+    --link-color: #00f3ff;
+    --neon-blue: #00f3ff;
+    --neon-pink: #bc13fe;
+    --glass-bg: rgba(10, 10, 10, 0.85);
+    --glass-border: rgba(0, 243, 255, 0.3);
+    --glass-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
 }
 
 /* Overall */
-html, body, div#map {
+html,
+body,
+div#map {
     width: 100%;
     height: 100%;
     margin: 0;
     overflow: hidden;
-    font-family: sans-serif;
+    font-family: 'Rajdhani', sans-serif;
     background-color: var(--background);
     color: var(--text);
     font-size: 16px;
     cursor: default;
-}
-
-html, body {
-    background-color: var(--background);
 }
