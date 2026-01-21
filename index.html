@@ -69,12 +69,13 @@
 </head>
 
 <body>
-    <div id="dataMenuButton" class="menuButton menuButtonActive" onClick="toggleData();"><i
-            class="fa-solid fa-database"></i>&nbsp;Data</div>
-    <div id="displayMenuButton" class="menuButton" onClick="toggleDisplay();"><i
-            class="fa-solid fa-palette"></i>&nbsp;Display</div>
-    <div id="statsMenuButton" class="menuButton" onClick="toggleStats();"><i
-            class="fa-solid fa-chart-pie"></i>&nbsp;Stats</div>
+    <div id="menuButtonRow">
+        <div id="dataMenuButton" class="menuButton menuButtonActive" onClick="toggleData();"><i
+                class="fa-solid fa-database"></i>&nbsp;Data</div>
+        <div id="displayMenuButton" class="menuButton" onClick="toggleDisplay();"><i
+                class="fa-solid fa-palette"></i>&nbsp;Display</div>
+        <div id="statsMenuButton" class="menuButton" onClick="toggleStats();"><i
+                class="fa-solid fa-chart-pie"></i>&nbsp;Stats</div>
     </div>
     <div id="dataPanel" class="panel">
         <p style="margin-top: 0;">To begin, click the <b>Browse</b> button and select a log file. ADIF, Cabrillo and
