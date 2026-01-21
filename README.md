@@ -6,7 +6,7 @@ A modern, high-performance utility for amateur radio operators to visualize thei
 
 ## 🚀 Features
 
-*   **Cyberpunk Theme**: A futuristic, high-contrast dark mode with neon accents and glassmorphism UI.
+*   **Light Tech Theme**: A modern, high-tech light mode with Tech Blue accents and Glassmorphism UI.
 *   **Data Support**: Load ADIF, Cabrillo & SOTA CSV files.
 *   **Advanced Visualizations**:
     *   Heatmaps (Global & Per-band)

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.1] - 2026-01-21
+
+### Changed
+- **Theme**: Switched to a "Light Tech" theme based on user feedback to improve readability and reduce darkness.
+- **Palette**: Updated color variables to use a bright background (`#f0f4f8`) with dark text and "Tech Blue" accents.
+- **UI Styling**: Softened corners and shadows for a cleaner, modern look.
+
 ## [2.0.0] - 2026-01-21
 
 ### Added

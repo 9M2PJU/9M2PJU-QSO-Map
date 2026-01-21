@@ -24,13 +24,13 @@ p.stats-qth {
 
 div.panel {
     background-color: var(--glass-bg);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid var(--glass-border);
-    border-radius: 4px;
-    /* Sharper corners */
+    border-radius: 12px;
+    /* Softer corners for light theme */
     color: var(--text);
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    box-shadow: var(--glass-shadow);
     transition: all 0.3s ease;
 }
 
@@ -40,7 +40,7 @@ div.panel::-webkit-scrollbar {
 }
 
 div.panel::-webkit-scrollbar-track {
-    background: #000;
+    background: rgba(0, 0, 0, 0.05);
 }
 
 div.panel::-webkit-scrollbar-thumb {
@@ -49,9 +49,9 @@ div.panel::-webkit-scrollbar-thumb {
 }
 
 div.menuButton {
-    background-color: rgba(0, 0, 0, 0.8);
-    border: 1px solid var(--neon-blue);
-    border-radius: 2px;
+    background-color: var(--glass-bg);
+    border: 1px solid rgba(0, 123, 255, 0.2);
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
     font-family: 'Orbitron', sans-serif;
@@ -59,7 +59,7 @@ div.menuButton {
     letter-spacing: 1px;
     color: var(--neon-blue);
     text-transform: uppercase;
-    box-shadow: 0 0 5px rgba(0, 243, 255, 0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 div.menuButton a {
@@ -67,15 +67,15 @@ div.menuButton a {
 }
 
 div.menuButtonActive {
-    background-color: rgba(0, 243, 255, 0.2);
-    box-shadow: 0 0 10px var(--neon-blue) inset;
-    text-shadow: 0 0 5px var(--neon-blue);
+    background-color: var(--neon-blue);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    text-shadow: none;
     color: white;
 }
 
 div.menuButton:hover {
-    background-color: rgba(0, 243, 255, 0.1);
-    box-shadow: 0 0 8px var(--neon-blue);
+    background-color: rgba(0, 123, 255, 0.1);
+    transform: translateY(-1px);
 }
 
 label.configLabel {
@@ -113,10 +113,10 @@ table.statsTable th {
 }
 
 div.dialog {
-    background-color: rgba(10, 10, 10, 0.95);
-    border: 1px solid var(--neon-pink);
-    border-radius: 4px;
-    box-shadow: 0 0 20px rgba(188, 19, 254, 0.3);
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     color: var(--text);
 }
 
