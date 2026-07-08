@@ -1,7 +1,8 @@
 h1.panelTitle {
     margin: 0 0 1em 0;
     font-size: 1.5em;
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
     text-transform: uppercase;
     color: var(--neon-blue);
     text-shadow: 0 0 5px var(--neon-blue);
@@ -10,7 +11,8 @@ h1.panelTitle {
 h1#stats-callsign {
     margin: 0;
     font-size: 1.5em;
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
     text-align: center;
     color: var(--neon-pink);
     text-shadow: 0 0 5px var(--neon-pink);
@@ -54,7 +56,8 @@ div.menuButton {
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
     font-size: 0.85em;
     letter-spacing: 1px;
     color: var(--neon-blue);
@@ -67,7 +70,8 @@ div.menuButton a {
 }
 
 #headerTitle {
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
     font-size: 1em;
     color: var(--neon-blue);
     text-shadow: 0 0 5px var(--neon-blue);
