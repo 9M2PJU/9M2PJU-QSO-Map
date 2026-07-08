@@ -209,11 +209,15 @@ function zoomToFit() {
 function enableMaidenheadGrid(show) {
     showMaidenheadGrid = show;
     if (maidenheadGrid) {
-        if (show) {
-            maidenheadGrid.addTo(map);
-            basemapLayer.bringToBack();
-        } else {
-            map.removeLayer(maidenheadGrid);
+        try {
+            if (show) {
+                maidenheadGrid.addTo(map);
+                basemapLayer.bringToBack();
+            } else {
+                map.removeLayer(maidenheadGrid);
+            }
+        } catch (e) {
+            console.warn("Could not toggle Maidenhead grid", e);
         }
     }
     localStorage.setItem('showMaidenheadGrid', showMaidenheadGrid);
@@ -223,11 +227,15 @@ function enableMaidenheadGrid(show) {
 function enableCQZones(show) {
     showCQZones = show;
     if (cqZones) {
-        if (show) {
-            cqZones.addTo(map);
-            basemapLayer.bringToBack();
-        } else {
-            map.removeLayer(cqZones);
+        try {
+            if (show) {
+                cqZones.addTo(map);
+                basemapLayer.bringToBack();
+            } else {
+                map.removeLayer(cqZones);
+            }
+        } catch (e) {
+            console.warn("Could not toggle CQ zones", e);
         }
     }
     localStorage.setItem('showCQZones', show);
@@ -237,11 +245,15 @@ function enableCQZones(show) {
 function enableITUZones(show) {
     showITUZones = show;
     if (ituZones) {
-        if (show) {
-            ituZones.addTo(map);
-            basemapLayer.bringToBack();
-        } else {
-            map.removeLayer(ituZones);
+        try {
+            if (show) {
+                ituZones.addTo(map);
+                basemapLayer.bringToBack();
+            } else {
+                map.removeLayer(ituZones);
+            }
+        } catch (e) {
+            console.warn("Could not toggle ITU zones", e);
         }
     }
     localStorage.setItem('showITUZones', show);
@@ -251,11 +263,15 @@ function enableITUZones(show) {
 function enableWABWAIGrid(show) {
     showWABWAIGrid = show;
     if (wabwaiGrid) {
-        if (show) {
-            wabwaiGrid.addTo(map);
-            basemapLayer.bringToBack();
-        } else {
-            map.removeLayer(wabwaiGrid);
+        try {
+            if (show) {
+                wabwaiGrid.addTo(map);
+                basemapLayer.bringToBack();
+            } else {
+                map.removeLayer(wabwaiGrid);
+            }
+        } catch (e) {
+            console.warn("Could not toggle WAB/WAI grid", e);
         }
     }
     localStorage.setItem('showWABWAIGrid', show);
@@ -487,15 +503,15 @@ function setBasemap(basemapname) {
 
         // Change the colour of the grid and zone overlays to match
         if (basemapIsDark) {
-            maidenheadGrid.options.color = MAIDENHEAD_GRID_COLOR_DARK;
-            cqZones.options.color = CQ_ZONES_COLOR_DARK;
-            ituZones.options.color = ITU_ZONES_COLOR_DARK;
-            wabwaiGrid.options.color = WAB_WAI_GRID_COLOR_DARK;
+            if (maidenheadGrid) maidenheadGrid.options.color = MAIDENHEAD_GRID_COLOR_DARK;
+            if (cqZones) cqZones.options.color = CQ_ZONES_COLOR_DARK;
+            if (ituZones) ituZones.options.color = ITU_ZONES_COLOR_DARK;
+            if (wabwaiGrid) wabwaiGrid.options.color = WAB_WAI_GRID_COLOR_DARK;
         } else {
-            maidenheadGrid.options.color = MAIDENHEAD_GRID_COLOR_LIGHT;
-            cqZones.options.color = CQ_ZONES_COLOR_LIGHT;
-            ituZones.options.color = ITU_ZONES_COLOR_LIGHT;
-            wabwaiGrid.options.color = WAB_WAI_GRID_COLOR_LIGHT;
+            if (maidenheadGrid) maidenheadGrid.options.color = MAIDENHEAD_GRID_COLOR_LIGHT;
+            if (cqZones) cqZones.options.color = CQ_ZONES_COLOR_LIGHT;
+            if (ituZones) ituZones.options.color = ITU_ZONES_COLOR_LIGHT;
+            if (wabwaiGrid) wabwaiGrid.options.color = WAB_WAI_GRID_COLOR_LIGHT;
         }
         if (showMaidenheadGrid) {
             map.removeLayer(maidenheadGrid);
