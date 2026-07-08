@@ -66,6 +66,15 @@ div.menuButton a {
     color: var(--text);
 }
 
+#headerTitle {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1em;
+    color: var(--neon-blue);
+    text-shadow: 0 0 5px var(--neon-blue);
+    margin-right: 1em;
+    white-space: nowrap;
+}
+
 div.menuButtonActive {
     background-color: var(--neon-blue);
     box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
