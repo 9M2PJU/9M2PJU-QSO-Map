@@ -72,6 +72,11 @@ div.menuButton a {
 #headerTitle {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 700;
+    background-color: var(--glass-bg);
+    border: 1px solid rgba(0, 123, 255, 0.2);
+    border-radius: 6px;
+    padding: 0.2em 0.7em;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     font-size: 1em;
     color: var(--neon-blue);
     text-shadow: 0 0 5px var(--neon-blue);
